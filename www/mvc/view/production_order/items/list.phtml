@@ -1,0 +1,68 @@
+<ol class="breadcrumb">
+    <li><a>Production</a></li>
+    <li><a href="<?= APP_URI ?>po/list/">Production Orders</a></li>
+    <li class="active">Blocks</li>
+</ol>
+
+<!-- LISTAGEM -->
+<div>
+
+    <div class="panel panel-default" id="po_detail">
+        <div class="panel-heading">
+            Production Order #<span id="po_detail_title"></span> Detail
+
+            <button type="button" class="btn btn-default" style="visibility: hidden">
+                <span class="glyphicon"></span>
+            </button>
+
+            <div style="float: right">
+                <button type="button" class="btn btn-default btn_po_edit" id="btn_po_edit">
+                    <span class="glyphicon glyphicon-pencil"></span> Edit
+                </button>
+                <button type="button" class="btn btn-default btn_po_confirm" id="btn_po_confirm" title="Save blocks and confirm production order">
+                    <span class="glyphicon glyphicon-ok"></span> Save and Confirm
+                </button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-6">Quarry: <span id="po_detail_quarry_name"></span></div>
+                <div class="col-sm-6">Production Date: <span id="po_detail_production_date"></span></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">Product: <span id="po_detail_product_name"></span></div>
+                <div class="col-sm-6">Block Type: <span id="po_detail_block_type"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div id="poi_menu_heading" class="panel-heading">
+        
+            <button type="button" class="btn btn-primary btn_po_add" id="btn_po_add">
+                <span class="glyphicon glyphicon-plus-sign"></span> Add new block
+            </button>
+            <!--button type="button" class="btn btn-default btn_po_refresh" id="btn_po_refresh">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </button-->
+            <span class="label label-info log_refresh"></span>
+
+            <div style="float: right">
+                <span class="label label-info log_save"></span>
+                <button type="button" class="btn btn-primary btn_po_save" id="btn_po_save">
+                    <span class="glyphicon glyphicon-floppy-disk"></span> Save blocks
+                </button>
+            </div>
+        
+        </div>
+
+        <div id="po_items" class="panel-body div-striped">
+            
+        </div>
+
+        <div id="poi_menu_footer" class="panel-footer">
+        </div>
+        
+    </div>
+
+</form>

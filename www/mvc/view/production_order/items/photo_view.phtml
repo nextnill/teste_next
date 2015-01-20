@@ -1,0 +1,38 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_detalhe_photo_view" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_photo_view_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe_photo_view');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_photo_view_label">Title</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+
+                    <input type="hidden" id="rec_photo_poi_id">
+                    <input type="hidden" id="rec_photo_block_id">
+
+                    <div id="div_photo_view">
+                        <img src="" style="width: 100%" id="img_photo_view" />
+                    </div>
+
+                    <div id="div_photo_obs">
+
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <div class="pull-left">
+                    <button class="btn btn-xs btn-danger" id="btn_photo_delete">
+                        Delete photo
+                    </button>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="javascript:closeModal('modal_detalhe_photo_view');">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

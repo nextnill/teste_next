@@ -1,0 +1,11 @@
+ALTER TABLE `msstone_app`.`terminal` 
+ADD COLUMN `wagon_number` CHAR(1) NOT NULL DEFAULT 'N' AFTER `obs`;
+
+
+ALTER TABLE `msstone_app`.`travel_plan_item` 
+ADD COLUMN `wagon_number` VARCHAR(15) NULL DEFAULT NULL AFTER `client_removed`;
+
+
+ADD COLUMN `draft_file` VARCHAR(300) NULL DEFAULT NULL AFTER `packing_list_ref`,
+ADD COLUMN `draft_type` VARCHAR(300) NULL DEFAULT NULL AFTER `draft_file`,
+ADD COLUMN `draft_size` INT(11) NULL DEFAULT NULL AFTER `draft_type`;

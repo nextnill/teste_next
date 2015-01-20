@@ -1,0 +1,38 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_up_draft" tabindex="-1" role="dialog" aria-labelledby="modal_up_draft" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_up_draft');">&times;</button>
+                <h4 class="modal-title" id="modal_up_draft_label">Send draft</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+
+                    <input type="hidden" id="rec_photo_poi_id">
+                    <input type="hidden" id="rec_photo_block_id">
+
+                    <!-- ANEXO BASE -->
+                    <div id="anexo_base" class="form-group">
+                        <label id="anexo_label" for="anexo_input">Select a draft file</label>
+                        <input id="anexo_input" name="files[]" type="file" multiple>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <div class="pull-left">
+                    <div class="progress progress-striped active" style="width: 200px" id="progress_up_draft">
+                        <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                            <span class="sr-only">wait, sending...</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_up_draft');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_upload_draft" onclick="javascript:upload_file();">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

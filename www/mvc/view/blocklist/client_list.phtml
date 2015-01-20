@@ -1,0 +1,44 @@
+<ol class="breadcrumb">
+    <li><a>Sale</a></li>
+    <li class="active">Block List</li>
+</ol>
+
+<!-- LISTAGEM -->
+
+<div>
+    <!-- Listagem de clientes -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover" id="tbl_listagem">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Name</th>
+                    <th class="text-center">Blocks Reserved</th>
+                    <th class="text-right">Vol</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- itens -->
+                <tr template-row style="display: none;">
+                    <td template-field="client_code">{client_code}</td>
+                    <td template-field="client_name">{client_name}</td>
+                    <td template-field="blocks" class="text-center">{blocks}</td>
+                    <td template-field="vol" class="text-right">{vol}</td>
+                    <td style="text-align: right;">
+                        <div class="btn-group" style="text-align: left;">
+                            <button type="button" class="btn btn-default" template-button="select">
+                                <span class="glyphicon glyphicon-download-alt"></span> Download
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <!-- /Listagem de clientes -->
+
+</div>
+
+<!-- /LISTAGEM -->

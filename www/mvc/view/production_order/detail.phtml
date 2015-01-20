@@ -1,0 +1,81 @@
+<!-- /MODAL DETAIL PRODUCTION ORDER -->
+<div class="modal" id="modal_detalhe" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_label"><label for="edtNumBloco">Production Order</label></h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+
+                    <input type="hidden" id="rec_id">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cbo_quarry">Quarry</label>
+                                <select id="cbo_quarry" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_date_production">Date Production</label>
+                                <input type="date" class="form-control" id="edt_date_production">
+                            </div>
+                        </div>    
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input type="text" class="form-control" id="edt_status" value="Draft" readonly="true">
+                            </div>
+                        </div>
+                    
+                    
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="rdo_block_type" id="rdo_block_type_final" value="final" checked>
+                                        Final Block
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="rdo_block_type" id="rdo_block_type_interim" value="interim">
+                                        Interim Block
+                                    </label>
+                                </div>
+                            </div>
+                        </div>    
+                    </div>
+
+                        <div class="col-sm-6"  style="display: none;">
+                            <div class="form-group">
+                                <label for="cbo_product">Product</label>
+                                <select id="cbo_product" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+
+                
+                </form>
+                
+                <!-- ALERTAS -->
+                <div id="alerta_form" class="alert alert-danger">
+                </div>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save and continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETAIL PRODUCTION ORDER -->

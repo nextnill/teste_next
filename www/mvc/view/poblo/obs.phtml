@@ -1,0 +1,33 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_poblo_obs" tabindex="-1" role="dialog" aria-labelledby="modal_poblo_obs_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_poblo_obs');">&times;</button>
+                <h4 class="modal-title" id="modal_poblo_obs_label">Observations</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="poblo_obs_rec_id">
+
+                    <div class="form-group">
+                        <label for="edt_poblo_obs_lot_number">Lot Number</label>
+                        <input type="text" class="form-control" id="edt_poblo_obs_lot_number" placeholder="Lot Number" readonly="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edt_poblo_obs">Obs</label>
+                        <textarea class="form-control" id="edt_poblo_obs" placeholder="Observations" rows="6" maxlength="200" spellcheck="false"></textarea>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_poblo_obs_cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_poblo_obs_save">Save observations</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

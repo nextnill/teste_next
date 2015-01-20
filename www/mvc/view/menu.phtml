@@ -1,0 +1,254 @@
+<?php
+
+if (LOGGED):
+    //$user = unserialize($_SESSION[SPRE.'user']);
+    $user = $this->ActiveUser();
+    $permissions = $user['permissions'];
+
+    function verifica_acesso($key, $permissions) {
+        return in_array($key, $permissions);
+    }
+?>
+<ul class="nav navbar-nav menu_top">
+
+    <!-- DASHBOARD -->
+    <!--li class="_active"><a href="<?= APP_URI ?>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li-->
+    <!-- /DASHBOARD -->
+
+    <!-- CADASTROS -->
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            General <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+
+            
+            <li <?= (!verifica_acesso('client', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>client/list/">
+                    Clients
+                </a>
+            </li>
+
+            <li <?= (!verifica_acesso('client', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>client_group/list/">
+                    Client Groups
+                </a>
+            </li>
+
+            <li role="presentation" class="divider"></li>
+            
+            <li <?= (!verifica_acesso('terminal', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>terminal/list/">
+                    Terminals
+                </a>
+            </li>
+            
+            <li <?= (!verifica_acesso('agency', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>agency/list/">
+                    Agencies
+                </a>
+            </li>
+
+            <li role="presentation" class="divider"></li>
+            
+            <li <?= (!verifica_acesso('quarry', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>quarry/list/">
+                    Quarries
+                </a>
+            </li>
+
+            <li role="presentation" class="divider"></li>
+
+            <li <?= (!verifica_acesso('product', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>product/list/">
+                    Products
+                </a>
+            </li>
+            
+            <li <?= (!verifica_acesso('quality', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>quality/list/">
+                    Qualities
+                </a>
+            </li>
+
+            <li <?= (!verifica_acesso('defect', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>defect/list/">
+                    Defects
+                </a>
+            </li>
+
+            <li role="presentation" class="divider"></li>
+
+            <li <?= (!verifica_acesso('block', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>block/list/">
+                    Blocks
+                </a>
+            </li>
+
+        </ul>
+    </li>
+    <!-- /CADASTROS -->
+
+    <!-- PRODUÇÃO -->
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Production <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        
+        <li <?= (!verifica_acesso('production_order', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>po/list/">
+                Production Orders
+            </a>
+        </li>
+
+        <li role="presentation" class="divider"></li>
+
+        <li <?= (!verifica_acesso('sobracolumay', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>sobracolumay/list/interim/">
+                Interim Sobracolumay
+            </a>
+        </li>
+
+        <li <?= (!verifica_acesso('sobracolumay', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>sobracolumay/list/final/">
+                Final Sobracolumay
+            </a>
+        </li>
+
+      </ul>
+    </li>
+    <!-- /PRODUÇÃO -->
+
+    <!-- VENDA -->
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Sale <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+         
+        <li <?= (!verifica_acesso('schedule_inspection', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>schedule_inspection/list/">
+                Schedule Inspection
+            </a>
+        </li>
+        
+        <li <?= (!verifica_acesso('inspection', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>blocklist/clients/">
+                Block List
+            </a>
+        </li>
+
+        <li <?= (!verifica_acesso('inspection', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>inspection/clients/">
+                Inspection
+            </a>
+        </li>
+
+        <li <?= (!verifica_acesso('reinspection', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>reinspection/blocks/">
+                Reinspection
+            </a>
+        </li>
+        
+        <li role="presentation" class="divider"></li>
+        
+        <li <?= (!verifica_acesso('inspection', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>inspection_certificate/list/">
+                Inspection Certificate
+            </a>
+        </li>
+      
+      </ul>
+    </li>
+    <!-- /VENDA -->
+
+    <!-- LOGISTICA -->
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Logistics <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        
+        <li <?= (!verifica_acesso('travel_route', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>travel_route/list/">
+                Travel Route
+            </a>
+        </li>
+
+        <li <?= (!verifica_acesso('travel_plan', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>travel_plan/template/list/">
+                Travel Plan Template
+            </a>
+        </li>
+        
+        <li <?= (!verifica_acesso('travel_cost', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>travel_cost/list/">
+                Travel Cost
+            </a>
+        </li>
+
+        <li role="presentation" class="divider"></li>
+        
+        <li <?= (!verifica_acesso('lot', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>lots/list/">
+                Lots
+            </a>
+        </li>
+        
+        <li <?= (!verifica_acesso('pointing_travel', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>travel_plan/pending/">
+                Pointing Travel
+            </a>
+        </li>
+
+      </ul>
+    </li>
+    <!-- /LOGISTICA -->
+
+    <!-- POBLO -->
+    <li class="dropdown <?= (!verifica_acesso('poblo', $permissions) ? 'disabled' : '') ?>">
+        <a href="<?= APP_URI ?>poblo/list/">
+            Poblo
+        </a>
+    </li>
+    <!-- /POBLO -->
+
+</ul>
+
+<ul class="nav navbar-nav navbar-right menu_top">
+
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> Settings <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            
+            <li <?= (!verifica_acesso('user', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>user/list/">
+                    <span class="glyphicon glyphicon-user"></span> Users
+                </a>
+            </li>
+            
+        </ul>
+    </li>
+
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <?= $user['name'] ?> <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="<?= APP_URI ?>logout"><span class="glyphicon glyphicon-off"></span> Log out</a></li>
+        </ul>
+    </li>
+
+</ul>
+
+<script>
+// on load window
+funcs_on_load.push(function() {
+    // removo link dos menus desabilitados
+    //$('.dropdown-menu > [class="disabled"] > a').attr('href', '#');
+    $('.menu_top .disabled > a').attr('href', '#');
+});
+</script>
+
+<?php
+endif;
+?>

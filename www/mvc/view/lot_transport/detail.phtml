@@ -1,0 +1,122 @@
+<ol class="breadcrumb">
+    <li><a>Logistics</a></li>
+    <li><a href="<?= APP_URI ?>lots/list/">Lots</a></li>
+    <?php if ($lot_transport->id == 0): ?>
+    <li class="active">New</li>
+    <?php else: ?>
+    <li class="active">Blocks</li>
+    <?php endif; ?>
+</ol>
+
+<!-- LISTAGEM -->
+<div>
+
+    <div class="row">
+        <div class="col-sm-3 col-md-2">
+            <div class="form-group">
+                <label for="edt_lot_number">Lot Number</label>
+                <input type="text" class="form-control" id="edt_lot_number" placeholder="Lot Number" maxlength="50">
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="edt_client_name">Client</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="edt_client_name" readonly="true">
+                    <span class="input-group-btn">
+                        <button id="btn_client_change" class="btn btn-default" type="button" onclick="javascript:cl_listar();">
+                            <span id="ico_client_change" class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-3 col-md-2">
+            <div class="form-group">
+                <label for="edt_lot_number">Status</label>
+                <span class="form-control" id="lbl_status" readonly="true">Draft</span>
+            </div>
+        </div>
+
+        <div class="col-sm-2 col-md-4">
+            <div class="pull-right">
+                <button type="button" class="btn btn-default" id="btn_release">
+                    <span class="glyphicon glyphicon-thumbs-up"></span> Release
+                </button>
+                <button type="button" class="btn btn-default" id="btn_costs" onclick="javascript:abre_costs()">
+                    <span class="glyphicon glyphicon-usd"></span> Costs
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" id="bl_menu_heading">
+            <button type="button" class="btn btn-primary btn_lt_add">
+                <span class="glyphicon glyphicon-plus-sign"></span> Add block
+            </button>
+
+            <div style="float: right">
+                <span class="label label-info log_save"></span>
+                <button type="button" class="btn btn-primary btn_lt_finish">
+                    <span class="glyphicon glyphicon-ok"></span> Save
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover" id="tbl_listagem">
+                <thead>
+                    <tr>
+                        <th>Block Number</th>
+                        <th class="text-center">Quality</th>
+                        <th class="text-center">Production Date</th>
+                        <!--th class="text-center">Invoice</th-->
+                        <th class="text-center">Inspection Date</th>
+                        <th class="text-center">Weight</th>
+                        <th>Destination</th>
+                        <th class="text-center" style="width: 100px">Status</th>
+                        <th class="text-left">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- template-row -->
+                    <tr template-row style="display: none;">
+                        <td template-field="block_number" style="width: 150px">
+                            <a template-field="block_number_a" href="#">{block_number}</a>
+                        </td>
+                        <td template-field="quality_name" style="width: 110px" class="text-center">{quality_name}</td>
+                        <td template-field="date_production" style="width: 100px" class="text-center">{date_production}</td>
+                        <!--td template-field="invoice_id" style="width: 60px" class="text-center">{invoice_id}</td-->
+                        <td template-field="invoice_date_record" style="width: 100px" class="text-center">{invoice_date_record}</td>
+                        <td template-field="tot_weight" style="width: 70px" class="text-right">{weight}</td>
+                        <td template-field="destination">{destination}</td>
+                        <td class="text-center">
+                            <span template-field="status">{status}</span>
+                            <span template-field="dismembered">{dismembered}</span>
+                        </td>
+                        <!--td class="text-left">
+                            <span template-field="dismembered">{dismembered}</span>
+                            <span template-field="destination">{destination}</span>
+                            <span template-field="status">{status}</span>
+                        </td-->
+                        <td class="text-right">
+                            <div class="btn-group">
+                                <button template-button="remove" type="button" class="btn btn-default btn-xs">Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- /template-row -->
+                </tbody>
+            </table>  
+        </div>
+
+        <!--div id="bl_menu_footer" class="panel-footer">
+        </div-->
+
+    </div>
+    
+</div>
+
+<!-- /LISTAGEM -->

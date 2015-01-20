@@ -1,0 +1,78 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="cost_modal_detalhe" tabindex="-1" role="dialog" aria-labelledby="cost_modal_detalhe_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('cost_modal_detalhe');">&times;</button>
+                <h4 class="modal-title" id="cost_modal_detalhe_label">Cost</h4>
+            </div>
+            <div class="modal-body">
+                
+                <!-- Costs Fixed -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table_block_list" id="tbl_list_cost">
+                        <thead>
+                            <tr>
+                                <th>Fobbings</th>
+                                <th class="text-right" style="width: 180px">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- itens -->
+                            <tr template-row style="display: none;">
+                                <td template-field="cost">{cost}</td>
+                                <td class="text-right">
+                                    <input template-field="value" type="text" class="form-control input_number text-right" placeholder="0.00" >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /Costs Fixed -->
+
+                <!-- Costs Variable -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table_block_list" id="tbl_list_cost_route">
+                        <thead>
+                            <tr>
+                                <th>Transport<br/>Start</th>
+                                <th>End</th>
+                                <th class="text-right small text-info" style="width: 100px">Last Value</th>
+                                <th class="text-right" style="width: 100px">Value</th>
+                                <th class="text-right" style="width: 100px">Handle<br/>In/Out</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- itens -->
+                            <tr template-row style="display: none;">
+                                <td template-field="start_location">{start_location}</td>
+                                <td template-field="end_location">{end_location}</td>
+                                <td template-field="last_cost_value" class="text-right small text-info">{last_cost_value}</td>
+                                <td class="text-right">
+                                    <input template-field="cost_value" type="text" class="form-control input_number text-right" placeholder="0.00" >
+                                </td>
+                                <td class="text-right">
+                                    <input template-field="cost_handle_in_out" type="text" class="form-control input_number text-right" placeholder="0.00" >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /Costs Variable -->
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                
+                <!-- Total -->
+                <div class="pull-left">
+                    Total $ <b><span id="edt_total">{edt_total}</span></b>
+                </div>
+                <!-- /Total -->
+
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('cost_modal_detalhe');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:costs_envia_detalhes();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

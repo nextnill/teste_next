@@ -1,0 +1,135 @@
+<!-- MODAL DETALHE -->
+<div class="modal bs-modal-lg" id="modal_detalhe" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_label">Agency</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+
+                    <input type="hidden" id="rec_id">
+
+
+                    <div class="row">
+
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label for="edt_shipping_company">Shipping Company</label>
+                                <input type="text" class="form-control" id="edt_shipping_company" placeholder="Shipping Company" maxlength="150">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label for="edt_name">Name</label>
+                                <input type="text" class="form-control" id="edt_name" placeholder="Name" maxlength="150">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+
+                            <div class="form-group">
+                                <label for="edt_code">Code</label>
+                                <input type="text" class="form-control" id="edt_code" placeholder="Code" maxlength="10">
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-8">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_contact">Contact</label>
+                                        <input type="text" class="form-control" id="edt_contact" placeholder="Contact" maxlength="100">
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_telephone">Telephone</label>
+                                        <input type="text" class="form-control" id="edt_telephone" placeholder="Telephone" maxlength="50">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_mobile">Mobile</label>
+                                        <input type="text" class="form-control" id="edt_mobile" placeholder="Mobile" maxlength="50">
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_fax">Fax</label>
+                                        <input type="text" class="form-control" id="edt_fax" placeholder="Fax" maxlength="50">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="edt_email">E-mail</label>
+                                        <input type="text" class="form-control" id="edt_email" placeholder="E-mail" maxlength="150">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="edt_contact_other">Other means of contact</label>
+                                <textarea class="form-control" id="edt_contact_other" placeholder="Other means of contact" rows="8" maxlength="300" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="edt_obs">Observations</label>
+                                <textarea class="form-control" id="edt_obs" placeholder="Observations" rows="6" maxlength="500" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                    </div>
+          
+                    
+                </form>
+                
+                <!-- ALERTAS -->
+                <div id="alerta_form" class="alert alert-danger">
+                </div>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

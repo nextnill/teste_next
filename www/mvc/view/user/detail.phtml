@@ -1,0 +1,61 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_detalhe" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_label">User</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+
+                    <input type="hidden" id="rec_id">
+
+                    <div class="form-group">
+                        <label for="edt_name">User Name</label>
+                        <input type="text" class="form-control" id="edt_name" placeholder="Name" maxlength="50">
+                    </div>
+
+                    <div class="form-group" id="div_senha">
+                        <label for="edt_password">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="edt_password" placeholder="Password" maxlength="50">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" onclick="javascript:estado_senha();">
+                                    <span id="ico_password" class="glyphicon glyphicon-eye-open"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input id="chk_blocked" type="checkbox" value="">
+                                Blocked
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input id="chk_admin" type="checkbox" value="">
+                                Administrator
+                            </label>
+                        </div>
+                    </div>
+
+                </form>
+                
+                <!-- ALERTAS -->
+                <div id="alerta_form" class="alert alert-danger">
+                </div>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

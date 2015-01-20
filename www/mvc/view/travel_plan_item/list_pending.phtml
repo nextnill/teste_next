@@ -1,0 +1,116 @@
+<ol class="breadcrumb">
+    <li><a>Logistics</a></li>
+    <li class="active">Pointing Travel</li>
+</ol>
+
+<!-- LISTAGEM -->
+<div>
+
+    <div id="pt_menu_heading" style="padding-top: 5px; padding-bottom: 5px;">
+
+        <div class="pull-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary disabled btn_pt_client_removed" id="btn_pt_client_removed">
+                    <span class="glyphicon glyphicon-ok"></span> The client removed
+                </button>
+                <button type="button" class="btn btn-primary disabled btn_pt_start" id="btn_pt_start">
+                    <span class="glyphicon glyphicon-road"></span> Start transportation
+                </button>
+                <button type="button" class="btn btn-primary disabled btn_pt_complete" id="btn_pt_complete">
+                    <span class="glyphicon glyphicon-flag"></span> Mark as completed
+                </button>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        
+    </div>
+
+    <div id="list">
+    </div>
+
+    <div id="pt_menu_footer">
+    </div>
+
+    <!-- template-table -->
+    <div class="panel panel-default" style="display: none;" template-table="pending">
+        <div class="panel-heading"  style="padding: 10px" >
+                
+                <div class="pull-right">
+                    <div class="text-right" style="font-weight: bold" style="padding: 5px" template-field="client">Cliente</div>
+                    <div class="text-right" style="font-weight: bold" style="padding: 5px" template-field="group">Group</div>
+                </div>
+
+                <div class="pull-left" style="padding-right: 5px">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-xs btn-default" template-button="order_up">
+                            <span class="glyphicon glyphicon-arrow-up"></span>
+                        </button>
+                        <button type="button" class="btn btn-xs btn-default" template-button="order_down">
+                            <span class="glyphicon glyphicon-arrow-down"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="panel-title" style="font-weight: bold" style="padding: 5px" template-title>Lote</h3>
+                </div>  
+
+                <div class="clearfix"></div>          
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover table_block_list">
+                <thead>
+                    <tr>
+                        <th style="width: 160px">Block Number</th>
+                        <th style="width: 120px">NF</th>
+                        <th colspan="3" class="text-center">Tot Meas</th>
+                        <th colspan="3" class="text-center">Net Meas</th>
+                        <th class="text-center">Vol</th>
+                        <th class="text-center">Weight</th>
+                        <th>Destination</th>
+                        <th class="text-center" style="width: 100px">Status</th>
+                        <th class="text-center" style="width: 70px">
+                            <button type="button" class="btn btn-xs btn-default" template-button="uncheck_all">
+                                <span class="glyphicon glyphicon-unchecked"></span>
+                            </button>
+                            <button type="button" class="btn btn-xs btn-default" template-button="check_all">
+                                <span class="glyphicon glyphicon-check"></span>
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- template-row -->
+                    <tr template-row style="display: none;">
+                        <td template-field="block_number">
+                            <span template-field="block_number_a">{block_number}</span>
+                        </td>
+                        <td template-field="nf">{nf}</td>
+                        <td template-field="tot_c" style="width: 45px" class="text-right">{C}</td>
+                        <td template-field="tot_a" style="width: 45px" class="text-right">{A}</td>
+                        <td template-field="tot_l" style="width: 45px" class="text-right">{L}</td>
+                        <td template-field="sale_net_c" style="width: 45px" class="text-right">{C}</td>
+                        <td template-field="sale_net_a" style="width: 45px" class="text-right">{A}</td>
+                        <td template-field="sale_net_l" style="width: 45px" class="text-right">{L}</td>
+                        <td template-field="sale_net_vol" style="width: 70px" class="text-right">{sale_net_vol}</td>
+                        <td template-field="tot_weight" style="width: 70px" class="text-right">{weight}</td>
+                        <td template-field="destination">{destination}</td>
+                        <td class="text-center"><span template-field="status">{status}</span></td>
+                        
+                        <td template-field="selected" class="text-center">
+                            <input type="checkbox">
+                        </td>
+                    </tr>
+                    <!-- /template-row -->
+                </tbody>
+            </table>
+            
+        </div>
+
+    </div>
+    <!-- /template-table -->
+    
+</div>
+
+<!-- /LISTAGEM -->

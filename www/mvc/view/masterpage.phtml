@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+
+        <title>Monte Santo</title>
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- css libs -->
+        <link href="<?= ASSETS_URI ?>css/libs/bootstrap.min.css?<?= VERSION ?>" rel="stylesheet">
+        <link href="<?= ASSETS_URI ?>css/libs/bootstrap-theme.min.css?<?= VERSION ?>" rel="stylesheet">
+        <link href="<?= ASSETS_URI ?>css/libs/overcast/jquery-ui-1.10.4.custom.min.css?<?= VERSION ?>" rel="stylesheet">
+        <link href="<?= ASSETS_URI ?>css/libs/select2.css?<?= VERSION ?>" rel="stylesheet" type="text/css" />
+        <link href="<?= ASSETS_URI ?>css/libs/select2-bootstrap.css?<?= VERSION ?>" rel="stylesheet" type="text/css" />
+        <link href="<?= ASSETS_URI ?>js/libs/fullcalendar-2.2.5/fullcalendar.min.css?<?= VERSION ?>" rel="stylesheet" type="text/css" />
+        <!-- /css libs -->
+
+        <!-- css app -->
+        <link href="<?= ASSETS_URI ?>css/layout.css?<?= VERSION ?>" rel="stylesheet">
+        <!-- /css app -->
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="<?= ASSETS_URI ?>js/libs/html5shiv.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/respond.min.js?<?= VERSION ?>"></script>
+        <![endif]-->
+
+        <!-- js libs -->
+        <script src="<?= ASSETS_URI ?>js/libs/jquery-1.11.0.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/jquery-ui-1.10.4.custom.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/bootstrap.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/select2.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/jquery.maskMoney.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/fabric.js-1.4.12/dist/fabric.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/fullcalendar-2.2.5/lib/moment.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/fullcalendar-2.2.5/fullcalendar.min.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/libs/fullcalendar-2.2.5/gcal.js?<?= VERSION ?>"></script>
+        
+        <!-- /js libs -->
+
+        <!-- js app -->
+        <script src="<?= ASSETS_URI ?>js/alert.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/convert.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/enum.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/helper.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/modal.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/validation.js?<?= VERSION ?>"></script>
+        <script src="<?= ASSETS_URI ?>js/webservice.js?<?= VERSION ?>"></script>
+        <!-- /js app -->
+
+        <!-- app favicon -->
+        <link rel="shortcut icon" href="<?= ASSETS_URI ?>/img/favicon.png?<?= VERSION ?>">
+        <!-- /app favicon -->
+        
+    </head>
+    <body>
+        <script>
+        var funcs_on_load = [];
+        var APP_URI = '<?= APP_URI ?>';
+        </script>
+        <!-- ALERTA Modal -->
+        <div class="modal" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="alert_modal_title" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header modal-header-primary">
+                <button id="alert_modal_close" type="button" class="close" onclick="javascript:closeModal('alert_modal');">&times;</button>
+                <h4 class="modal-title" id="alert_modal_title">Titulo Alerta</h4>
+              </div>
+              <div class="modal-body" id="alert_modal_mensagem">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="alert_modal_cancel" onclick="javascript:closeModal('alert_modal');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="alert_modal_ok">Ok</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- /ALERTA Modal -->
+
+        <!-- Menu Superior -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <span class="navbar-brand" style="padding-top: 7px; padding-bottom: 0px;"><img src="<?= ASSETS_URI ?>img/logo_transp.png?<?= VERSION ?>" /></span>
+            </div>
+            <div class="navbar-collapse collapse">
+                <?php require 'menu.phtml'; ?>
+            </div><!--/.nav-collapse -->
+          </div>
+        </div>
+        <!-- /Menu Superior -->
+
+        <!-- Conteudo -->
+        <div class="container" style="padding-bottom: 100px;">
+        <[content]>
+        </div>
+
+        <!-- Menu Posterior -->
+        <div class="nav navbar navbar-default navbar-fixed-bottom" style="min-height:26px !important">
+            <div class="container">
+                <div class="nav navbar-nav navbar-right">
+                    <span style="font-size:10px;">Version <?= VERSION ?> |</span>
+                    <span style="font-size:10px;">Powered by</span>
+                    <a href="http://www.nextsi.com.br" target="_blank">
+                        <img src="<?= ASSETS_URI ?>/img/logo_rodape.png?<?= VERSION ?>">
+                    </a>
+                </div>                        
+          </div>
+        </div>
+        <!-- /Menu Posterior -->
+
+        <!-- libs -->
+        <script src="<?= ASSETS_URI ?>js/libs/modernizr.js?<?= VERSION ?>"></script>
+        <!-- /libs -->
+
+        <!-- framework -->
+        <script src="<?= ASSETS_URI ?>js/modal.after.js?<?= VERSION ?>"></script>
+        <!-- /framework -->
+
+        <script>
+        $(window).load(function(){
+            $.each(funcs_on_load, function(i, fnc) {
+                fnc();
+            });
+        });
+        </script>
+
+        <!-- Loading -->
+        <div id="loading"><span class="label label-warning">Waiting...</span></div>
+        <div id="saved_successfully"><span class="label label-success">Saved sucessfully</span></div>
+        <script>
+        var loading = $('#loading').hide();
+        $(document).ajaxStart(function() {
+                loading.show();
+            }).ajaxStop(function() {
+                loading.hide();
+            });
+        
+        var saved_successfully = $('#saved_successfully').hide();
+        function alert_saved(msg) {
+            saved_successfully.find('span').text(msg ? msg : 'Saved successfully');
+            saved_successfully.fadeIn('slow', function() {
+                $(this).fadeOut(2000);
+           });
+        }
+        </script>
+    </body>
+</html>

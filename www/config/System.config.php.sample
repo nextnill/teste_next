@@ -1,0 +1,24 @@
+<?php
+
+// SITE
+define('APP_URI', '/monte_santo/index.php/');
+define('ASSETS_URI', '/monte_santo/assets/');
+
+// MYSQL
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'msstone_app');
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
+
+// 
+define('FRAMEWORK_FOLDER', '');
+date_default_timezone_set('America/Sao_Paulo');
+
+// PREFIXO DA SESSÃO
+define('SPRE', 'msto_');
+
+// PASTA DE DESTINO DOS UPLOADS DE FOTOS DOS BLOCOS
+define('BLOCK_PHOTO_PATH', 'E:/Workspace/monte_santo/trunk/datablock_original');
+define('BLOCK_PHOTO_SMALL_PATH', 'E:/Workspace/monte_santo/trunk/datablock_small');
+define('BLOCK_PHOTO_LARGE_PATH', 'E:/Workspace/monte_santo/trunk/datablock_large');
+define('DRAFT_PATH', 'E:/Workspace/monte_santo/trunk/datadraft');

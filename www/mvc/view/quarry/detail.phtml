@@ -1,0 +1,76 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_detalhe" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_label">Quarry</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+
+                    <input type="hidden" id="rec_id">
+
+                    <div class="form-group">
+                        <label for="edt_name">Name</label>
+                        <input type="text" class="form-control" id="edt_name" placeholder="Name" maxlength="150">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cbo_products">Products</label>
+                        <select id="cbo_products" class="form-control select2" multiple="multiple">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cbo_defects">Defects</label>
+                        <select id="cbo_defects" class="form-control select2" multiple="multiple">
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_final_block_number">Final block number</label>
+                                <input type="text" class="form-control" id="edt_final_block_number" placeholder="Final block number" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_interim_block_number">Interim block number</label>
+                                <input type="text" class="form-control" id="edt_interim_block_number" placeholder="Interim block number" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_final_block_number">Last sequence of final</label>
+                                <input type="text" class="form-control input_integer" id="edt_seq_final" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_interim_block_number">Last sequence of interim</label>
+                                <input type="text" class="form-control input_integer" id="edt_seq_interim" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                
+                <!-- ALERTAS -->
+                <div id="alerta_form" class="alert alert-danger">
+                </div>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

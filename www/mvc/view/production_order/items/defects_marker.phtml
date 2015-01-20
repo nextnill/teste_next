@@ -1,0 +1,51 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_detalhe_defects_marker" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_defects_marker_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe_defects_marker');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_defects_marker_label">Marker Defects</h4>
+            </div>
+            <div class="modal-body">
+
+            	<div class="row">
+            		<div class="col-sm-2" id="dm_tools">
+	            		<button id="btn_tool_circle" class="btn btn-default block_editor_pallet_button">
+							<img src="<?= ASSETS_URI ?>img/obj_circle.png" width="50%" height="50%">
+						</button>
+						<button id="btn_tool_line" class="btn btn-default block_editor_pallet_button">
+							<img src="<?= ASSETS_URI ?>img/obj_line_0.png" width="50%" height="50%">
+						</button>
+						<button id="btn_tool_rubber" class="btn btn-xs btn-default block_editor_pallet_button">
+							<img src="<?= ASSETS_URI ?>img/rubber.png" width="50%" height="50%">
+						</button>
+            		</div>
+            		<div class="col-sm-10">
+            			<canvas id="canvas" class="block_editor" width="306" height="306" style="background-image: url('<?= ASSETS_URI ?>img/block.png'); background-repeat: no-repeat; padding: 0px; margin: 0px;">
+    						<!-- adicionar elementos aqui -->
+						</canvas>
+            		</div>
+            	</div>
+
+            	<!-- templates -->
+				<canvas style="display: none;">
+                    <line id="tool_template_line" x1="0" y1="0" x2="200" y2="200" stroke="black" stroke-width="3" editor-type="defect" />
+                    <circle id="tool_template_circle" cx="0" cy="0" r="0" stroke-width="3" stroke="black" fill="transparent" editor-type="defect" />
+                    <circle id="template_point" cx="0" cy="0" r="2" stroke-width="1" stroke="red" fill="yellow" editor-type="pointer" />
+                </canvas>
+				<!-- /templates -->
+				
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">	
+            	<div class="pull-left">
+	            	<button id="btn_dm_new" class="btn btn-default" onclick="javascript:block_editor_new()">
+						New (clear all)
+					</button>
+				</div>
+				<button type="button" class="btn btn-default" id="btn_dm_cancel" onclick="javascript:closeModal('modal_detalhe_defects_marker');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_dm_save" onclick="javascript:dm_save();">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

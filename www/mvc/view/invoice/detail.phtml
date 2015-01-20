@@ -1,0 +1,51 @@
+<ol class="breadcrumb">
+    <li><a>Sale</a></li>
+    <li><a href="<?= APP_URI ?>inspection_certificate/list/">Inspection Certificate</a></li>
+    <li class="active">Blocks</li>
+</ol>
+
+<div id="list_invoice">
+</div>
+
+<!-- template-table -->
+<div class="panel panel-default" style="display: none;" template-table-invoice>
+    <div class="panel-heading" style="padding: 5px" >
+        <h3 class="panel-title" style="font-weight: bold" template-title>Quarry</h3>
+        <div><span class="label label-primary" template-quality>Quality</span></div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover table_block_list">
+            <thead>
+                <tr>
+                    <th>Block Number</th>
+                    <th colspan="3" class="text-center">Tot Meas</th>
+                    <th colspan="3" class="text-center">Net Meas</th>
+                    <th class="text-center">Vol</th>
+                    <th class="text-center">Weight</th>
+                    <th class="text-center">Obs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- template-row -->
+                <tr template-row style="display: none;">
+                    <td template-field="block_number" style="width: 160px">
+                        <a template-field="block_number_a" href="#">{block_number}</a>
+                    </td>
+                    <td template-field="tot_c" style="width: 60px" class="text-right">{C}</td>
+                    <td template-field="tot_a" style="width: 60px" class="text-right">{A}</td>
+                    <td template-field="tot_l" style="width: 60px" class="text-right">{L}</td>
+                    <td template-field="sale_net_c" style="width: 60px" class="text-right">{C}</td>
+                    <td template-field="sale_net_a" style="width: 60px" class="text-right">{A}</td>
+                    <td template-field="sale_net_l" style="width: 60px" class="text-right">{L}</td>
+                    <td template-field="sale_net_vol" style="width: 80px" class="text-right">{Vol}</td>
+                    <td template-field="tot_weight" style="width: 90px" class="text-right">{Weight}</td>
+                    <td template-field="obs">{Obs}</td>
+                </tr>
+                <!-- /template-row -->
+            </tbody>
+        </table>
+        
+    </div>
+
+</div>
+<!-- /template-table -->

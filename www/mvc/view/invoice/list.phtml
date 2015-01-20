@@ -1,0 +1,67 @@
+<ol class="breadcrumb">
+    <li><a>Sale</a></li>
+    <li class="active">Inspection Certificate</li>
+</ol>
+
+<!-- LISTAGEM -->
+<div>
+
+    <!--nav class="navbar" role="navigation" style="margin: 0px; padding: 0px;">
+        <button type="button" class="btn btn-primary" onclick="javascript:show_dialog(FORMULARIO.NOVO);">
+            <span class="glyphicon glyphicon-plus-sign"></span> New
+        </button>
+        <button type="button" class="btn btn-default" onclick="javascript:listar()">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </button>
+    </nav-->
+
+    <!-- Listagem de pedreiras -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover" id="tbl_listagem">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Invoice</th>
+                    <th>Client</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- itens -->
+                <tr template-row style="display: none;">
+                    <td template-field="date_record">{date_record}</td>
+                    <td template-field="id">{id}</td>
+                    <td template-field="client_name">{client_name}</td>
+                    <td >
+                        <div class="pull-right">
+                            <div class="btn-group">    
+                            <button type="button" class="btn btn-default" template-button="select">
+                                <span class="glyphicon glyphicon-download-alt"></span> PDF
+                            </button>
+                            <button type="button" class="btn btn-default" template-button="select_excel">
+                                <span class="glyphicon glyphicon-list-alt"></span> Excel
+                            </button>
+                        </div>
+                           <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    Action <span class="caret"></span>
+                                </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" template-button="blocks">
+                                            Blocks
+                                        </a></li>
+                                        <li template-menu="delete"><a href="#" template-button="delete">
+                                            Delete
+                                        </a></li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- /Listagem de chamados -->
+</div>
+
+<!-- /LISTAGEM -->

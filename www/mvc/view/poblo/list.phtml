@@ -1,0 +1,127 @@
+<ol class="breadcrumb">
+    <li class="active">Poblo</li>
+</ol>
+
+<!-- LISTAGEM -->
+<div>
+
+    <div id="list">
+    </div>
+
+    <!-- template-obs -->
+    <div template-obs style="display: none;">
+        <div template-field="obs" class="text-center">
+            {obs}
+        </div>
+        
+    </div>
+    <!-- /template-obs -->
+
+    <!-- template-table -->
+    <div class="panel panel-default small" template-table="poblo" style="display: none;">
+        <div class="panel-heading"  style="padding: 10px" >
+
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <a type="button" class="btn btn-xs btn-warning" template-button="doc_commercial_invoice" target="_blank">
+                            <span class="glyphicon glyphicon-download-alt"></span>
+                            Commercial Invoice
+                        </a>
+                        <a type="button" class="btn btn-xs btn-warning" template-button="doc_packing_list" target="_blank">
+                            <span class="glyphicon glyphicon-download-alt"></span>
+                            Packing List
+                        </a>
+                    </div>
+                    <div class = "btn-group">
+
+                        <button class="btn btn-xs btn-warning" template-button="doc_draft">
+                            <span class="glyphicon glyphicon-download-alt"></span>
+                            Draft
+                        </button>
+                        <button class="btn btn-xs btn-warning dropdown-toggle" data-toggle="dropdown" template-button="doc_draft_menu" target="_blank">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" template-button="doc_draft_send">Send</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="text-left" style="font-weight: bold" style="padding: 5px" >
+                        <a template-field="lot" target="_blank">Lote</a>
+                    </div>
+                    <div>
+                        <span template-field="status">{status}</span>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>          
+        </div>
+        
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover table_block_list">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px" class="text-center">NF</th>
+                            <th style="width: 80px" class="text-center">Data</th>
+                            <th style="width: 80px" class="text-center">Price</th>
+                            <th style="width: 110px" class="text-center">Block Number</th>
+                            <th style="width: 80px" class="text-center">Quality</th>
+                            <th colspan="3" class="text-center">Net Meas</th>
+                            <th class="text-center">Vol</th>
+                            <th class="text-center">Weight</th>
+                            <th class="text-center" style="width: 90px">Wagon Number</th>
+                            <th class="text-center">
+                                <div class="pull-right">
+                                    <button template-button="obs" class="btn btn-default btn-xs">
+                                        ...
+                                    </button>
+                                </div>
+                                Obs
+                            </th>
+                            <!--th class="text-center">Local</th-->
+                            <!--th class="text-center">Status</th-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- template-row -->
+                        <tr template-row style="display: none;">
+                            
+                            <td template-field="nf" class="text-center">{nf}</td>
+                            <td template-field="data" class="text-center">{data}</td>
+                            <td template-field="price" class="text-right">{price}</td>
+                            <td template-field="block_number" class="text-center">
+                                <span template-field="block_number_a" style="cursor: pointer;">{block_number}</span>
+                            </td>
+                            <td template-field="quality_name" class="text-center">{quality_name}</td>
+                            
+                            <td template-field="sale_net_c" style="width: 45px" class="text-right meas_c">{C}</td>
+                            <td template-field="sale_net_a" style="width: 45px" class="text-right meas_a">{A}</td>
+                            <td template-field="sale_net_l" style="width: 45px" class="text-right meas_l">{L}</td>
+                            <td template-field="net_vol" style="width: 70px" class="text-right meas_m3">{net_vol}</td>
+                            <td template-field="tot_weight" style="width: 70px" class="text-right">{weight}</td>
+                            <td template-field="wagon_number" style="width: 70px" class="text-right">{wagon_number}</td>
+                            <!--td template-field="local">{local}</td-->
+                            <!--td class="text-center"><span template-field="status">{status}</span></td-->
+                            
+                        </tr>
+                        <!-- /template-row -->
+                    </tbody>
+                </table>
+
+
+            </div>
+        
+
+            <div class="clearfix"></div>
+
+
+    </div>
+    <!-- /template-table -->
+    
+</div>
+
+<!-- /LISTAGEM -->
+

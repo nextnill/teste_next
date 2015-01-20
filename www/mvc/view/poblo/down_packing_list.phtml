@@ -1,0 +1,73 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_down_packing_list" tabindex="-1" role="dialog" aria-labelledby="modal_down_packing_list_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_down_packing_list');">&times;</button>
+                <h4 class="modal-title" id="modal_down_packing_list_label">Packing List</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="edt_pl_client_notify_address">Client</label>
+                            <textarea class="form-control" id="edt_pl_client_notify_address" placeholder="Client and Notify Address" rows="4" maxlength="300" spellcheck="false"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="edt_pl_shipped_from">Shipped from</label>
+                            <input type="text" class="form-control" id="edt_pl_shipped_from" placeholder="Shipped from" maxlength="50">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="edt_pl_bl">B/L NR.</label>
+                            <input type="text" class="form-control" id="edt_pl_bl" placeholder="B/L" maxlength="50">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="edt_pl_dated">Dated</label>
+                            <input type="date" class="form-control" id="edt_pl_dated">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="edt_pl_vessel">Vessel</label>
+                            <input type="text" class="form-control" id="edt_pl_vessel" placeholder="Vessel" maxlength="50">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="edt_pl_commercial_invoice_number">Commercial Invoice</label>
+                            <input type="text" class="form-control" id="edt_pl_commercial_invoice_number" placeholder="Commercial Invoice" maxlength="50">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="edt_pl_packing_list_ref">Ref</label>
+                            <input type="text" class="form-control" id="edt_pl_packing_list_ref" placeholder="Ref" maxlength="50">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" onclick="javascript:closeModal('modal_down_packing_list');">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="javascript:btn_down_packing_list_click();">
+                    <span class="glyphicon glyphicon-download-alt"></span> Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

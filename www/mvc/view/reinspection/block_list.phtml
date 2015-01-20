@@ -1,0 +1,69 @@
+<ol class="breadcrumb">
+    <li><a>Sale</a></li>
+    <li class="active">Reinspection</li>
+</ol>
+
+<div>
+
+    <!-- MENU -->
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="edt_block_number_search" placeholder="Block Number" />
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-primary" id="btn_block_number_search">
+                        <span class="glyphicon glyphicon-search"></span> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover" id="tbl_listagem">
+            <thead>
+                <tr>
+                    <th>Block Number</th>
+                    <th colspan="3" class="text-center">Tot Meas</th>
+                    <th colspan="3" class="text-center">Client Net Meas</th>
+                    <th class="text-center">Vol</th>
+                    <th class="text-center">Weight</th>
+                    <th class="text-center">Last Reinspection</th>
+                    <th class="text-center">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <!-- template-row -->
+                <tr template-row style="display: none;">
+                    <td template-field="block_number" style="width: 150px">
+                        <a template-field="block_number_a" href="#">{block_number}</a>
+                    </td>
+                    <td template-field="tot_c" style="width: 70px" class="text-right meas_c">{C}</td>
+                    <td template-field="tot_a" style="width: 70px" class="text-right meas_a">{A}</td>
+                    <td template-field="tot_l" style="width: 70px" class="text-right meas_l">{L}</td>
+                    <td template-field="sale_net_c" style="width: 70px" class="text-right meas_c">{C}</td>
+                    <td template-field="sale_net_a" style="width: 70px" class="text-right meas_a">{A}</td>
+                    <td template-field="sale_net_l" style="width: 70px" class="text-right meas_l">{L}</td>
+                    <td style="width: 80px" class="text-right">
+                        <span template-field="sale_net_vol">{vol}</span>
+                    </td>
+                    <td template-field="tot_weight" style="width: 70px" class="text-right">{weight}</td>
+                    <td template-field="reinspection">{reinspection}</td>
+                    
+                    <td class="text-right" style="width: 140px">
+                        <button type="button" class="btn btn-primary" template-button="edit">
+                            <span class="glyphicon glyphicon-pencil"></span> Reinspection
+                        </button>
+                    </td>
+                </tr>
+                <!-- /template-row -->
+
+            </tbody>
+        </table>
+        
+    </div>
+    
+</div>
+
+<!-- /LISTAGEM -->

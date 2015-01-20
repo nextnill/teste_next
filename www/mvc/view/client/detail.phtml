@@ -1,0 +1,279 @@
+<!-- MODAL DETALHE -->
+<div class="modal bs-modal-lg" id="modal_detalhe" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_label">Client</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+
+                    <input type="hidden" id="rec_id">
+
+
+                    <div class="row">
+
+                        <div class="col-sm-8">
+                            <div class="row">
+                                <div class="col-sm-8">
+
+                                    <div class="form-group">
+                                        <label for="edt_name">Name</label>
+                                        <input type="text" class="form-control" id="edt_name" placeholder="Name" maxlength="150">
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="edt_code">Code</label>
+                                        <input type="text" class="form-control" id="edt_code" placeholder="Code" maxlength="10">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="form-group" id="pnl_head_office">
+                                        <label for="cbo_head_office">Head Office</label>
+                                        <select id="cbo_head_office" class="form-control select2 select2-input">
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="pnl_branch_offices">
+                                        <label>Branch Offices</label><br>
+                                        <span id="lbl_branch_offices"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label for="edt_terms_of_payment">Terms of Payment</label>
+                                        <input type="text" class="form-control" id="edt_terms_of_payment" placeholder="Terms of Payment" maxlength="100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+
+                            <div class="form-group" id="div_rd">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label>Required Documents</label>
+
+                                        <button type="button" class="btn btn-xs btn-default" template-button="uncheck_all">
+                                            <span class="glyphicon glyphicon-unchecked"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-xs btn-default" template-button="check_all">
+                                            <span class="glyphicon glyphicon-check"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="chk_com_inv" type="checkbox" value="">
+                                        Commercial Invoice
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="chk_pack_list" type="checkbox" value="">
+                                        Packing List
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="chk_bl" type="checkbox" value="">
+                                        Block List
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="chk_certif_orig" type="checkbox" value="">
+                                        Certificado de Origem
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="chk_proforma_invoice" type="checkbox" value="">
+                                        Proforma Invoice
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="chk_fumigation_certificate" type="checkbox" value="">
+                                        Fumigation Certificate
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="chk_bill_of_lading" type="checkbox" value="">
+                                        Bill Of Lading
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-8">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_contact">Contact</label>
+                                        <input type="text" class="form-control" id="edt_contact" placeholder="Contact" maxlength="100">
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_telephone">Telephone</label>
+                                        <input type="text" class="form-control" id="edt_telephone" placeholder="Telephone" maxlength="50">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_mobile">Mobile</label>
+                                        <input type="text" class="form-control" id="edt_mobile" placeholder="Mobile" maxlength="50">
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                        <label for="edt_fax">Fax</label>
+                                        <input type="text" class="form-control" id="edt_fax" placeholder="Fax" maxlength="50">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="edt_contact_other">Other means of contact</label>
+                                <textarea class="form-control" id="edt_contact_other" placeholder="Other means of contact" rows="4" maxlength="300" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label for="edt_email">E-mail</label>
+                                <input type="text" class="form-control" id="edt_email" placeholder="E-mail" maxlength="150">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="edt_eori">EORI Code</label>
+                                <input type="text" class="form-control" id="edt_eori" placeholder="EORI Code" maxlength="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cbo_client_groups">Client Groups</label>
+                                <select id="cbo_client_groups" class="form-control select2" multiple="multiple">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cbo_agencies">Agencies</label>
+                                <select id="cbo_agencies" class="form-control select2" multiple="multiple">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_consignee">Consignee</label>
+                                <textarea class="form-control" id="edt_consignee" placeholder="Consignee" rows="5" maxlength="500" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_notify_address">Notify Address</label>
+                                <textarea class="form-control" id="edt_notify_address" placeholder="Notify Address" rows="5" maxlength="500" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edt_marks">Marks</label>
+                        <input type="text" class="form-control" id="edt_marks" placeholder="Marks" maxlength="50">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="cbo_port_of_loading">Port Of Loading</label>
+                                <select id="cbo_port_of_loading" class="form-control select2" multiple="multiple">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_destination_port">Destination Port</label>
+                                <input type="text" class="form-control" id="edt_destination_port" placeholder="Destination Port" maxlength="200">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="visibility:hidden;display:none;">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_obs_body_of_bl">Observation in the Body of B/L</label>
+                                <textarea class="form-control" id="edt_obs_body_of_bl" placeholder="Observation in the Body of B/L" rows="5" maxlength="500" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_desc_of_goods">Description of Goods</label>
+                                <textarea class="form-control" id="edt_desc_of_goods" placeholder="Observation in the Body of B/L" rows="5" maxlength="500"  spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="edt_obs">Observations</label>
+                                <textarea class="form-control" id="edt_obs" placeholder="Observations" rows="6" maxlength="500" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                    </div>
+          
+                    
+                </form>
+                
+                <!-- ALERTAS -->
+                <div id="alerta_form" class="alert alert-danger">
+                </div>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

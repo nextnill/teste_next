@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="col-xs-11">
+    <ol class="breadcrumb">
+        <li><a>Sale</a></li>
+        <li class="active"><?= ucfirst($type) ?> Sobracolumay</li>
+    </ol>
+  </div>
+  <div class="col-xs-1">
+    <div style="float: right;">
+        <!--button type="button" class="btn btn-default" onclick="javascript:init()">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </button-->
+        <a class="btn btn-default" href="<?= APP_URI ?>sobracolumay/excel/<?= $type ?>/">
+            <span class="glyphicon glyphicon-list-alt"></span> Excel
+        </a>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- LISTAGEM -->
+<div>
+
+    <div id="list">
+    </div>
+
+    <!-- template-table -->
+    <div class="panel panel-default" style="display: none;" template-table>
+        <div class="panel-heading" style="padding: 5px" >
+            <h3 class="panel-title" style="font-weight: bold" template-title>Quarry</h3>
+            <div><span class="label label-primary" template-quality>Quality</span></div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover table_block_list">
+                <thead>
+                    <tr>
+                        <th>Block Number</th>
+                        <th colspan="3" class="text-center">Tot Meas</th>
+                        <th colspan="3" class="text-center">Net Meas</th>
+                        <th class="text-center">Vol</th>
+                        <th class="text-center">Weight</th>
+                        <th class="text-center">Obs.</th>
+                        <th class="text-center">Reserved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- template-row -->
+                    <tr template-row style="display: none;">
+                        <td template-field="block_number" style="width: 160px">
+                            <a template-field="block_number_a" href="#">{block_number}</a>
+                        </td>
+                        <td template-field="tot_c" style="width: 60px" class="text-right">{C}</td>
+                        <td template-field="tot_a" style="width: 60px" class="text-right">{A}</td>
+                        <td template-field="tot_l" style="width: 60px" class="text-right">{L}</td>
+                        <td template-field="net_c" style="width: 60px" class="text-right">{C}</td>
+                        <td template-field="net_a" style="width: 60px" class="text-right">{A}</td>
+                        <td template-field="net_l" style="width: 60px" class="text-right">{L}</td>
+                        <td template-field="net_vol" style="width: 80px" class="text-right">{Vol}</td>
+                        <td template-field="tot_weight" style="width: 90px" class="text-right">{Weight}</td>
+                        <td template-field="obs">{Obs}</td>
+                        <!--td style="width: 90px">
+                            <span template-field="reserved">{client_name}</span>
+                            <div class="btn-group btn-group-sm" style="float: right; margin: -5px;">
+                                <button type="button" class="btn btn-default" template-button="reserved">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </div>
+                        </td-->
+                        <td template-field="reserved" style="width: 90px">
+                            <select class="form-control select2 cbo_head_office">
+                            </select>
+                        </td>
+                    </tr>
+                    <!-- /template-row -->
+                </tbody>
+            </table>
+            
+        </div>
+
+    </div>
+    <!-- /template-table -->
+    
+</div>
+
+<!-- /LISTAGEM -->

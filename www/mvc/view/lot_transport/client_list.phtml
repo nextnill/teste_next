@@ -1,0 +1,47 @@
+<!-- MODAL LISTA BLOCOS -->
+<div class="modal bs-modal-lg" id="modal_client_list" tabindex="-1" role="dialog" aria-labelledby="modal_client_list_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_client_list');">&times;</button>
+                <h4 class="modal-title" id="modal_client_list_label">Select a client</h4>
+            </div>
+            <div class="modal-body">
+
+                <!-- Listagem de pedreiras -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="tbl_client_list">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Name</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- itens -->
+                            <tr template-row style="display: none;">
+                                <td template-field="client_code">{client_code}</td>
+                                <td template-field="client_name">{client_name}</td>
+                                <td style="text-align: right;">
+                                    <div class="btn-group" style="text-align: left;">
+                                        <button type="button" class="btn btn-default" template-button="select">
+                                            <span class="glyphicon glyphicon-ok"></span> Select
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /Listagem de chamados -->
+
+            </div>
+
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_client_list_cancel" onclick="javascript:closeModal('modal_client_list');">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL LISTA BLOCOS -->
