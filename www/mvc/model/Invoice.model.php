@@ -156,6 +156,21 @@ class Invoice_Model extends \Sys\Model {
         }
         else
         {
+            // ajusto os blocos para poderem ser inspecionados novamente
+            $invoice_item_model = $this->LoadModel('InvoiceItem', true);
+            $items = $invoice_item_model->get_by_invoice($this->id);
+            foreach ($items as $key => $item) {
+                $block_model = $this->LoadModel('Block', true);
+                $block_model->populate($item['block_id']);
+                $block_model->sale_net_c = 0;
+                $block_model->sale_net_a = 0;
+                $block_model->sale_net_l = 0;
+                $block_model->sale_net_vol = 0;
+                $block_model->sold = false;
+                $block_model->sold_client_id = null;
+                $block_model->save();
+            }
+            
             $sql = 'UPDATE
 	                    invoice
 	                SET
