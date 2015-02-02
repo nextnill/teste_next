@@ -15,6 +15,8 @@ function listar_blocks(callback_function)
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>poblo/json/", function(response_poblo) {
         if (response_validation(response_poblo)) {
+            var transport = response_poblo.transport;
+
             var list = $('#list');
             var table = $('[template-table="poblo"]').clone();
             var table_body = $(table).find('table > tbody');
@@ -33,16 +35,16 @@ function listar_blocks(callback_function)
             var wagon_number = '';
 
             
-            arr_blocks = response_poblo;
+            arr_blocks = transport;
 
             // limpa a listagem
             list.html('');
-            if(response_poblo > 0){
-            // limpa trs, menos a primeira
-            table.find("tr:gt(1)").remove();
-            table.removeAttr("template-table");
-            table.css("display", '');
-            }
+            //if(transport > 0){
+                // limpa trs, menos a primeira
+                table.find("tr:gt(1)").remove();
+                table.removeAttr("template-table");
+                table.css("display", '');
+            //}
             var render_header = function(table, item) {
 
             		quality_name = '';
@@ -57,10 +59,10 @@ function listar_blocks(callback_function)
 					sum_quality_weight = 0;
                     wagon_number = '';
 
-                    var is_sobra = (item.lot_number.indexOf('Sobracolumay') >= 0);
+                    var is_not_travel = (item.lot_number.indexOf('Sobracolumay') >= 0) || (item.lot_number.indexOf('Inspected') >= 0);
             		var field_lot = table.find("[template-field='lot']");
             		field_lot.text(item.lot_number);
-            		if (!is_sobra) {
+            		if (!is_not_travel) {
             			field_lot.attr('href', "<?= APP_URI ?>lots/detail/" + item.lot_transport_id);
             		}
 
@@ -138,7 +140,7 @@ function listar_blocks(callback_function)
                         icone.addClass('glyphicon-ok');
                     }
 
-                    if (is_sobra) {
+                    if (is_not_travel) {
                     	var div_botoes = table.find('.div_botoes');
                     	div_botoes.hide();
                     	var th_wagon_number = table.find('.th_wagon_number');
@@ -152,13 +154,13 @@ function listar_blocks(callback_function)
                     }
             };
 
-            var render_totalizador = function(lot_transport_id, lot_number, is_sobra) {
+            var render_totalizador = function(lot_transport_id, lot_number) {
             	add_row(table_body, {
             		invoice_item_price: sum_price,
             		net_vol: sum_volume,
             		tot_weight: sum_weight,
             		block_number: count_blocks,
-            		lot_number: (is_sobra ? 'Sobracolumay' : null)
+            		lot_number: lot_number
             	}, true, 'bg-success');
 
             	// total de linhas, menos um (template)
@@ -183,14 +185,14 @@ function listar_blocks(callback_function)
             	nova_coluna.appendTo(primeira_linha);
             }
 
-            var render_quality_totalizador = function(is_sobra) {
+            var render_quality_totalizador = function(lot_number) {
 
             	add_row(table_body, {
             		invoice_item_price: sum_quality_price,
             		net_vol: sum_quality_volume,
             		tot_weight: sum_quality_weight,
             		block_number: count_quality_blocks,
-            		lot_number: (is_sobra ? 'Sobracolumay' : null)
+            		lot_number: lot_number
             	}, true, 'bg-warning');
 
             	count_quality_blocks = 0;
@@ -199,7 +201,7 @@ function listar_blocks(callback_function)
 				sum_quality_weight = 0;
             }
 
-            var is_sobra = false;
+            var is_not_travel = false;
             $.each(arr_blocks, function(i, item) {
                 // se for o primeiro registro, seta o título na tabela
                 if (i == 0) {
@@ -209,8 +211,8 @@ function listar_blocks(callback_function)
                 // se for um novo lote
                 if (item.lot_number != lot_number) {
                 	// imprimo o totalizador referente ao ultimo registro do lote
-                	render_quality_totalizador(is_sobra);
-                	render_totalizador(lot_transport_id, lot_number, is_sobra);
+                	render_quality_totalizador(lot_number);
+                	render_totalizador(lot_transport_id, lot_number);
 
                     // se não for o primeiro registro
                     if (i > 0) {
@@ -228,7 +230,7 @@ function listar_blocks(callback_function)
                 }
                 else {
                 	if (item.quality_name != quality_name) {
-                		render_quality_totalizador(is_sobra);
+                		render_quality_totalizador(lot_number);
                 	}
                 }
 
@@ -236,7 +238,7 @@ function listar_blocks(callback_function)
 
                 lot_transport_id = item.lot_transport_id;
                 lot_number = item.lot_number;
-                is_sobra = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false);
+                is_not_travel = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 || item.lot_number.indexOf('Inspected') >= 0 : false);
                 quality_name = item.quality_name;
                 poblo_obs  = item.poblo_obs;
 
@@ -253,8 +255,8 @@ function listar_blocks(callback_function)
 
             });  
 			
-            render_quality_totalizador(is_sobra);
-            render_totalizador(lot_transport_id, lot_number, is_sobra);
+            render_quality_totalizador(lot_number);
+            render_totalizador(lot_transport_id, lot_number);
 
             // mostra a tabela
             table.appendTo(list);
@@ -268,7 +270,7 @@ function listar_blocks(callback_function)
 
 function add_row(table_body, item, bold, style_class)
 {
-	var is_sobra = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false);
+	var is_not_travel = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 || item.lot_number.indexOf('Inspected') >= 0 : false);
 
     var template_row = table_body.find("tr:first");
     var new_row = template_row.clone();
@@ -288,7 +290,7 @@ function add_row(table_body, item, bold, style_class)
     field_nf.text(item.invoice_item_nf ? item.invoice_item_nf : '');
 
     var field_data = $(new_row.find("[template-field='data']"));
-    if (!is_sobra) {
+    if (!is_not_travel) {
     	field_data.text(item.invoice_date_record ? item.invoice_date_record.format_date() : '');
     }
     else {
@@ -302,7 +304,7 @@ function add_row(table_body, item, bold, style_class)
 
 
     var field_sale_net_c = $(new_row.find("[template-field='sale_net_c']"));
-    if (!is_sobra) {
+    if (!is_not_travel) {
     	field_sale_net_c.text(item.invoice_sale_net_c ? item.invoice_sale_net_c.format_number(2) : '');
     }
     else {
@@ -310,7 +312,7 @@ function add_row(table_body, item, bold, style_class)
     }
 
     var field_sale_net_a = $(new_row.find("[template-field='sale_net_a']"));
-    if (!is_sobra) {
+    if (!is_not_travel) {
     	field_sale_net_a.text(item.invoice_sale_net_a ? item.invoice_sale_net_a.format_number(2) : '');
     }
     else {
@@ -318,7 +320,7 @@ function add_row(table_body, item, bold, style_class)
     }
 
     var field_sale_net_l = $(new_row.find("[template-field='sale_net_l']"));
-    if (!is_sobra) {
+    if (!is_not_travel) {
     	field_sale_net_l.text(item.invoice_sale_net_l ? item.invoice_sale_net_l.format_number(2) : '');
     }
     else {
@@ -334,7 +336,7 @@ function add_row(table_body, item, bold, style_class)
     field_tot_weight.text(item.tot_weight ? item.tot_weight.format_number(3) : '');
 
     var field_wagon_number = $(new_row.find("[template-field='wagon_number']"));
-    if (!is_sobra) {
+    if (!is_not_travel) {
     	field_wagon_number.text(item.current_travel_plan_item_wagon_number ? item.current_travel_plan_item_wagon_number : '');
     }
     else {
@@ -366,7 +368,7 @@ function add_row(table_body, item, bold, style_class)
     }
 
     
-    if (is_sobra) {
+    if (is_not_travel) {
     	field_nf.hide();
     	field_price.hide();
     }

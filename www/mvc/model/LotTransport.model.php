@@ -778,6 +778,11 @@ class LotTransport_Model extends \Sys\Model {
     }
 
     function get_poblo() {
+
+        $block_model = $this->LoadModel('Block', true);
+        $interim_sobracolumay = $block_model->get_sobracolumay($block_model::BLOCK_TYPE_INTERIM);
+        $final_sobracolumay = $block_model->get_sobracolumay($block_model::BLOCK_TYPE_FINAL);
+
         $sql = "SELECT
                     lot_transport_item.id,
                     lot_transport_item.id AS lot_transport_item_id,
@@ -786,7 +791,7 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.status AS lot_transport_status,
                     lot_transport.poblo_obs,
                     lot_transport.date_record,
-                    COALESCE(lot_transport.lot_number, 'Sobracolumay') AS lot_number,
+                    COALESCE(lot_transport.lot_number, 'Inspected blocks without lot') AS lot_number,
                     lot_transport.client_remove,
                     lot_transport.down_packing_list,
                     lot_transport.down_commercial_invoice,
@@ -854,7 +859,7 @@ class LotTransport_Model extends \Sys\Model {
 					block.quarry_id IN ({$this->active_quarries}) AND 
 					block.excluido = 'N' 
 					AND ((
-							block.sold = 0
+							block.sold = 1 and block.current_lot_transport_id IS NULL
 						)
 						OR
 						(
@@ -876,7 +881,20 @@ class LotTransport_Model extends \Sys\Model {
         
         $query = DB::query($sql);
         
-        return $query;
+        foreach ($interim_sobracolumay as $key => $block) {
+            $interim_sobracolumay[$key]['lot_number'] = 'Iterim Sobracolumay';
+        }
+
+        foreach ($final_sobracolumay as $key => $block) {
+            $final_sobracolumay[$key]['lot_number'] = 'Final Sobracolumay';
+        }
+
+        return array('transport' => array_merge($final_sobracolumay, $query));
+
+        return array(
+                    'interim_sobracolumay' => $interim_sobracolumay,
+                    'final_sobracolumay' => $final_sobracolumay,
+                    'transport' => $query);
     }
     
 }
