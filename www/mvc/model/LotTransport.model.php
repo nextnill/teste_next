@@ -786,7 +786,7 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.status AS lot_transport_status,
                     lot_transport.poblo_obs,
                     lot_transport.date_record,
-                    lot_transport.lot_number,
+                    COALESCE(lot_transport.lot_number, 'Sobracolumay') AS lot_number,
                     lot_transport.client_remove,
                     lot_transport.down_packing_list,
                     lot_transport.down_commercial_invoice,
@@ -795,7 +795,7 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.vessel,
                     lot_transport.shipped_to,
                     coalesce(lot_transport.order_number, 99999999) AS order_number,
-                    lot_transport_item.block_id,
+                    block.id AS block_id,
                     block.block_number,
                     block.tot_weight,
                     block.quarry_id,
@@ -810,6 +810,10 @@ class LotTransport_Model extends \Sys\Model {
                     block.net_a,
                     block.net_l,
                     block.net_vol,
+                    block.reserved,
+                    block.reserved_client_id,
+                    reserved_client.code AS reserved_client_code,
+                    reserved_client.name AS reserved_client_name,
                     quality.name AS quality_name,
                     production_order.date_production,
                     invoice.id AS invoice_id,
@@ -831,27 +835,39 @@ class LotTransport_Model extends \Sys\Model {
                         ORDER BY current_tpi.id ASC
                         LIMIT 0, 1
                     ) AS current_travel_plan_item_wagon_number 
-                    FROM lot_transport_item
-                    INNER JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
-                    INNER JOIN block ON (block.id = lot_transport_item.block_id AND block.quarry_id IN ({$this->active_quarries}))
-                    INNER JOIN client ON (client.id = lot_transport.client_id)
+                    FROM block
+                    LEFT JOIN client AS reserved_client ON (reserved_client.id = block.reserved_client_id)
+					-- FROM lot_transport_item
+                    LEFT JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
+                    LEFT JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
+                    -- INNER JOIN block ON (block.id = lot_transport_item.block_id/* AND block.quarry_id IN ({$this->active_quarries})*/)
+                    LEFT JOIN client ON (client.id = lot_transport.client_id)
                     INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)
                     INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id)
                     INNER JOIN quarry ON (quarry.id = block.quarry_id)
                     INNER JOIN quality ON (quality.id = block.quality_id)
-                    INNER JOIN invoice_item ON (invoice_item.block_id = block.id AND invoice_item.excluido = 'N')
-                    INNER JOIN invoice ON (invoice.id = invoice_item.invoice_id)
+                    LEFT JOIN invoice_item ON (invoice_item.block_id = block.id AND invoice_item.excluido = 'N')
+                    LEFT JOIN invoice ON (invoice.id = invoice_item.invoice_id)
                     
 
                 WHERE
-                    lot_transport.status != 0 -- não exibo LOTES rascunhos
-                    AND (lot_transport.status != 3 -- não exibo LOTES entregues
-                        OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
-                        OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
-                    )
-                    AND lot_transport_item.dismembered != TRUE
-                    AND lot_transport.excluido = 'N'
-                    AND lot_transport_item.excluido = 'N'
+					block.quarry_id IN ({$this->active_quarries}) AND 
+					block.excluido = 'N' 
+					AND ((
+							block.sold = 0
+						)
+						OR
+						(
+
+							lot_transport.status != 0 -- não exibo LOTES rascunhos
+							AND (lot_transport.status != 3 -- não exibo LOTES entregues
+								OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
+								OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
+							)
+							AND lot_transport_item.dismembered != TRUE
+							AND lot_transport.excluido = 'N'
+							AND lot_transport_item.excluido = 'N'
+					))
 
                 ORDER BY
                     lot_transport.order_number,

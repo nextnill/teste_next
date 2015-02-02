@@ -57,14 +57,16 @@ function listar_blocks(callback_function)
 					sum_quality_weight = 0;
                     wagon_number = '';
 
+                    var is_sobra = (item.lot_number.indexOf('Sobracolumay') >= 0);
             		var field_lot = table.find("[template-field='lot']");
             		field_lot.text(item.lot_number);
-            		field_lot.attr('href', "<?= APP_URI ?>lots/detail/" + item.lot_transport_id);
-					
+            		if (!is_sobra) {
+            			field_lot.attr('href', "<?= APP_URI ?>lots/detail/" + item.lot_transport_id);
+            		}
 
                     table.find("[template-field='vessel']").text(item.shipped_to || '');
                     var field_status = table.find("[template-field='status']");
-				    field_status.text(str_lot_transport_status(item.lot_transport_status));
+				    field_status.text(str_lot_transport_status(item.lot_transport_status) || '');
 				    switch (parseInt(item.lot_transport_status, 10))
 				    {
 				        case LOT_TRANSPORT_STATUS.DRAFT:
@@ -135,14 +137,28 @@ function listar_blocks(callback_function)
                         icone.removeClass('glyphicon-download-alt');
                         icone.addClass('glyphicon-ok');
                     }
+
+                    if (is_sobra) {
+                    	var div_botoes = table.find('.div_botoes');
+                    	div_botoes.hide();
+                    	var th_wagon_number = table.find('.th_wagon_number');
+                    	th_wagon_number.text('Reserved');
+
+                    	var th_nf = table.find('.th_nf');
+                    	th_nf.hide();
+
+                    	var th_price = table.find('.th_price');
+                    	th_price.hide();
+                    }
             };
 
-            var render_totalizador = function(lot_transport_id, lot_number) {
+            var render_totalizador = function(lot_transport_id, lot_number, is_sobra) {
             	add_row(table_body, {
             		invoice_item_price: sum_price,
             		net_vol: sum_volume,
             		tot_weight: sum_weight,
-            		block_number: count_blocks
+            		block_number: count_blocks,
+            		lot_number: (is_sobra ? 'Sobracolumay' : null)
             	}, true, 'bg-success');
 
             	// total de linhas, menos um (template)
@@ -167,13 +183,14 @@ function listar_blocks(callback_function)
             	nova_coluna.appendTo(primeira_linha);
             }
 
-            var render_quality_totalizador = function() {
+            var render_quality_totalizador = function(is_sobra) {
 
             	add_row(table_body, {
             		invoice_item_price: sum_quality_price,
             		net_vol: sum_quality_volume,
             		tot_weight: sum_quality_weight,
-            		block_number: count_quality_blocks
+            		block_number: count_quality_blocks,
+            		lot_number: (is_sobra ? 'Sobracolumay' : null)
             	}, true, 'bg-warning');
 
             	count_quality_blocks = 0;
@@ -182,6 +199,7 @@ function listar_blocks(callback_function)
 				sum_quality_weight = 0;
             }
 
+            var is_sobra = false;
             $.each(arr_blocks, function(i, item) {
                 // se for o primeiro registro, seta o título na tabela
                 if (i == 0) {
@@ -191,7 +209,8 @@ function listar_blocks(callback_function)
                 // se for um novo lote
                 if (item.lot_number != lot_number) {
                 	// imprimo o totalizador referente ao ultimo registro do lote
-                	render_totalizador(lot_transport_id, lot_number);
+                	render_quality_totalizador(is_sobra);
+                	render_totalizador(lot_transport_id, lot_number, is_sobra);
 
                     // se não for o primeiro registro
                     if (i > 0) {
@@ -209,7 +228,7 @@ function listar_blocks(callback_function)
                 }
                 else {
                 	if (item.quality_name != quality_name) {
-                		render_quality_totalizador();
+                		render_quality_totalizador(is_sobra);
                 	}
                 }
 
@@ -217,6 +236,7 @@ function listar_blocks(callback_function)
 
                 lot_transport_id = item.lot_transport_id;
                 lot_number = item.lot_number;
+                is_sobra = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false);
                 quality_name = item.quality_name;
                 poblo_obs  = item.poblo_obs;
 
@@ -230,12 +250,11 @@ function listar_blocks(callback_function)
 				sum_quality_volume += parseFloat(item.net_vol) || 0;
 				sum_quality_weight += parseFloat(item.tot_weight) || 0;
                 wagon_number  = item.wagon_number;
+
             });  
 			
-			
-            render_quality_totalizador();
-                	
-            render_totalizador(lot_transport_id, lot_number);
+            render_quality_totalizador(is_sobra);
+            render_totalizador(lot_transport_id, lot_number, is_sobra);
 
             // mostra a tabela
             table.appendTo(list);
@@ -249,6 +268,8 @@ function listar_blocks(callback_function)
 
 function add_row(table_body, item, bold, style_class)
 {
+	var is_sobra = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false);
+
     var template_row = table_body.find("tr:first");
     var new_row = template_row.clone();
     new_row.removeAttr("template-row");
@@ -267,28 +288,59 @@ function add_row(table_body, item, bold, style_class)
     field_nf.text(item.invoice_item_nf ? item.invoice_item_nf : '');
 
     var field_data = $(new_row.find("[template-field='data']"));
-    field_data.text(item.invoice_date_record ? item.invoice_date_record.format_date() : '');
+    if (!is_sobra) {
+    	field_data.text(item.invoice_date_record ? item.invoice_date_record.format_date() : '');
+    }
+    else {
+    	field_data.text(item.date_production ? item.date_production.format_date() : '');
+    }
+    
 
     var field_price = $(new_row.find("[template-field='price']"));
     field_price.text(item.invoice_item_price ? item.invoice_item_price.format_number(2) : '');
+    
+
 
     var field_sale_net_c = $(new_row.find("[template-field='sale_net_c']"));
-    field_sale_net_c.text(item.invoice_sale_net_c ? item.invoice_sale_net_c.format_number(2) : '');
+    if (!is_sobra) {
+    	field_sale_net_c.text(item.invoice_sale_net_c ? item.invoice_sale_net_c.format_number(2) : '');
+    }
+    else {
+    	field_sale_net_c.text(item.net_c ? item.net_c.format_number(2) : '');
+    }
 
     var field_sale_net_a = $(new_row.find("[template-field='sale_net_a']"));
-    field_sale_net_a.text(item.invoice_sale_net_a ? item.invoice_sale_net_a.format_number(2) : '');
+    if (!is_sobra) {
+    	field_sale_net_a.text(item.invoice_sale_net_a ? item.invoice_sale_net_a.format_number(2) : '');
+    }
+    else {
+    	field_sale_net_a.text(item.net_a ? item.net_a.format_number(2) : '');
+    }
 
     var field_sale_net_l = $(new_row.find("[template-field='sale_net_l']"));
-    field_sale_net_l.text(item.invoice_sale_net_l ? item.invoice_sale_net_l.format_number(2) : '');
+    if (!is_sobra) {
+    	field_sale_net_l.text(item.invoice_sale_net_l ? item.invoice_sale_net_l.format_number(2) : '');
+    }
+    else {
+    	field_sale_net_l.text(item.net_l ? item.net_l.format_number(2) : '');
+    }
 
     var field_net_vol = $(new_row.find("[template-field='net_vol']"));
-    field_net_vol.text(item.net_vol ? item.net_vol.format_number(3) : '');
+   	field_net_vol.text(item.net_vol ? item.net_vol.format_number(3) : '');
+
+
 
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
     field_tot_weight.text(item.tot_weight ? item.tot_weight.format_number(3) : '');
 
     var field_wagon_number = $(new_row.find("[template-field='wagon_number']"));
-    field_wagon_number.text(item.current_travel_plan_item_wagon_number ? item.current_travel_plan_item_wagon_number : '');
+    if (!is_sobra) {
+    	field_wagon_number.text(item.current_travel_plan_item_wagon_number ? item.current_travel_plan_item_wagon_number : '');
+    }
+    else {
+    	field_wagon_number.text(item.reserved_client_code ? item.reserved_client_code : '');
+    }
+    
 
     /*
     var field_destination = $(new_row.find("[template-field='destination']"));
@@ -311,6 +363,12 @@ function add_row(table_body, item, bold, style_class)
 
     if (style_class) {
     	new_row.addClass(style_class);
+    }
+
+    
+    if (is_sobra) {
+    	field_nf.hide();
+    	field_price.hide();
     }
 
     new_row.appendTo(table_body);
