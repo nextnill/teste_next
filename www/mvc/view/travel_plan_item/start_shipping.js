@@ -234,6 +234,7 @@ function add_row_shipping_list(table_body, item, type)
 
 function btn_start_shipping_click(type)
 {
+
     // populo nf e preço com o valor dos fields
     for (var i = 0; i < arr_pending_blocks_selected.length; i++) {
         var row = $('#list_start_shipping table > tbody > [template-row-ref="' + arr_pending_blocks_selected[i].id + '"] > td');
@@ -266,9 +267,11 @@ function btn_start_shipping_click(type)
         if (!arr_pending_blocks_selected[i].invoice_item_price) {
             without_price = true;
         }
-        if (!arr_pending_blocks_selected[i].invoice_item_wagon_number) {
+
+        var terminal_wagon = arr_pending_blocks_selected[i].next_terminal_wagon_number;
+        if (terminal_wagon == "S" && !arr_pending_blocks_selected[i].invoice_item_wagon_number) {
             without_wagon_number = true;
-        }
+        }    	
     }
 
     // validação
