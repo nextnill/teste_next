@@ -42,14 +42,16 @@ class Poblo_Controller extends \Sys\Controller
     {
         $lot_number = (string)$this->ReadGet('lot_number');
         $lot_transport_id = (int)$this->ReadGet('lot_transport_id');
+        $quarry_id = (int)$this->ReadGet('quarry_id');
         
         // salvar obs dos blocos do poblo
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-        $obs = $lot_transport_model->get_poblo_obs($lot_number, $lot_transport_id);
+        $obs = $lot_transport_model->get_poblo_obs($lot_number, $lot_transport_id, $quarry_id);
 
         $this->print_json(array(
             'lot_number' => $lot_number,
             'lot_transport_id' => $lot_transport_id,
+            'quarry_id' => $quarry_id,
             'obs' => $obs
         ));
     }
@@ -58,14 +60,17 @@ class Poblo_Controller extends \Sys\Controller
     {
         $lot_number = (string)$this->ReadPost('lot_number');
         $lot_transport_id = (int)$this->ReadPost('lot_transport_id');
+        $quarry_id = (int)$this->ReadPost('quarry_id');
         $obs = (string)$this->ReadPost('obs');
+
         // salvar obs dos blocos do poblo
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-        $obs = $lot_transport_model->set_poblo_obs($lot_number, $lot_transport_id, $obs);
+        $obs = $lot_transport_model->set_poblo_obs($lot_number, $lot_transport_id, $quarry_id, $obs);
 
         $this->print_json(array(
             'lot_number' => $lot_number,
             'lot_transport_id' => $lot_transport_id,
+            'quarry_id' => $quarry_id,
             'obs' => $obs
         ));
     }

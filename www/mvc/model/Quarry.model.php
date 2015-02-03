@@ -20,6 +20,9 @@ class Quarry_Model extends \Sys\Model {
     public $interim_block_number;
     public $seq_final;
     public $seq_interim;
+    public $poblo_obs_interim_sobra;
+    public $poblo_obs_final_sobra;
+    public $poblo_obs_inspected_without_lot;
 
     //protected $active_user;
     protected $active_quarries;
@@ -76,14 +79,27 @@ class Quarry_Model extends \Sys\Model {
         $validation = $this->validation();
 
         if ($validation->isValid())
-        {
-            $sql = 'INSERT INTO quarry (name, final_block_number, interim_block_number, seq_final, seq_interim) VALUES (?, ?, ?, ?, ?) ';
+        {   
+
+            $sql = 'INSERT INTO quarry (
+                        name, 
+                        final_block_number, 
+                        interim_block_number, 
+                        seq_final, 
+                        seq_interim,
+                        poblo_obs_interim_sobra,
+                        poblo_obs_final_sobra,
+                        poblo_obs_inspected_without_lot
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ';
             $query = DB::exec($sql, array(
                 $this->name,
                 $this->final_block_number,
                 $this->interim_block_number,
                 $this->seq_final,
-                $this->seq_interim
+                $this->seq_interim,
+                $this->poblo_obs_interim_sobra,
+                $this->poblo_obs_final_sobra,
+                $this->poblo_obs_inspected_without_lot
             ));
 
             $this->id = DB::last_insert_id();
@@ -118,7 +134,10 @@ class Quarry_Model extends \Sys\Model {
                         final_block_number = ?,
                         interim_block_number = ?,
                         seq_final = ?,
-                        seq_interim = ?
+                        seq_interim = ?,
+                        poblo_obs_interim_sobra = ?,
+                        poblo_obs_final_sobra = ?,
+                        poblo_obs_inspected_without_lot = ?
                     WHERE
                         id = ? ';
                 $query = DB::exec($sql, array(
@@ -128,6 +147,9 @@ class Quarry_Model extends \Sys\Model {
                     $this->interim_block_number,
                     $this->seq_final,
                     $this->seq_interim,
+                    $this->poblo_obs_interim_sobra,
+                    $this->poblo_obs_final_sobra,
+                    $this->poblo_obs_inspected_without_lot,
                     // where
                     $this->id
 
@@ -238,7 +260,10 @@ class Quarry_Model extends \Sys\Model {
                     final_block_number,
                     interim_block_number,
                     seq_final,
-                    seq_interim
+                    seq_interim,
+                    poblo_obs_interim_sobra,
+                    poblo_obs_final_sobra,
+                    poblo_obs_inspected_without_lot
                 FROM
                     quarry
                 WHERE
@@ -288,6 +313,9 @@ class Quarry_Model extends \Sys\Model {
             $this->interim_block_number = (string)$row_query['interim_block_number'];
             $this->seq_final = (int)$row_query['seq_final'];
             $this->seq_interim = (int)$row_query['seq_interim'];
+            $this->poblo_obs_interim_sobra = (string)$row_query['poblo_obs_interim_sobra'];
+            $this->poblo_obs_final_sobra = (string)$row_query['poblo_obs_final_sobra'];
+            $this->poblo_obs_inspected_without_lot = (string)$row_query['poblo_obs_inspected_without_lot'];            
         }
     }
     

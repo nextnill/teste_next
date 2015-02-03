@@ -741,33 +741,32 @@ class LotTransport_Model extends \Sys\Model {
         return $query;
     }
 
-    function get_poblo_obs($lot_number, $id) {
+    function get_poblo_obs($lot_number, $id, $quarry_id) {
     	
-    	$is_sobra_interim = ($lot_number == 'Iterim Sobracolumay');
-    	$is_sobra_final = ($lot_number == 'Final Sobracolumay');
-    	$is_inspected_without_lot = ($lot_number == 'Inspected blocks without lot');
+    	$is_sobra_interim = strpos($lot_number, 'Iterim Sobracolumay') !== false;
+    	$is_sobra_final = strpos($lot_number, 'Final Sobracolumay') !== false;
+    	$is_inspected_without_lot = strpos($lot_number, 'Inspected blocks without lot') !== false;
     	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspected_without_lot);
-
-    	// se for interim
-    	if ($is_sobra_interim) {
-    		$this->LoadModel('Parameters', false);
-        	return Parameters_Model::get('poblo_obs_interim_sobra');
-    	}
-
-    	// se for final
-    	else if ($is_sobra_final) {
-    		$this->LoadModel('Parameters', false);
-        	return Parameters_Model::get('poblo_obs_final_sobra');
-    	}
-
-    	// se for inspecionado sem lote
-    	else if ($is_inspected_without_lot) {
-    		$this->LoadModel('Parameters', false);
-        	return Parameters_Model::get('poblo_obs_inspected_without_lot');
-    	}
-
+        
+        // se não for transporte, pega da pedreira
+        if (!$is_transport) {
+            $quarry_model = $this->LoadModel('Quarry', true);
+            $quarry_model->populate($quarry_id);
+            // se for interim
+            if ($is_sobra_interim == true) {
+                return $quarry_model->poblo_obs_interim_sobra;
+            }
+            // se for final
+            else if ($is_sobra_final == true) {
+                return $quarry_model->poblo_obs_final_sobra;
+            }
+            // se for inspecionado sem lote
+            else if ($is_inspected_without_lot) {
+                return $quarry_model->poblo_obs_inspected_without_lot;
+            }
+        }
     	// se for transporte
-    	else if ($is_transport) {
+    	else {
     		$sql = "SELECT
 	                    lot_transport.poblo_obs
 	                FROM 
@@ -788,33 +787,38 @@ class LotTransport_Model extends \Sys\Model {
         return '';
     }
 
-    function set_poblo_obs($lot_number, $id, $obs) {
+    function set_poblo_obs($lot_number, $id, $quarry_id, $obs) {
         
-        $is_sobra_interim = ($lot_number == 'Iterim Sobracolumay');
-    	$is_sobra_final = ($lot_number == 'Final Sobracolumay');
-    	$is_inspected_without_lot = ($lot_number == 'Inspected blocks without lot');
+        $is_sobra_interim = strpos($lot_number, 'Iterim Sobracolumay') !== false;
+        $is_sobra_final = strpos($lot_number, 'Final Sobracolumay') !== false;
+        $is_inspected_without_lot = strpos($lot_number, 'Inspected blocks without lot') !== false;
     	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspected_without_lot);
 
-    	// se for interim
-    	if ($is_sobra_interim) {
-    		$this->LoadModel('Parameters', false);
-        	Parameters_Model::set('poblo_obs_interim_sobra', $obs);
-    	}
+        // se não for transporte
+        if (!$is_transport) {
+            $quarry_model = $this->LoadModel('Quarry', true);
+            $quarry_model->populate($quarry_id);
 
-    	// se for final
-    	else if ($is_sobra_final) {
-    		$this->LoadModel('Parameters', false);
-        	Parameters_Model::set('poblo_obs_final_sobra', $obs);
-    	}
+            // se for interim
+            if ($is_sobra_interim) {
+                $quarry_model->poblo_obs_interim_sobra = $obs;
+                $quarry_model->save();
+            }
 
-    	// se for inspecionado sem lote
-    	else if ($is_inspected_without_lot) {
-    		$this->LoadModel('Parameters', false);
-        	Parameters_Model::set('poblo_obs_inspected_without_lot', $obs);
-    	}
+            // se for final
+            else if ($is_sobra_final) {
+                $quarry_model->poblo_obs_final_sobra = $obs;
+                $quarry_model->save();
+            }
 
+            // se for inspecionado sem lote
+            else if ($is_inspected_without_lot) {
+                $quarry_model->poblo_obs_inspected_without_lot = $obs;
+                $quarry_model->save();
+            }
+        }
     	// se for transporte
-    	else if ($is_transport) {
+    	else {
 	        $sql = "UPDATE
 	                    lot_transport
 	                SET
@@ -828,7 +832,7 @@ class LotTransport_Model extends \Sys\Model {
 	        DB::exec($sql, $params);
 	    }
 
-	    return $this->get_poblo_obs($lot_number, $id);
+	    return $this->get_poblo_obs($lot_number, $id, $quarry_id);
     }
 
     function get_poblo() {
@@ -845,7 +849,7 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.status AS lot_transport_status,
                     lot_transport.poblo_obs,
                     lot_transport.date_record,
-                    COALESCE(lot_transport.lot_number, 'Inspected blocks without lot') AS lot_number,
+                    COALESCE(lot_transport.lot_number, CONCAT('Inspected blocks without lot - ', quarry.name)) AS lot_number,
                     lot_transport.client_remove,
                     lot_transport.down_packing_list,
                     lot_transport.down_commercial_invoice,
@@ -859,6 +863,9 @@ class LotTransport_Model extends \Sys\Model {
                     block.tot_weight,
                     block.quarry_id,
                     quarry.name AS quarry_name,
+                    quarry.poblo_obs_interim_sobra,
+                    quarry.poblo_obs_final_sobra,
+                    quarry.poblo_obs_inspected_without_lot,
                     block.product_id,
                     block.quality_id,
                     block.tot_c,
@@ -893,11 +900,9 @@ class LotTransport_Model extends \Sys\Model {
                         AND current_tpi.excluido = 'N'
                         ORDER BY current_tpi.id ASC
                         LIMIT 0, 1
-                    ) AS current_travel_plan_item_wagon_number,
-					parameters.poblo_obs_inspected_without_lot
+                    ) AS current_travel_plan_item_wagon_number
                     FROM block
                     LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
-                    LEFT JOIN parameters ON (block.sold = 1 AND block.current_lot_transport_id IS NULL AND parameters.excluido = 'N')
 					-- FROM lot_transport_item
                     LEFT JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
                     LEFT JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
@@ -939,11 +944,11 @@ class LotTransport_Model extends \Sys\Model {
         $query = DB::query($sql);
         
         foreach ($interim_sobracolumay as $key => $block) {
-            $interim_sobracolumay[$key]['lot_number'] = 'Iterim Sobracolumay';
+            $interim_sobracolumay[$key]['lot_number'] = 'Iterim Sobracolumay - ' . $block['quarry_name'];
         }
 
         foreach ($final_sobracolumay as $key => $block) {
-            $final_sobracolumay[$key]['lot_number'] = 'Final Sobracolumay';
+            $final_sobracolumay[$key]['lot_number'] = 'Final Sobracolumay - ' . $block['quarry_name'];
         }
 
         return array('transport' => array_merge($final_sobracolumay, $query));
