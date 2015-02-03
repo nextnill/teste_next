@@ -19,6 +19,10 @@ function listar_head_office()
         }
     }).fail(ajaxError);
 }
+function listar(){
+
+    listar_blocks();        
+}
 
 function listar_blocks()
 {
@@ -88,7 +92,7 @@ function listar_blocks()
             // mostra a tabela
             table.appendTo(list);      
             
-            $(".cbo_head_office").select2();
+            $('cbo_head_office').select2();
         }
     }).fail(ajaxError);
 }
@@ -118,6 +122,7 @@ function add_row(table_body, item)
         }
         
     );
+
 
     var field_tot_c = $(new_row.find("[template-field='tot_c']"));
     field_tot_c.text(item.tot_c);
