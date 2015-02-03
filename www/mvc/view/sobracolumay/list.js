@@ -109,6 +109,16 @@ function add_row(table_body, item)
         show_dialog(FORMULARIO.VISUALIZAR, id);
     });
 
+    var button_delete = $(new_row.find('#delete_block'));
+    button_delete.attr('id', item.id);
+    button_delete.click(
+        function () {
+            var id = $(this).attr('id');
+            show_dialog(FORMULARIO.EXCLUIR, id);
+        }
+        
+    );
+
     var field_tot_c = $(new_row.find("[template-field='tot_c']"));
     field_tot_c.text(item.tot_c);
 
@@ -138,6 +148,8 @@ function add_row(table_body, item)
 
     //var field_reserved = $(new_row.find("[template-field='reserved']"));
     //field_reserved.text(item.reserved_client_code ? item.reserved_client_code : '');
+    
+    
 
     var cbo_reserved_client = $(new_row.find("[template-field='reserved'] > select"));
     cbo_reserved_client.find("option").remove();
@@ -292,6 +304,8 @@ function add_footer(table_body, block_count, block_net_vol_sum, block_tot_weight
     
     new_row.appendTo(table_body);
 }
+
+
 
 // on load window
 funcs_on_load.push(function() {
