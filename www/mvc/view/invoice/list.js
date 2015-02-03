@@ -1,11 +1,40 @@
+function listar_filter_client()
+{
+    var cbo_filter_client = $('#cbo_filter_client');
+
+    cbo_filter_client.unbind('change');
+    cbo_filter_client.change(function() {
+        listar();
+    });
+
+    cbo_filter_client.find("option").remove();
+
+    // pesquisa a listagem em json
+    $.getJSON("<?= APP_URI ?>client/list_head_office/json/", function(response) {
+        if (response_validation(response)) {
+            add_option(cbo_filter_client, '-1', 'None');
+            for (var i = 0; i < response.length; i++) {
+                var item = response[i];
+                add_option(cbo_filter_client, item.id, item.code + ' - ' + item.name);
+            };
+
+            cbo_filter_client.select2();
+        }
+    }).fail(ajaxError);
+}
+
 function listar()
 {
+    var cbo_filter_client = $('#cbo_filter_client');
+    var edt_year = $('#edt_year');
+    var cbo_month_filter = $('#cbo_month_filter');
     // limpa trs, menos a primeira
     //
     $('#tbl_listagem').find("tr:gt(1)").remove();
 
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>inspection_certificate/list/json/", function(response) {
+    $.getJSON("<?= APP_URI ?>inspection_certificate/list/json/" + (cbo_filter_client.val() ? cbo_filter_client.val() : ''), 
+        {ano: edt_year.val(), mes: cbo_month_filter.val()}, function(response) {
         if (response_validation(response)) {
             var table_body = $('#tbl_listagem > tbody');
 
@@ -83,5 +112,21 @@ function add_row(table_body, item)
     });
 }
 
+funcs_on_load.push(function() {
 
-listar();
+    listar_filter_client();
+    
+    var agora = new Date();
+    var mes = ("0" + (agora.getMonth() + 1)).slice(-2);
+    var ano = agora.getFullYear();
+
+    
+    var edt_year = $('#edt_year');
+    var cbo_month_filter = $('#cbo_month_filter');
+      
+    edt_year.val(ano);
+    cbo_month_filter.val(mes);
+
+
+    listar();
+});

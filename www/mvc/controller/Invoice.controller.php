@@ -12,8 +12,20 @@ class Invoice_Controller extends \Sys\Controller
 
     function list_json($params)
     {
+        $client_id = -1;
+        if (isset($params[0])) {
+            $client_id = (int)$params[0];
+        }
+
+        $ano = $this->ReadGet('ano');
+        $mes = $this->ReadGet('mes');
+
+        $client_id = ($client_id > 0 ? $client_id : null);
+        $ano = ($ano > 0 ? $ano : null);
+        $mes = ($mes > 0 ? $mes : null);
+
     	$invoice_model = $this->LoadModel('Invoice', true);
-    	$list = $invoice_model->get_list();
+    	$list = $invoice_model->get_list(false, $client_id, $ano, $mes);
     	
         $this->print_json($list);
     }

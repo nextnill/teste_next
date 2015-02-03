@@ -307,9 +307,9 @@ class Invoice_Model extends \Sys\Model {
         }        
     }
     
-    function get_list($excluido=false)
+    function get_list($excluido=false, $client_id=null, $ano, $mes)
     {
-        $excluido = ($excluido === true ? 'S' : 'N');
+        
         
         $sql = 'SELECT
                     invoice.id,
@@ -322,11 +322,30 @@ class Invoice_Model extends \Sys\Model {
                 INNER JOIN client ON (client.id = invoice.client_id)
                 WHERE
                     invoice.excluido = ?
-                ORDER BY
-                	invoice.date_record DESC, invoice.id DESC
                 ';
 
-        $query = DB::query($sql, array($excluido));
+         $params[] = ($excluido === true ? 'S' : 'N');
+
+         if ($client_id) {
+            $sql .= ' AND invoice.client_id = ? ';
+            $params[] = $client_id;
+        }
+
+        if ($ano){
+
+            $sql .= 'AND Year(invoice.date_record) = ?';
+            $params[] = $ano;
+        }
+
+        if ($mes){
+
+            $sql .= 'AND Month(invoice.date_record) = ?';
+            $params[] = $mes;
+        }
+
+        $sql .= ' ORDER BY invoice.date_record DESC, invoice.id DESC';
+
+        $query = DB::query($sql, $params);
         
         return $query;
     }
