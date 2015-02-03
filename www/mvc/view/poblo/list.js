@@ -22,6 +22,7 @@ function listar_blocks(callback_function)
             var table_body = $(table).find('table > tbody');
             var lot_transport_id = null;
             var lot_number = '';
+            var quarry_id = 0;
             var quarry_name = '';
             var quality_name = '';
             var count_blocks = 0;
@@ -33,6 +34,9 @@ function listar_blocks(callback_function)
             var sum_quality_volume = 0;
             var sum_quality_weight = 0;
             var poblo_obs = '';
+            var poblo_obs_interim_sobra = '';
+            var poblo_obs_final_sobra = '';
+            var poblo_obs_inspected_without_lot = '';
             var wagon_number = '';
 
             
@@ -173,7 +177,7 @@ function listar_blocks(callback_function)
                 	}
             };
 
-            var render_totalizador = function(lot_transport_id, lot_number) {
+            var render_totalizador = function(lot_transport_id, lot_number, quarry_id) {
             	var is_sobra_interim = lot_number ? lot_number.indexOf('Iterim Sobracolumay') >= 0 : false;
             	var is_sobra_final = lot_number ? lot_number.indexOf('Final Sobracolumay') >= 0 : false;
 				var is_inspected = lot_number ? lot_number.indexOf('Inspected') >= 0 : false;
@@ -215,7 +219,7 @@ function listar_blocks(callback_function)
                 var btn_obs = table.find('[template-button="obs"]');
                 btn_obs.unbind('click');
                 btn_obs.click(function() {
-                	show_poblo_obs(lot_number, lot_transport_id)
+                	show_poblo_obs(lot_number, lot_transport_id, quarry_id);
                 });
 
             	var nova_coluna = $('<td rowspan="' + linhas + '"></td>');
@@ -250,7 +254,7 @@ function listar_blocks(callback_function)
                 if (item.lot_number != lot_number) {
                 	// imprimo o totalizador referente ao ultimo registro do lote
                 	render_quality_totalizador(lot_number);
-                	render_totalizador(lot_transport_id, lot_number);
+                	render_totalizador(lot_transport_id, lot_number, quarry_id);
 
                     // se não for o primeiro registro
                     if (i > 0) {
@@ -277,6 +281,7 @@ function listar_blocks(callback_function)
                 lot_transport_id = item.lot_transport_id;
                 lot_number = item.lot_number;
                 is_not_travel = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 || item.lot_number.indexOf('Inspected') >= 0 : false);
+                quarry_id = item.quarry_id;
                 quarry_name = item.quarry_name;
                 quality_name = item.quality_name;
                 poblo_obs  = item.poblo_obs;
@@ -298,7 +303,7 @@ function listar_blocks(callback_function)
             });  
 			
             render_quality_totalizador(lot_number);
-            render_totalizador(lot_transport_id, lot_number);
+            render_totalizador(lot_transport_id, lot_number, quarry_id);
 
             // mostra a tabela
             table.appendTo(list);
