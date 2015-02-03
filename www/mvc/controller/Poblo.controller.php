@@ -40,13 +40,15 @@ class Poblo_Controller extends \Sys\Controller
 
     function obs_json($params)
     {
+        $lot_number = (string)$this->ReadGet('lot_number');
         $lot_transport_id = (int)$this->ReadGet('lot_transport_id');
         
         // salvar obs dos blocos do poblo
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-        $obs = $lot_transport_model->get_poblo_obs($lot_transport_id);
+        $obs = $lot_transport_model->get_poblo_obs($lot_number, $lot_transport_id);
 
         $this->print_json(array(
+            'lot_number' => $lot_number,
             'lot_transport_id' => $lot_transport_id,
             'obs' => $obs
         ));
@@ -54,13 +56,15 @@ class Poblo_Controller extends \Sys\Controller
 
     function salve_obs_json($params)
     {
+        $lot_number = (string)$this->ReadPost('lot_number');
         $lot_transport_id = (int)$this->ReadPost('lot_transport_id');
         $obs = (string)$this->ReadPost('obs');
         // salvar obs dos blocos do poblo
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-        $obs = $lot_transport_model->set_poblo_obs($lot_transport_id, $obs);
+        $obs = $lot_transport_model->set_poblo_obs($lot_number, $lot_transport_id, $obs);
 
         $this->print_json(array(
+            'lot_number' => $lot_number,
             'lot_transport_id' => $lot_transport_id,
             'obs' => $obs
         ));

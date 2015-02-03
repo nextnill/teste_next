@@ -174,6 +174,11 @@ function listar_blocks(callback_function)
             };
 
             var render_totalizador = function(lot_transport_id, lot_number) {
+            	var is_sobra_interim = lot_number ? lot_number.indexOf('Iterim Sobracolumay') >= 0 : false;
+            	var is_sobra_final = lot_number ? lot_number.indexOf('Final Sobracolumay') >= 0 : false;
+				var is_inspected = lot_number ? lot_number.indexOf('Inspected') >= 0 : false;
+				var is_transport = (!is_sobra_interim && !is_sobra_final && !is_inspected && !is_transport);
+
             	add_row(table_body, {
             		invoice_item_price: sum_price,
             		net_vol: sum_volume,
@@ -191,12 +196,26 @@ function listar_blocks(callback_function)
             	var template_obs = $('[template-obs]').clone();
                 template_obs.removeAttr("template-obs");
                 template_obs.css("display", '');
-                template_obs.find("[template-field='obs']").html(nl2br(poblo_obs ? poblo_obs : ''));
+
+                var obs = '';
+                if (is_transport) {
+                	obs = poblo_obs ? poblo_obs : '';
+                }
+                else if (is_sobra_interim) {
+                	obs = poblo_obs_interim_sobra ? poblo_obs_interim_sobra : '';
+                }
+                else if (is_sobra_final) {
+                	obs = poblo_obs_final_sobra ? poblo_obs_final_sobra : '';
+                }
+                else if (is_inspected) {
+                	obs = poblo_obs_inspected_without_lot ? poblo_obs_inspected_without_lot : '';
+                }
+                template_obs.find("[template-field='obs']").html(nl2br(obs));
 
                 var btn_obs = table.find('[template-button="obs"]');
                 btn_obs.unbind('click');
                 btn_obs.click(function() {
-                	show_poblo_obs(lot_transport_id, lot_number)
+                	show_poblo_obs(lot_number, lot_transport_id)
                 });
 
             	var nova_coluna = $('<td rowspan="' + linhas + '"></td>');
@@ -261,6 +280,9 @@ function listar_blocks(callback_function)
                 quarry_name = item.quarry_name;
                 quality_name = item.quality_name;
                 poblo_obs  = item.poblo_obs;
+                poblo_obs_interim_sobra  = item.poblo_obs_interim_sobra;
+                poblo_obs_final_sobra  = item.poblo_obs_final_sobra;
+                poblo_obs_inspected_without_lot  = item.poblo_obs_inspected_without_lot;
 
                 count_blocks++;
 				sum_price += parseFloat(item.invoice_item_price) || 0;

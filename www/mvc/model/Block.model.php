@@ -783,7 +783,9 @@ class Block_Model extends \Sys\Model {
                     reserved_client.code AS reserved_client_code,
                     reserved_client.name AS reserved_client_name,
                     block.sold,
-                    block.client_block_number
+                    block.client_block_number,
+                    parameters.poblo_obs_interim_sobra,
+                    parameters.poblo_obs_final_sobra
                 FROM block
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id AND production_order_item.excluido = 'N')
                 INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id AND production_order.excluido = 'N')
@@ -791,6 +793,7 @@ class Block_Model extends \Sys\Model {
                 INNER JOIN quality ON (quality.id = block.quality_id)
                 INNER JOIN product ON (product.id = block.product_id)
                 LEFT JOIN client AS reserved_client ON (reserved_client.id = block.reserved_client_id)
+                LEFT JOIN parameters ON (parameters.excluido = 'N')
                 WHERE
                     block.quarry_id IN ({$this->active_quarries})
                     AND block.excluido = ?

@@ -741,40 +741,94 @@ class LotTransport_Model extends \Sys\Model {
         return $query;
     }
 
-    function get_poblo_obs($id) {
-        $sql = "SELECT
-                    lot_transport.poblo_obs
-                FROM 
-                    lot_transport
-                WHERE
-                    lot_transport.id = :lot_transport_id
-                ";
+    function get_poblo_obs($lot_number, $id) {
+    	
+    	$is_sobra_interim = ($lot_number == 'Iterim Sobracolumay');
+    	$is_sobra_final = ($lot_number == 'Final Sobracolumay');
+    	$is_inspected_without_lot = ($lot_number == 'Inspected blocks without lot');
+    	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspected_without_lot);
 
-        $params[':lot_transport_id'] = $id;
+    	// se for interim
+    	if ($is_sobra_interim) {
+    		$this->LoadModel('Parameters', false);
+        	return Parameters_Model::get('poblo_obs_interim_sobra');
+    	}
 
-        $query = DB::query($sql, $params);
+    	// se for final
+    	else if ($is_sobra_final) {
+    		$this->LoadModel('Parameters', false);
+        	return Parameters_Model::get('poblo_obs_final_sobra');
+    	}
 
-        if (DB::has_rows($query)) {
-            return $query[0]['poblo_obs'];
-        }
+    	// se for inspecionado sem lote
+    	else if ($is_inspected_without_lot) {
+    		$this->LoadModel('Parameters', false);
+        	return Parameters_Model::get('poblo_obs_inspected_without_lot');
+    	}
+
+    	// se for transporte
+    	else if ($is_transport) {
+    		$sql = "SELECT
+	                    lot_transport.poblo_obs
+	                FROM 
+	                    lot_transport
+	                WHERE
+	                    lot_transport.id = :lot_transport_id
+	                ";
+
+	        $params[':lot_transport_id'] = $id;
+
+	        $query = DB::query($sql, $params);
+
+	        if (DB::has_rows($query)) {
+	            return $query[0]['poblo_obs'];
+	        }
+    	}
         
         return '';
     }
 
-    function set_poblo_obs($id, $obs) {
-        $sql = "UPDATE
-                    lot_transport
-                SET
-                    poblo_obs = :poblo_obs
-                WHERE
-                    lot_transport.id = :lot_transport_id";
+    function set_poblo_obs($lot_number, $id, $obs) {
         
-        $params[':lot_transport_id'] = $id;
-        $params[':poblo_obs'] = $obs;
+        $is_sobra_interim = ($lot_number == 'Iterim Sobracolumay');
+    	$is_sobra_final = ($lot_number == 'Final Sobracolumay');
+    	$is_inspected_without_lot = ($lot_number == 'Inspected blocks without lot');
+    	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspected_without_lot);
 
-        DB::exec($sql, $params);
+    	// se for interim
+    	if ($is_sobra_interim) {
+    		$this->LoadModel('Parameters', false);
+        	Parameters_Model::set('poblo_obs_interim_sobra', $obs);
+    	}
 
-        return $this->get_poblo_obs($id);
+    	// se for final
+    	else if ($is_sobra_final) {
+    		$this->LoadModel('Parameters', false);
+        	Parameters_Model::set('poblo_obs_final_sobra', $obs);
+    	}
+
+    	// se for inspecionado sem lote
+    	else if ($is_inspected_without_lot) {
+    		$this->LoadModel('Parameters', false);
+        	Parameters_Model::set('poblo_obs_inspected_without_lot', $obs);
+    	}
+
+    	// se for transporte
+    	else if ($is_transport) {
+	        $sql = "UPDATE
+	                    lot_transport
+	                SET
+	                    poblo_obs = :poblo_obs
+	                WHERE
+	                    lot_transport.id = :lot_transport_id";
+	        
+	        $params[':lot_transport_id'] = $id;
+	        $params[':poblo_obs'] = $obs;
+
+	        DB::exec($sql, $params);
+	    }
+
+	    return $this->get_poblo_obs($lot_number, $id);
     }
 
     function get_poblo() {
@@ -839,9 +893,11 @@ class LotTransport_Model extends \Sys\Model {
                         AND current_tpi.excluido = 'N'
                         ORDER BY current_tpi.id ASC
                         LIMIT 0, 1
-                    ) AS current_travel_plan_item_wagon_number 
+                    ) AS current_travel_plan_item_wagon_number,
+					parameters.poblo_obs_inspected_without_lot
                     FROM block
                     LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
+                    LEFT JOIN parameters ON (block.sold = 1 AND block.current_lot_transport_id IS NULL AND parameters.excluido = 'N')
 					-- FROM lot_transport_item
                     LEFT JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
                     LEFT JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
