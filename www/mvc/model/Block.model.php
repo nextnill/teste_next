@@ -760,6 +760,7 @@ class Block_Model extends \Sys\Model {
                     quality.order_number AS quality_order_number,
                     block.type,
                     block.production_order_item_id,
+                    production_order.date_production,
                     block.block_number,
                     block.tot_c,
                     block.tot_a,
@@ -784,6 +785,8 @@ class Block_Model extends \Sys\Model {
                     block.sold,
                     block.client_block_number
                 FROM block
+                INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id AND production_order_item.excluido = 'N')
+                INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id AND production_order.excluido = 'N')
                 INNER JOIN quarry ON (quarry.id = block.quarry_id)
                 INNER JOIN quality ON (quality.id = block.quality_id)
                 INNER JOIN product ON (product.id = block.product_id)

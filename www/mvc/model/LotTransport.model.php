@@ -815,10 +815,10 @@ class LotTransport_Model extends \Sys\Model {
                     block.net_a,
                     block.net_l,
                     block.net_vol,
-                    block.reserved,
-                    block.reserved_client_id,
-                    reserved_client.code AS reserved_client_code,
-                    reserved_client.name AS reserved_client_name,
+                    block.sold,
+                    block.sold_client_id,
+                    sold_client.code AS sold_client_code,
+                    sold_client.name AS sold_client_name,
                     quality.name AS quality_name,
                     production_order.date_production,
                     invoice.id AS invoice_id,
@@ -841,7 +841,7 @@ class LotTransport_Model extends \Sys\Model {
                         LIMIT 0, 1
                     ) AS current_travel_plan_item_wagon_number 
                     FROM block
-                    LEFT JOIN client AS reserved_client ON (reserved_client.id = block.reserved_client_id)
+                    LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
 					-- FROM lot_transport_item
                     LEFT JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
                     LEFT JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
@@ -876,6 +876,7 @@ class LotTransport_Model extends \Sys\Model {
 
                 ORDER BY
                     lot_transport.order_number,
+                    quarry.name,
                     quality.order_number
                 ";
         
