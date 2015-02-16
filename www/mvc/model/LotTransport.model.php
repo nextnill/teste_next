@@ -741,15 +741,15 @@ class LotTransport_Model extends \Sys\Model {
         return $query;
     }
 
-    function get_poblo_obs($lot_number, $id, $quarry_id) {
+    function get_poblo_obs($lot_number, $id, $quarry_id, $invoice_id) {
     	
     	$is_sobra_interim = strpos($lot_number, 'Iterim Sobracolumay') !== false;
     	$is_sobra_final = strpos($lot_number, 'Final Sobracolumay') !== false;
-    	$is_inspected_without_lot = strpos($lot_number, 'Inspected blocks without lot') !== false;
-    	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspected_without_lot);
+    	$is_inspection_certificate = strpos($lot_number, 'Inspection Certificate') !== false;
+    	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspection_certificate);
         
-        // se não for transporte, pega da pedreira
-        if (!$is_transport) {
+        // se for sobra
+        if ($is_sobra_interim || $is_sobra_final) {
             $quarry_model = $this->LoadModel('Quarry', true);
             $quarry_model->populate($quarry_id);
             // se for interim
@@ -760,13 +760,15 @@ class LotTransport_Model extends \Sys\Model {
             else if ($is_sobra_final == true) {
                 return $quarry_model->poblo_obs_final_sobra;
             }
-            // se for inspecionado sem lote
-            else if ($is_inspected_without_lot) {
-                return $quarry_model->poblo_obs_inspected_without_lot;
-            }
+        }
+        // se for certificado de inspeção
+        else if ($is_inspection_certificate) {
+            $invoice_model = $this->LoadModel('Invoice', true);
+            $invoice_model->populate($invoice_id);
+            return $invoice_model->poblo_obs;
         }
     	// se for transporte
-    	else {
+    	else if ($is_transport) {
     		$sql = "SELECT
 	                    lot_transport.poblo_obs
 	                FROM 
@@ -787,15 +789,15 @@ class LotTransport_Model extends \Sys\Model {
         return '';
     }
 
-    function set_poblo_obs($lot_number, $id, $quarry_id, $obs) {
+    function set_poblo_obs($lot_number, $id, $quarry_id, $invoice_id, $obs) {
         
         $is_sobra_interim = strpos($lot_number, 'Iterim Sobracolumay') !== false;
         $is_sobra_final = strpos($lot_number, 'Final Sobracolumay') !== false;
-        $is_inspected_without_lot = strpos($lot_number, 'Inspected blocks without lot') !== false;
-    	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspected_without_lot);
+        $is_inspection_certificate = strpos($lot_number, 'Inspection Certificate') !== false;
+    	$is_transport = (!$is_sobra_interim && !$is_sobra_final && !$is_inspection_certificate);
 
-        // se não for transporte
-        if (!$is_transport) {
+        // se for sobra
+        if ($is_sobra_interim || $is_sobra_final) {
             $quarry_model = $this->LoadModel('Quarry', true);
             $quarry_model->populate($quarry_id);
 
@@ -810,15 +812,16 @@ class LotTransport_Model extends \Sys\Model {
                 $quarry_model->poblo_obs_final_sobra = $obs;
                 $quarry_model->save();
             }
-
-            // se for inspecionado sem lote
-            else if ($is_inspected_without_lot) {
-                $quarry_model->poblo_obs_inspected_without_lot = $obs;
-                $quarry_model->save();
-            }
         }
-    	// se for transporte
-    	else {
+        // se for certificado de inspeção
+    	else if ($is_inspection_certificate) {
+            $invoice_model = $this->LoadModel('Invoice', true);
+            $invoice_model->populate($invoice_id);
+            $invoice_model->poblo_obs = $obs;
+            $invoice_model->save();
+        }
+        // se for transporte
+    	else if ($is_transport) {
 	        $sql = "UPDATE
 	                    lot_transport
 	                SET
@@ -832,7 +835,7 @@ class LotTransport_Model extends \Sys\Model {
 	        DB::exec($sql, $params);
 	    }
 
-	    return $this->get_poblo_obs($lot_number, $id, $quarry_id);
+	    return $this->get_poblo_obs($lot_number, $id, $quarry_id, $invoice_id);
     }
 
     function get_poblo() {
@@ -849,7 +852,13 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.status AS lot_transport_status,
                     lot_transport.poblo_obs,
                     lot_transport.date_record,
-                    COALESCE(lot_transport.lot_number, CONCAT('Inspected blocks without lot - ', quarry.name)) AS lot_number,
+                    CASE
+                        -- se for lote, exibir informações do lote
+                        WHEN !ISNULL(lot_transport.lot_number) THEN CONCAT('Lot Number ', lot_transport.lot_number)
+                        -- se não tiver lote, exibir dados da inspeção (invoice)
+                        WHEN ISNULL(lot_transport.lot_number) AND !ISNULL(invoice.id) THEN CONCAT('Inspection Certificate #', invoice.id, ' - ', DATE_FORMAT(invoice.date_record, '%Y/%m/%d'))
+                        ELSE ''
+                    END AS lot_number,
                     lot_transport.client_remove,
                     lot_transport.down_packing_list,
                     lot_transport.down_commercial_invoice,
@@ -890,6 +899,7 @@ class LotTransport_Model extends \Sys\Model {
                     invoice_item.sale_net_a AS invoice_sale_net_a,
                     invoice_item.sale_net_l AS invoice_sale_net_l,
                     invoice.date_record AS invoice_date_record,
+                    invoice.poblo_obs AS invoice_poblo_obs,
                     lot_transport.client_id AS client_id,
                     client.code AS client_code,
                     client.name AS client_name,
@@ -903,10 +913,8 @@ class LotTransport_Model extends \Sys\Model {
                     ) AS current_travel_plan_item_wagon_number
                     FROM block
                     LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
-					-- FROM lot_transport_item
                     LEFT JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
                     LEFT JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
-                    -- INNER JOIN block ON (block.id = lot_transport_item.block_id/* AND block.quarry_id IN ({$this->active_quarries})*/)
                     LEFT JOIN client ON (client.id = lot_transport.client_id)
                     INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)
                     INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id)
@@ -914,29 +922,28 @@ class LotTransport_Model extends \Sys\Model {
                     INNER JOIN quality ON (quality.id = block.quality_id)
                     LEFT JOIN invoice_item ON (invoice_item.block_id = block.id AND invoice_item.excluido = 'N')
                     LEFT JOIN invoice ON (invoice.id = invoice_item.invoice_id)
-                    
-
                 WHERE
-					block.quarry_id IN ({$this->active_quarries}) AND 
-					block.excluido = 'N' 
-					AND ((
-							block.sold = 1 and block.current_lot_transport_id IS NULL
-						)
-						OR
-						(
+                    block.quarry_id IN ({$this->active_quarries}) AND 
+                    block.excluido = 'N' 
+                    AND ((
+                            block.sold = 1 and block.current_lot_transport_id IS NULL
+                        )
+                        OR
+                        (
 
-							lot_transport.status != 0 -- não exibo LOTES rascunhos
-							AND (lot_transport.status != 3 -- não exibo LOTES entregues
-								OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
-								OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
-							)
-							AND lot_transport_item.dismembered != TRUE
-							AND lot_transport.excluido = 'N'
-							AND lot_transport_item.excluido = 'N'
-					))
+                            lot_transport.status != 0 -- não exibo LOTES rascunhos
+                            AND (lot_transport.status != 3 -- não exibo LOTES entregues
+                                OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
+                                OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
+                            )
+                            AND lot_transport_item.dismembered != TRUE
+                            AND lot_transport.excluido = 'N'
+                            AND lot_transport_item.excluido = 'N'
+                    ))
 
                 ORDER BY
                     lot_transport.order_number,
+                    invoice.id,
                     quarry.name,
                     quality.order_number
                 ";

@@ -23,6 +23,7 @@ function listar_blocks(callback_function)
             var lot_transport_id = null;
             var lot_number = '';
             var quarry_id = 0;
+            var invoice_id = 0;
             var quarry_name = '';
             var quality_name = '';
             var count_blocks = 0;
@@ -36,10 +37,9 @@ function listar_blocks(callback_function)
             var poblo_obs = '';
             var poblo_obs_interim_sobra = '';
             var poblo_obs_final_sobra = '';
-            var poblo_obs_inspected_without_lot = '';
+            var poblo_obs_invoice;
             var wagon_number = '';
 
-            
             arr_blocks = transport;
 
             // limpa a listagem
@@ -65,9 +65,8 @@ function listar_blocks(callback_function)
                     wagon_number = '';
 
                     var is_sobra = item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false;
-					var is_inspected = item.lot_number ? item.lot_number.indexOf('Inspected') >= 0 : false;
-					var is_not_travel = (is_sobra || is_inspected);
-
+					var is_inspection_certificate = item.lot_number ? item.lot_number.indexOf('Inspection Certificate') >= 0 : false;
+					var is_not_travel = (is_sobra || is_inspection_certificate);
 
             		var field_lot = table.find("[template-field='lot']");
             		field_lot.text(item.lot_number);
@@ -166,8 +165,8 @@ function listar_blocks(callback_function)
 	                    	th_nf.hide();
                     		th_price.hide();
                     	}
-                    	else if (is_inspected) {
-                    		th_wagon_number.text('Sold');
+                    	else if (is_inspection_certificate) {
+                    		th_wagon_number.text('Client');
                     		th_nf.hide();
                     		th_price.hide();
                     	}
@@ -177,11 +176,11 @@ function listar_blocks(callback_function)
                 	}
             };
 
-            var render_totalizador = function(lot_transport_id, lot_number, quarry_id) {
+            var render_totalizador = function(lot_transport_id, lot_number, quarry_id, invoice_id) {
             	var is_sobra_interim = lot_number ? lot_number.indexOf('Iterim Sobracolumay') >= 0 : false;
             	var is_sobra_final = lot_number ? lot_number.indexOf('Final Sobracolumay') >= 0 : false;
-				var is_inspected = lot_number ? lot_number.indexOf('Inspected') >= 0 : false;
-				var is_transport = (!is_sobra_interim && !is_sobra_final && !is_inspected && !is_transport);
+				var is_inspection_certificate = lot_number ? lot_number.indexOf('Inspection Certificate') >= 0 : false;
+				var is_transport = (!is_sobra_interim && !is_sobra_final && !is_inspection_certificate && !is_transport);
 
             	add_row(table_body, {
             		invoice_item_price: sum_price,
@@ -211,15 +210,15 @@ function listar_blocks(callback_function)
                 else if (is_sobra_final) {
                 	obs = poblo_obs_final_sobra ? poblo_obs_final_sobra : '';
                 }
-                else if (is_inspected) {
-                	obs = poblo_obs_inspected_without_lot ? poblo_obs_inspected_without_lot : '';
+                else if (is_inspection_certificate) {
+                	obs = poblo_obs_invoice ? poblo_obs_invoice : '';
                 }
                 template_obs.find("[template-field='obs']").html(nl2br(obs));
 
                 var btn_obs = table.find('[template-button="obs"]');
                 btn_obs.unbind('click');
                 btn_obs.click(function() {
-                	show_poblo_obs(lot_number, lot_transport_id, quarry_id);
+                	show_poblo_obs(lot_number, lot_transport_id, quarry_id, invoice_id);
                 });
 
             	var nova_coluna = $('<td rowspan="' + linhas + '"></td>');
@@ -254,7 +253,7 @@ function listar_blocks(callback_function)
                 if (item.lot_number != lot_number) {
                 	// imprimo o totalizador referente ao ultimo registro do lote
                 	render_quality_totalizador(lot_number);
-                	render_totalizador(lot_transport_id, lot_number, quarry_id);
+                	render_totalizador(lot_transport_id, lot_number, quarry_id, invoice_id);
 
                     // se não for o primeiro registro
                     if (i > 0) {
@@ -280,14 +279,15 @@ function listar_blocks(callback_function)
 
                 lot_transport_id = item.lot_transport_id;
                 lot_number = item.lot_number;
-                is_not_travel = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 || item.lot_number.indexOf('Inspected') >= 0 : false);
+                is_not_travel = (item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 || item.lot_number.indexOf('Inspection Certificate') >= 0 : false);
                 quarry_id = item.quarry_id;
                 quarry_name = item.quarry_name;
                 quality_name = item.quality_name;
+                invoice_id = item.invoice_id;
                 poblo_obs  = item.poblo_obs;
                 poblo_obs_interim_sobra  = item.poblo_obs_interim_sobra;
                 poblo_obs_final_sobra  = item.poblo_obs_final_sobra;
-                poblo_obs_inspected_without_lot  = item.poblo_obs_inspected_without_lot;
+                poblo_obs_invoice  = item.invoice_poblo_obs;
 
                 count_blocks++;
 				sum_price += parseFloat(item.invoice_item_price) || 0;
@@ -303,7 +303,7 @@ function listar_blocks(callback_function)
             });  
 			
             render_quality_totalizador(lot_number);
-            render_totalizador(lot_transport_id, lot_number, quarry_id);
+            render_totalizador(lot_transport_id, lot_number, quarry_id, invoice_id);
 
             // mostra a tabela
             table.appendTo(list);
@@ -318,8 +318,8 @@ function listar_blocks(callback_function)
 function add_row(table_body, item, bold, style_class)
 {
 	var is_sobra = item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false;
-	var is_inspected = item.lot_number ? item.lot_number.indexOf('Inspected') >= 0 : false;
-	var is_not_travel = (is_sobra || is_inspected);
+	var is_inspection_certificate = item.lot_number ? item.lot_number.indexOf('Inspection Certificate') >= 0 : false;
+	var is_not_travel = (is_sobra || is_inspection_certificate);
 
     var template_row = table_body.find("tr:first");
     var new_row = template_row.clone();
@@ -394,7 +394,7 @@ function add_row(table_body, item, bold, style_class)
     	if (is_sobra) {
     		field_wagon_number.text(item.reserved_client_code ? item.reserved_client_code : '');
     	}
-    	else if (is_inspected) {
+    	else if (is_inspection_certificate) {
     		field_wagon_number.text(item.sold_client_code ? item.sold_client_code : '');
     	}
     	

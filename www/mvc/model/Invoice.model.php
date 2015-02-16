@@ -17,6 +17,7 @@ class Invoice_Model extends \Sys\Model {
     public $client_id;
     //public $number;
     public $date_record;
+    public $poblo_obs;
     
     function __construct()
     {
@@ -90,14 +91,16 @@ class Invoice_Model extends \Sys\Model {
         {
             $sql = 'INSERT INTO invoice (
 	                    client_id,
-                        date_record
+                        date_record,
+                        poblo_obs
 	                ) VALUES (
-	                    ?, ?
+	                    ?, ?, ?
 	                ) ';
                         
             $dt_now = new DateTime('now');
             $params[] = $this->client_id;
             $params[] = $dt_now->format('Y-m-d H:i:s');
+            $params[] = $this->poblo_obs;
 
             $query = DB::exec($sql, $params);
 
@@ -126,7 +129,8 @@ class Invoice_Model extends \Sys\Model {
 	                        invoice
 	                    SET
 	                        client_id = ?,
-                            date_record = ?
+                            date_record = ?,
+                            poblo_obs = ?
 	                    WHERE
 	                        id = ?
 	                    ';
@@ -134,6 +138,7 @@ class Invoice_Model extends \Sys\Model {
                     // set
                     $this->client_id,
                     $this->date_record,
+                    $this->poblo_obs,
                     // where
                     $this->id
 
@@ -210,7 +215,8 @@ class Invoice_Model extends \Sys\Model {
 	                    id,
 	                    excluido,
 	                    client_id,
-	                    date_record
+	                    date_record,
+                        poblo_obs
 	                FROM
 	                    invoice
 	                WHERE
@@ -240,6 +246,7 @@ class Invoice_Model extends \Sys\Model {
 
             $this->client_id = (int)$row_query['client_id'];
             $this->date_record = (string)$row_query['date_record'];
+            $this->poblo_obs = (string)$row_query['poblo_obs'];
         }
     }
 
@@ -317,7 +324,8 @@ class Invoice_Model extends \Sys\Model {
                     invoice.client_id,
                     client.code AS client_code,
                     client.name AS client_name,
-                    invoice.date_record
+                    invoice.date_record,
+                    invoice.poblo_obs
                 FROM invoice
                 INNER JOIN client ON (client.id = invoice.client_id)
                 WHERE
@@ -355,7 +363,8 @@ class Invoice_Model extends \Sys\Model {
         $sql = 'SELECT
                     invoice.client_id,
                     client.code AS client_code,
-                    client.name AS client_name
+                    client.name AS client_name,
+                    invoice.poblo_obs
                 FROM invoice
                 INNER JOIN client ON (client.id = invoice.client_id)
                 WHERE
