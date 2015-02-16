@@ -65,6 +65,7 @@
                     <thead>
                         <tr>
                             <!--th style="width: 150px" class="text-center th_quarry">Quarry</th-->
+                            <th style="width: 60px" class="text-center">&nbsp;</th>
                             <th style="width: 60px" class="text-center th_nf">NF</th>
                             <th style="width: 80px" class="text-center th_data">Date</th>
                             <th style="width: 80px" class="text-center th_price">Price</th>
@@ -89,6 +90,11 @@
                     <tbody>
                         <!-- template-row -->
                         <tr template-row style="display: none;">
+                            <td class="text-center">
+                                <button class="btn btn-xs btn-default" template-field="cores">
+                                    <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>
+                                </button>
+                            </td>
                             <!--td template-field="quarry_name" class="text-center">{quarry_name}</td-->
                             <td template-field="nf" class="text-center">{nf}</td>
                             <td template-field="data" class="text-center">{data}</td>

@@ -1,5 +1,6 @@
 <?php
 
+use \Sys\Util;
 use \Sys\DB;
 
 class Poblo_Controller extends \Sys\Controller
@@ -11,6 +12,7 @@ class Poblo_Controller extends \Sys\Controller
         $permissions = $user['permissions'];
 
         if(in_array('poblo', $permissions)){
+
             $this->RenderView('masterpage', array(
                     'poblo/list',
                     'poblo/obs',

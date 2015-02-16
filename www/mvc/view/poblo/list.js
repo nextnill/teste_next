@@ -1,4 +1,5 @@
 var arr_blocks = [];
+var colors = <?= json_encode(Sys\Util::Colors()); ?>;
 
 // on load window
 funcs_on_load.push(function() {
@@ -6,7 +7,7 @@ funcs_on_load.push(function() {
 });
 
 function init_list() {
-
+    render_cores();
     listar_blocks();
 }
 
@@ -321,10 +322,16 @@ function add_row(table_body, item, bold, style_class)
 	var is_inspection_certificate = item.lot_number ? item.lot_number.indexOf('Inspection Certificate') >= 0 : false;
 	var is_not_travel = (is_sobra || is_inspection_certificate);
 
+    //var template_cores = $('#template_cores');
     var template_row = table_body.find("tr:first");
     var new_row = template_row.clone();
     new_row.removeAttr("template-row");
     new_row.css("display", '');
+    //var select_cores = template_cores.clone();
+    //new_row.removeAttr("id");
+
+    var field_cores = $(new_row.find("[template-field='cores']"));
+    field_cores.colorpicker();
 
     var field_quarry = $(new_row.find("[template-field='quarry_name']"));
     if (is_not_travel) {
@@ -433,4 +440,14 @@ function add_row(table_body, item, bold, style_class)
     }
 
     new_row.appendTo(table_body);
+}
+
+function render_cores() {
+    var template_cores = $('#template_cores');
+    var keys = Object.keys(colors);
+
+    for (var i = 0; i < keys.length; i++) {
+        var option = $('<option>').val(keys[i]).css('background', keys[i]);
+        option.appendTo(template_cores);
+    };
 }
