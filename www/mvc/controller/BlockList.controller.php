@@ -66,7 +66,7 @@ class BlockList_Controller extends \Sys\Controller
                             <td width="50" align="right">'. $bloco['net_c'] .'</td>
                             <td width="50" align="right">'. $bloco['net_a'] .'</td>
                             <td width="50" align="right">'. $bloco['net_l'] .'</td>
-                            <td width="60" align="right">'. $bloco['tot_vol'] .'</td>
+                            <td width="60" align="right">'. $bloco['net_vol'] .'</td>
                             <td width="60" align="right">'. $bloco['tot_weight'] .'</td>
                         </tr>';
 
@@ -142,11 +142,11 @@ class BlockList_Controller extends \Sys\Controller
         $chave_anterior = $nova_chave;
 
         $bloco_count++;
-        $volume_count += $bloco['tot_vol'];
+        $volume_count += $bloco['net_vol'];
         $peso_count += $bloco['tot_weight'];
 
         $total_bloco++;
-        $total_volume += $bloco['tot_vol'];
+        $total_volume += $bloco['net_vol'];
         $total_peso += $bloco['tot_weight'];
 
     }

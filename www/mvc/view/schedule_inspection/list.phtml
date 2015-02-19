@@ -13,9 +13,9 @@
                     <span class="glyphicon glyphicon-plus-sign"></span> New
                 </button>
             </div>
-            <div class="form-group col-md-3 navbar-left">
+            <!--div class="form-group col-md-3 navbar-left">
                 <select id="cbo_quarry_filter" class="form-control select2 select2-input"></select>
-            </div>
+            </div-->
             <div class="btn-group navbar-right" style="margin-right:15px;">
                 <button type="button" class="btn btn-primary" id="btn_calendar" onclick="javascript:btn_visualizar('calendario');">
                     <span class="glyphicon glyphicon-calendar"></span>
@@ -56,7 +56,7 @@
                     <th>Day</th>
                     <th>Time</th>
                     <th>Client Name</th>
-                    <th>Quarry Name</th>
+                    <!--th>Quarry Name</th-->
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -64,9 +64,9 @@
                 <!-- itens -->
                 <tr template-row style="display: none;">
                     <td template-field="day">{day}</td>
-                    <td template-field="time">{time}</td>
+                    <!--td template-field="time">{time}</td-->
                     <td template-field="client_name">{client_name}</td>
-                    <td template-field="quarry_name">{quarry_name}</td>
+                    <!--td template-field="quarry_name">{quarry_name}</td-->
                     <td style="text-align: right;">
                         <div class="btn-group" style="text-align: left;">
                             <button type="button" class="btn btn-default" template-button="edit">

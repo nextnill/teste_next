@@ -9,12 +9,7 @@ class ScheduleInspection_Controller extends \Sys\Controller
     }
 
     function list_json($params)
-    {
-        $quarry_id = -1;
-        if (isset($params[0])) {
-            $quarry_id = (int)$params[0];
-        }
-        
+    {        
         $ano = $this->ReadGet('ano');
         $mes = $this->ReadGet('mes');
 
@@ -23,7 +18,7 @@ class ScheduleInspection_Controller extends \Sys\Controller
         $mes = ($mes > 0 ? $mes : null);
 
     	$schedule_inspection_model = $this->LoadModel('ScheduleInspection', true);
-    	$list = $schedule_inspection_model->get_list(false, $quarry_id, $ano, $mes);
+    	$list = $schedule_inspection_model->get_list(false, $ano, $mes);
         $this->print_json($list);
     }
 
@@ -47,8 +42,8 @@ class ScheduleInspection_Controller extends \Sys\Controller
         }
         
         $schedule_inspection_model->day = $this->ReadPost('day');
-        $schedule_inspection_model->time = $this->ReadPost('time');
-        $schedule_inspection_model->quarry_id = $this->ReadPost('quarry_id');
+        //$schedule_inspection_model->time = $this->ReadPost('time');
+        $schedule_inspection_model->quarries = $this->ReadPost('quarries');
         $schedule_inspection_model->client_id = $this->ReadPost('client_id');
         $schedule_inspection_model->obs = $this->ReadPost('obs');
 

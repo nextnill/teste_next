@@ -17,14 +17,14 @@
                         <input type="date" class="form-control" id="edt_day">
                     </div>
 
-                    <div class="form-group">
+                    <!--div class="form-group">
                         <label for="edt_time">Time</label>
                         <input type="time" class="form-control" id="edt_time" placeholder="00:00">
-                    </div>
+                    </div-->
 
                     <div class="form-group">
                         <label for="cbo_quarry">Quarry</label>
-                        <select id="cbo_quarry" class="form-control select2 select2-input">
+                        <select id="cbo_quarry" class="form-control select2" multiple="multiple">
                         </select>
                     </div>
 
@@ -47,8 +47,15 @@
 
             </div>
             <div class="modal-footer" style="bottom: 0px;">
-                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
-                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save</button>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save</button>
+                </div>
+                <div class="text-left">
+                    <button type="button" class="btn btn-danger btn-sm" id="btn_delete" onclick="javascript:$('#post_tipo').val(FORMULARIO.EXCLUIR);envia_detalhes();">Delete</button>
+                </div>
+                
+                
             </div>
         </div>
     </div>

@@ -128,7 +128,7 @@ function calendar(events) {
             start = $.fullCalendar.moment(start).format('YYYY-MM-DD');
             show_dialog(FORMULARIO.NOVO, start); 
 
-            calendar.fullCalendar('unselect');
+            $('#calendar').fullCalendar('unselect');
             $('.fc-event-container').css('cursor', 'pointer');
        },
         eventClick: function(event){
@@ -154,14 +154,18 @@ function add_row(table_body, item)
     var field_day = $(new_row.find("[template-field='day']"));
     field_day.text(item.day.format_date());
 
+    /*
     var field_time = $(new_row.find("[template-field='time']"));
     field_time.text(item.time.format_time());
+    */
 
     var field_client_name = $(new_row.find("[template-field='client_name']"));
     field_client_name.text(item.client_name);
 
+    /*
     var field_quarry_name = $(new_row.find("[template-field='quarry_name']"));
     field_quarry_name.text(item.quarry_name);
+    */
 
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);
