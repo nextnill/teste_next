@@ -327,7 +327,7 @@ require_once 'sys/libs/tcpdf.php';
             $objDrawing = new PHPExcel_Worksheet_Drawing();
             $objDrawing->setName('logo');
             $objDrawing->setDescription('logo');
-            $objDrawing->setPath('./assets/img/logo_relatorio_excel.png');
+            $objDrawing->setPath('assets/img/logo_relatorio_excel.png');
             $objDrawing->setCoordinates('A1');
             $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
 
