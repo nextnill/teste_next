@@ -108,6 +108,7 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/block/photo/upload/' => array('BlockPhoto', 'upload_photo_json', 'block'),
 
                 '/block/reserve/' => array('Block', 'reserve_json', 'sobracolumay'),
+                '/block/reserve_selected/' => array('Block', 'reserve_selected_json', 'sobracolumay'),
 
                 '/sobracolumay/list/' => array('Sobracolumay', 'list_action', 'sobracolumay'),
                 '/sobracolumay/list/json/' => array('Sobracolumay', 'list_json', 'sobracolumay'),

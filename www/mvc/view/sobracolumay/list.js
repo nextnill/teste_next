@@ -1,8 +1,10 @@
 var head_office = [];
 var selected_combo = null;
+var campos_marcados = new Array();
+$('.btn_reserve').hide();
 
 function init()
-{
+{   
     listar_head_office();
 }
 
@@ -21,6 +23,7 @@ function listar_head_office()
 }
 function listar(){
 
+    campos_marcados = [];
     listar_blocks();        
 }
 
@@ -151,10 +154,31 @@ function add_row(table_body, item)
     var field_obs = $(new_row.find("[template-field='obs']"));
     field_obs.text(item.obs);
 
+    var chk_alteracao = $(new_row.find(".chk_alteracao"));
+    chk_alteracao.attr('value', item.id); 
+
     //var field_reserved = $(new_row.find("[template-field='reserved']"));
     //field_reserved.text(item.reserved_client_code ? item.reserved_client_code : '');
     
-    
+    chk_alteracao.change(function(e){
+        
+        if(this.checked){
+        campos_marcados.push($(this).val());
+        }
+        else{
+         var indice = campos_marcados.indexOf($(this).val());
+         campos_marcados.splice(indice, 1);  
+        }
+
+         if(campos_marcados.length > 0){
+            $('.btn_reserve').show();    
+        }
+        else{
+            $('.btn_reserve').hide();  
+        }
+     
+    });
+
 
     var cbo_reserved_client = $(new_row.find("[template-field='reserved'] > select"));
     cbo_reserved_client.find("option").remove();
@@ -310,6 +334,47 @@ function add_footer(table_body, block_count, block_net_vol_sum, block_tot_weight
     new_row.appendTo(table_body);
 }
 
+function abrir_modal_reserve(){
+    
+    $('.btn_reserve').unbind('click');
+   // limpar_formulario_alterar_atividade()
+    showModal('modal_reserve_selected');
+
+    var cbo_reserved_client = $('#client_select');
+    cbo_reserved_client.find("option").remove();
+
+    add_option(cbo_reserved_client, '-1', 'None');
+    for (var i = 0; i < head_office.length; i++) {
+        var ho_item = head_office[i];
+        add_option(cbo_reserved_client, ho_item.id, ho_item.name);
+    };
+
+    var btn_confirm_reserve = $('#btn_confirm_reserve');
+
+    btn_confirm_reserve.unbind('click');
+            btn_confirm_reserve.click(function() {
+               
+                    // chamar json de reserva
+                    $.ajax({
+                        error: ajaxError,
+                        type: "POST",
+                        url: "<?= APP_URI ?>block/reserve_selected/",
+                        data: {
+                            id: campos_marcados,
+                            client_block_number: null,
+                            reserved_client_id: cbo_reserved_client.val()
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response_validation(response)) {
+                                closeModal('modal_reserve_selected');
+                                listar_blocks();
+                            }
+                        }
+                    });
+                
+            });         
+}
 
 
 // on load window

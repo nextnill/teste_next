@@ -124,6 +124,26 @@ class Block_Controller extends \Sys\Controller
         $this->print_json($block_model);
     }
 
+    function reserve_selected_json($params){
+
+            $id_reserve = $_POST['id'];
+            $blocks_reserved = array();
+
+            for($i=0; $i<count($id_reserve); $i++){
+            
+            $id = $id_reserve[$i];
+            $client_block_number = $this->ReadPost('client_block_number');
+            $reserved_client_id = (int)$this->ReadPost('reserved_client_id');
+
+            $block_model = $this->LoadModel('Block', true);
+            $block_model->reserve($id, $reserved_client_id, $client_block_number);
+            $blocks_reserved = $block_model;
+        }
+        
+
+        $this->print_json($blocks_reserved);   
+    }
+
     function list_clients_with_reservations_json($params)
     {
         $block_model = $this->LoadModel('Block', true);
