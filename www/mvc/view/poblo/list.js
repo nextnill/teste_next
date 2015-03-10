@@ -1,5 +1,8 @@
 var arr_blocks = [];
 var colors = <?= json_encode(Sys\Util::Colors()); ?>;
+var divisoria = $('<hr>').css('border-color', '#8b0305').css('border-width', '8px');
+
+
 
 // on load window
 funcs_on_load.push(function() {
@@ -40,6 +43,9 @@ function listar_blocks(callback_function)
             var poblo_obs_final_sobra = '';
             var poblo_obs_invoice;
             var wagon_number = '';
+            var primeiro_certificado_inspecao = 0;
+            var primeiro_lot_transporte = 0;
+
 
             arr_blocks = transport;
 
@@ -50,6 +56,7 @@ function listar_blocks(callback_function)
                 table.find("tr:gt(1)").remove();
                 table.removeAttr("template-table");
                 table.css("display", '');
+
             //}
             var render_header = function(table, item) {
             		quarry_name = '';
@@ -65,15 +72,39 @@ function listar_blocks(callback_function)
 					sum_quality_weight = 0;
                     wagon_number = '';
 
+                    
+
                     var is_sobra = item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false;
 					var is_inspection_certificate = item.lot_number ? item.lot_number.indexOf('Inspection Certificate') >= 0 : false;
 					var is_not_travel = (is_sobra || is_inspection_certificate);
+
+                    if(primeiro_certificado_inspecao != 2 && is_inspection_certificate){
+
+                        primeiro_certificado_inspecao = 1;
+                    }
+
+                    if(primeiro_certificado_inspecao == 1){
+
+                        list.append(divisoria.clone());
+                        primeiro_certificado_inspecao = 2;
+                    }
 
             		var field_lot = table.find("[template-field='lot']");
             		field_lot.text(item.lot_number);
             		if (!is_not_travel) {
             			field_lot.attr('href', "<?= APP_URI ?>lots/detail/" + item.lot_transport_id);
             		}
+
+                       if(primeiro_lot_transporte != 2 && !is_not_travel){
+
+                        primeiro_lot_transporte = 1;
+                    }
+
+                    if(primeiro_lot_transporte == 1){
+
+                        list.append(divisoria.clone());
+                        primeiro_lot_transporte = 2;
+                    }
 
                     table.find("[template-field='vessel']").text(item.shipped_to || '');
                     var field_status = table.find("[template-field='status']");
@@ -159,27 +190,33 @@ function listar_blocks(callback_function)
                     	var th_nf = table.find('.th_nf');
                     	var th_price = table.find('.th_price');
 
+
                     	if (is_sobra) {
 	                    	th_data.text('Production');
 	                    	th_wagon_number.text('Reserved');
-
 	                    	th_nf.hide();
                     		th_price.hide();
+                          
                     	}
                     	else if (is_inspection_certificate) {
                     		th_wagon_number.text('Client');
                     		th_nf.hide();
                     		th_price.hide();
+                           
                     	}
                     }
                     else {
                 		th_quarry.hide();
+                        
                 	}
+                    
+
             };
 
             var render_totalizador = function(lot_transport_id, lot_number, quarry_id, invoice_id) {
             	var is_sobra_interim = lot_number ? lot_number.indexOf('Iterim Sobracolumay') >= 0 : false;
             	var is_sobra_final = lot_number ? lot_number.indexOf('Final Sobracolumay') >= 0 : false;
+                
 				var is_inspection_certificate = lot_number ? lot_number.indexOf('Inspection Certificate') >= 0 : false;
 				var is_transport = (!is_sobra_interim && !is_sobra_final && !is_inspection_certificate && !is_transport);
 
@@ -204,6 +241,7 @@ function listar_blocks(callback_function)
                 var obs = '';
                 if (is_transport) {
                 	obs = poblo_obs ? poblo_obs : '';
+
                 }
                 else if (is_sobra_interim) {
                 	obs = poblo_obs_interim_sobra ? poblo_obs_interim_sobra : '';
@@ -220,15 +258,19 @@ function listar_blocks(callback_function)
                 btn_obs.unbind('click');
                 btn_obs.click(function() {
                 	show_poblo_obs(lot_number, lot_transport_id, quarry_id, invoice_id);
+
                 });
 
             	var nova_coluna = $('<td rowspan="' + linhas + '"></td>');
             	nova_coluna.append(template_obs);
             	nova_coluna.appendTo(primeira_linha);
+
+
+
             }
-
+            
             var render_quality_totalizador = function(lot_number) {
-
+                
             	add_row(table_body, {
             		invoice_item_price: sum_quality_price,
             		net_vol: sum_quality_volume,
@@ -244,14 +286,18 @@ function listar_blocks(callback_function)
             }
 
             var is_not_travel = false;
+            
             $.each(arr_blocks, function(i, item) {
+
                 // se for o primeiro registro, seta o título na tabela
                 if (i == 0) {
 				    render_header(table, item);
+
                 }
                 
                 // se for um novo lote
                 if (item.lot_number != lot_number) {
+
                 	// imprimo o totalizador referente ao ultimo registro do lote
                 	render_quality_totalizador(lot_number);
                 	render_totalizador(lot_transport_id, lot_number, quarry_id, invoice_id);
@@ -259,20 +305,28 @@ function listar_blocks(callback_function)
                     // se não for o primeiro registro
                     if (i > 0) {
                         // mostra a tabela
+                        //list.append(divisoria);
                         table.appendTo(list);
+
+                        
                     }
+
+
                     table = $('[template-table="poblo"]').clone();
                     table_body = $(table).find('table > tbody');
-
                     table.find("tr:gt(1)").remove(); // limpa trs, menos a primeira
                     table.removeAttr("template-table");
                     table.css("display", '');
                     
+
                     render_header(table, item);
+
                 }
                 else {
                 	if (item.quarry_name != quarry_name || item.quality_name != quality_name) {
                 		render_quality_totalizador(lot_number);
+
+
                 	}
                 }
 
@@ -301,16 +355,21 @@ function listar_blocks(callback_function)
 				sum_quality_weight += parseFloat(item.tot_weight) || 0;
                 wagon_number  = item.wagon_number;
 
+
             });  
 			
             render_quality_totalizador(lot_number);
             render_totalizador(lot_transport_id, lot_number, quarry_id, invoice_id);
+            
 
             // mostra a tabela
+            
             table.appendTo(list);
+
 
             if (callback_function) {
                 callback_function();
+
             }
         }
     }).fail(ajaxError);
@@ -434,6 +493,7 @@ function add_row(table_body, item, bold, style_class)
     if (is_not_travel) {
     	field_nf.hide();
     	field_price.hide();
+
     }
     else {
     	field_quarry.hide();
