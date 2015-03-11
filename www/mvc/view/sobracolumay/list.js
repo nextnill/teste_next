@@ -1,11 +1,20 @@
 var head_office = [];
 var selected_combo = null;
 var campos_marcados = new Array();
+var reserved_client_code = new Array();
+var colors = new Array();
+var client_color = new Array();
+var reserved_client = new Array();
+
 $('.btn_reserve').hide();
+
+
+
 
 function init()
 {   
     listar_head_office();
+    colors = ['#FFFF00','#00FF00','#0000FF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];   
 }
 
 function listar_head_office()
@@ -18,13 +27,17 @@ function listar_head_office()
             });
             
             listar_blocks();
+
+
         }
     }).fail(ajaxError);
 }
 function listar(){
 
     campos_marcados = [];
-    listar_blocks();        
+    reserved_client = [];
+    listar_blocks();
+        
 }
 
 function listar_blocks()
@@ -96,6 +109,10 @@ function listar_blocks()
             table.appendTo(list);      
             
             $('cbo_head_office').select2();
+
+            color();
+
+    
         }
     }).fail(ajaxError);
 }
@@ -103,6 +120,7 @@ function listar_blocks()
 
 function add_row(table_body, item)
 {
+
     var template_row = table_body.find("tr:first");
     var new_row = template_row.clone();
     new_row.removeAttr("template-row");
@@ -111,6 +129,7 @@ function add_row(table_body, item)
     var field_block_number = $(new_row.find("[template-field='block_number_a']"));
     field_block_number.text(item.block_number);
     field_block_number.attr('template-ref', item.id);
+    field_block_number.attr('template-client', item.reserved_client_id);
     field_block_number.click(function() {
         var id = $(this).attr('template-ref');
         show_dialog(FORMULARIO.VISUALIZAR, id);
@@ -187,15 +206,18 @@ function add_row(table_body, item)
     for (var i = 0; i < head_office.length; i++) {
         var ho_item = head_office[i];
         add_option(cbo_reserved_client, ho_item.id, ho_item.code);
+        reserved_client_code.push(ho_item.id);
+
     };
-    
+
+   
     if (item.reserved_client_id)
         cbo_reserved_client.val(item.reserved_client_id).trigger("change");
 
     cbo_reserved_client.attr('template-ref', item.id);
     cbo_reserved_client.attr('template-ref-bn', item.block_number);
     cbo_reserved_client.attr('template-ref-default', item.reserved_client_id);
-    cbo_reserved_client.attr('template-ref-active', "false");
+    cbo_reserved_client.attr('template-ref-active', "false");    
 
     cbo_reserved_client.on("change", function(e) {
         // se nao tiver nenhuma janela de reserva ativa
@@ -229,7 +251,7 @@ function add_row(table_body, item)
                 btn_reserve_save.text('Save');
                 btn_reserve_save.addClass('btn btn-primary');
             }
-            
+
             edt_block_number.val(block_number);
             selected_combo = this;
             
@@ -253,6 +275,8 @@ function add_row(table_body, item)
                             if (response_validation(response)) {
                                 closeModal('modal_reserve');
                                 $(selected_combo).attr('template-ref-default', $(selected_combo).val());
+                                field_block_number.attr('template-client', $(selected_combo).val());
+                                color();    
                                 // desmarca janela como ativa
                                 $(selected_combo).attr('template-ref-active', "false");
                             }
@@ -282,8 +306,69 @@ function add_row(table_body, item)
     
     
     new_row.appendTo(table_body);
+
 }
 
+function associate(){
+
+    Array.prototype.associate = function (keys) {
+          var result = [];
+
+          this.forEach(function (el, i) {
+            if(typeof keys[i] != 'undefined')
+               // result[keys[i]] = el;
+                result.push({client_id:keys[i], cor:el});
+          });
+
+          return result;
+        };
+
+  client_color = colors.associate(reserved_client_code);      
+}
+
+function color(){
+
+    alert('ok');
+    
+    associate();
+
+    var linhas = $('[template-field="block_number"]'); 
+    var blocos = new Array();
+
+    linhas.each(function(indice, linha) {
+
+        var template_client = $(linha).find('[template-client]');
+        if(template_client.length > 0){
+            blocos.push(template_client);
+        }
+    });  
+
+    $(blocos).each(function(indice, linha) {
+
+        var client_id = $(linha).attr('template-client');
+        var cor = null;
+
+        $(client_color).each(function(indice_cliente, cor_cliente) {
+
+            if(cor_cliente.client_id == client_id){
+                cor = cor_cliente.cor;
+            }
+        });
+        
+        $(linha).parent().css('background-color', cor);    
+    });
+    
+
+
+    /*
+    client_color = colors.associate(reserved_client_code);
+    //for(i=0; i<reserved_client.length; i++){
+        cor = client_color[reserved_client];
+        $('.block_number').css('background-color', cor);
+   // }*/
+}
+
+  
 function add_footer(table_body, block_count, block_net_vol_sum, block_tot_weight_sum)
 {
     var template_row = table_body.find("tr:first");
