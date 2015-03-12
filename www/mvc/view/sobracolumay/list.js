@@ -210,6 +210,7 @@ function add_row(table_body, item)
 
     };
 
+    reserved_client_code.push('-1');
    
     if (item.reserved_client_id)
         cbo_reserved_client.val(item.reserved_client_id).trigger("change");
@@ -292,7 +293,6 @@ function add_row(table_body, item)
             btn_reserve_cancel.click(function() {
                 if (selected_combo) {
                     closeModal('modal_reserve');
-
                     $(selected_combo).val($(this).attr('template-ref-default'));
                     $(selected_combo).change();
                     // desmarca janela como ativa
@@ -327,9 +327,7 @@ function associate(){
 }
 
 function color(){
-
-    alert('ok');
-    
+   
     associate();
 
     var linhas = $('[template-field="block_number"]'); 
@@ -354,8 +352,12 @@ function color(){
                 cor = cor_cliente.cor;
             }
         });
-        
-        $(linha).parent().css('background-color', cor);    
+        if(client_id > 0)
+            $(linha).parent().css('background-color', cor);
+
+        else{
+           $(linha).parent().css('background-color', ''); 
+        }        
     });
     
 
