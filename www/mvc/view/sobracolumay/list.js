@@ -14,7 +14,7 @@ $('.btn_reserve').hide();
 function init()
 {   
     listar_head_office();
-    colors = ['#FFFF00','#00FF00','#0000FF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];   
+    colors = ['#FFFF00','#00FF00','#00AFFF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];   
 }
 
 function listar_head_office()
