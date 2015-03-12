@@ -1,4 +1,6 @@
 var arr_blocks = [];
+var reserved_client_code = new Array();
+var colors = new Array();
 var colors = <?= json_encode(Sys\Util::Colors()); ?>;
 var divisoria = $('<hr>').css('border-color', '#8b0305').css('border-width', '8px');
 
@@ -7,11 +9,13 @@ var divisoria = $('<hr>').css('border-color', '#8b0305').css('border-width', '8p
 // on load window
 funcs_on_load.push(function() {
     init_list();
+
 });
 
 function init_list() {
     render_cores();
     listar_blocks();
+    colors = ['#FFFF00','#00FF00','#00AFFF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];  
 }
 
 function listar_blocks(callback_function)
@@ -399,8 +403,13 @@ function add_row(table_body, item, bold, style_class)
 
     var field_block_number = $(new_row.find("[template-field='block_number_a']"));
     field_block_number.text(item.block_number || '');
+    field_block_number.attr('template-client', item.reserved_client_id);
     field_block_number.click(function() {
     	show_dialog(FORMULARIO.VISUALIZAR, !is_sobra ? item.block_id : item.id);
+    });
+
+    $(field_block_number).each(function(){
+            reserved_client_code.push(item.reserved_client_id);
     });
 
     var field_quality_name = $(new_row.find("[template-field='quality_name']"));
@@ -500,6 +509,7 @@ function add_row(table_body, item, bold, style_class)
     }
 
     new_row.appendTo(table_body);
+    color_sobra();
 }
 
 function render_cores() {
@@ -510,4 +520,57 @@ function render_cores() {
         var option = $('<option>').val(keys[i]).css('background', keys[i]);
         option.appendTo(template_cores);
     };
+}
+
+function associate_sobra(){
+
+    Array.prototype.associate = function (keys) {
+          var result = [];
+
+          this.forEach(function (el, i) {
+            if(typeof keys[i] != 'undefined')
+               // result[keys[i]] = el;
+                result.push({client_id:keys[i], cor:el});
+          });
+
+          return result;
+        };
+
+  client_color = colors.associate(reserved_client_code); 
+
+}
+
+function color_sobra(){
+   
+    associate_sobra();
+
+    var linhas = $('[template-field="block_number"]'); 
+    var blocos = new Array();
+
+    linhas.each(function(indice, linha) {
+
+        var template_client = $(linha).find('[template-client]');
+        if(template_client.length > 0){
+            blocos.push(template_client);
+        }
+    });  
+
+    $(blocos).each(function(indice, linha) {
+
+        var client_id = $(linha).attr('template-client');
+        var cor = null;
+
+        $(client_color).each(function(indice_cliente, cor_cliente) {
+
+            if(cor_cliente.client_id == client_id){
+                cor = cor_cliente.cor;
+            }
+        });
+        if(client_id > 0)
+            $(linha).parent().css('background-color', cor);
+
+        else{
+           $(linha).parent().css('background-color', ''); 
+        }        
+    });
 }
