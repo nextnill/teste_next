@@ -31,8 +31,23 @@ class ProductionOrder_Controller extends \Sys\Controller
     // JSON SERVICES
     function list_json($params)
     {
+
+        $quarry_id = -1;
+        if(isset($params[0])){
+            $quarry_id = (int)$params[0];
+        }
+
+        $block_type = $this->ReadGet('block_type');
+        $ano = $this->ReadGet('ano');
+        $mes = $this->ReadGet('mes');
+
+        $quarry_id = ($quarry_id > 0 ? $quarry_id : null);
+        $block_type = ($block_type > 0 ? $block_type : null);
+        $ano = ($ano > 0 ? $ano : null);
+        $mes = ($mes > 0 ? $mes : null);
+
     	$po_model = $this->LoadModel('ProductionOrder', true);
-    	$list = $po_model->get_list();
+    	$list = $po_model->get_list($quarry_id, $block_type, $ano, $mes);
     	
         $this->print_json($list);
     }

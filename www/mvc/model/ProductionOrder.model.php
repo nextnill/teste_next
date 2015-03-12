@@ -319,7 +319,7 @@ class ProductionOrder_Model extends \Sys\Model {
         }
     }
     
-    function get_list($quarry_id=null)
+    function get_list($quarry_id=null, $block_type, $ano, $mes)
     {
         $params[] = 'N';
 
@@ -347,8 +347,23 @@ class ProductionOrder_Model extends \Sys\Model {
                     AND production_order.excluido = ? ";
 
         if (!is_null($quarry_id)) {
-            $sql .= " AND production_order.quarry_id = ? ";
+            $sql .= ' AND production_order.quarry_id = ? ';
             $params[] = $quarry_id;
+        }
+
+        if($block_type){
+            $sql.= ' AND production_order.block_type = ?';
+            $params[] = $block_type;
+        }
+
+        if($ano){
+            $sql.= ' AND Year(production_order.date_production) = ?';
+            $params[] = $ano;
+        }
+
+        if($mes){
+            $sql.= ' AND Month(production_order.date_production) = ?';
+            $params[] = $mes;
         }
 
         $sql .= "ORDER BY production_order.date_production DESC, production_order.id DESC ";
