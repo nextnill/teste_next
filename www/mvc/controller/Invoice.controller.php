@@ -28,6 +28,7 @@ class Invoice_Controller extends \Sys\Controller
     	$list = $invoice_model->get_list(false, $client_id, $ano, $mes);
     	
         $this->print_json($list);
+        
     }
 
     function detail_action($params)

@@ -68,14 +68,19 @@ function add_row(table_body, item)
     var field_block_type = $(new_row.find("[template-field='block_type']"));
     field_block_type.text(str_block_type(item.block_type));
 
+    var field_vol = $(new_row.find("[template-field='vol']"));
+
     var field_status = $(new_row.find("[template-field='status']"));
     field_status.text(str_production_status(item.status));
     if (item.status == PRODUCTION_STATUS.CONFIRMED) {
         field_status.addClass('label label-success');
+        field_vol.text(item.block_net_vol);
     }
     else {
         field_status.addClass('label label-default');
+        field_vol.text(item.production_order_item_net_vol);
     }
+
 
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);

@@ -50,6 +50,7 @@ class ProductionOrder_Controller extends \Sys\Controller
     	$list = $po_model->get_list($quarry_id, $block_type, $ano, $mes);
     	
         $this->print_json($list);
+        
     }
 
     function detail_json($params)

@@ -319,7 +319,7 @@ class ProductionOrder_Model extends \Sys\Model {
         }
     }
     
-    function get_list($quarry_id=null, $block_type, $ano, $mes)
+    function get_list($quarry_id=null, $block_type=null, $ano, $mes)
     {
         $params[] = 'N';
 
@@ -330,6 +330,8 @@ class ProductionOrder_Model extends \Sys\Model {
                     quarry.name AS quarry_name,
                     quarry.id AS quarry_id,
                     quarry.name AS quarry_name,
+                    production_order_item.net_vol as production_order_item_net_vol,
+                    block.net_vol as block_net_vol,
                     production_order.date_production,
                     production_order.product_id,
                     product.name AS product_name,
@@ -342,6 +344,10 @@ class ProductionOrder_Model extends \Sys\Model {
                     quarry ON (quarry.id = production_order.quarry_id)
                 INNER JOIN
                     product ON (product.id = production_order.product_id)
+                INNER JOIN
+                    production_order_item ON (production_order_item.production_order_id = production_order.id)
+                LEFT JOIN
+                    block ON (block.production_order_item_id = production_order_item.id)
                 WHERE
                     production_order.quarry_id IN ({$this->active_quarries})
                     AND production_order.excluido = ? ";
