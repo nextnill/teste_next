@@ -75,7 +75,7 @@ function listar_blocks(callback_function)
 					sum_quality_volume = 0;
 					sum_quality_weight = 0;
                     wagon_number = '';
-
+                    
                     
 
                     var is_sobra = item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false;
@@ -94,7 +94,17 @@ function listar_blocks(callback_function)
                     }
 
             		var field_lot = table.find("[template-field='lot']");
-            		field_lot.text(item.lot_number);
+                    var field_client_name = table.find("[template-field='client_name']");
+
+                    if(is_not_travel){
+            		  field_lot.text(item.lot_number);
+                      field_client_name.css('display', 'none');
+                    }
+                    else{
+                       field_lot.text(item.lot_number + ' - ');
+                       field_client_name.text(item.client_name); 
+                    }
+
             		if (!is_not_travel) {
             			field_lot.attr('href', "<?= APP_URI ?>lots/detail/" + item.lot_transport_id);
             		}

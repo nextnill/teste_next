@@ -50,9 +50,11 @@
                 <div>
                     <div class="text-left" style="font-weight: bold" style="padding: 5px" >
                         <a template-field="lot" target="_blank">Lote</a>
+                         <span template-field="status">{status}</span>
                     </div>
+                      
                     <div>
-                        <span template-field="status">{status}</span>
+                        <span template-field="client_name" class="text-primary" style="font-weight: bold">{client_name}</span>
                     </div>
                 </div>
 
@@ -74,7 +76,7 @@
                             <th colspan="3" class="text-center">Net Meas</th>
                             <th class="text-center">Vol</th>
                             <th class="text-center">Weight</th>
-                            <th class="text-center th_wagon_number" style="width: 90px">Wagon Number</th>
+                            <th class="text-center th_wagon_number" style="width: 90px">Wagon Number</th>   
                             <th class="text-center">
                                 <div class="pull-right">
                                     <button template-button="obs" class="btn btn-default btn-xs">
