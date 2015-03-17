@@ -910,7 +910,15 @@ class LotTransport_Model extends \Sys\Model {
                         AND current_tpi.excluido = 'N'
                         ORDER BY current_tpi.id ASC
                         LIMIT 0, 1
-                    ) AS current_travel_plan_item_wagon_number
+                    ) AS current_travel_plan_item_wagon_number,
+                          (
+                        SELECT MIN(invoice.date_record)
+                        from lot_transport_item
+                        INNER JOIN invoice_item on invoice_item.id = lot_transport_item.invoice_item_id
+                        INNER JOIN invoice on invoice.id = invoice_item.invoice_id
+                        WHERE lot_transport_id = lot_transport.id
+                        
+                    ) AS menor_date_record
                     FROM block
                     LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
                     LEFT JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
@@ -942,8 +950,8 @@ class LotTransport_Model extends \Sys\Model {
                     ))
 
                 ORDER BY
-                    lot_transport.order_number,
-                    invoice.id,
+                    menor_date_record,
+                    invoice.date_record,
                     quarry.name,
                     quality.order_number
                 ";
