@@ -74,13 +74,15 @@ function add_row(table_body, item)
     field_status.text(str_production_status(item.status));
     if (item.status == PRODUCTION_STATUS.CONFIRMED) {
         field_status.addClass('label label-success');
-        field_vol.text(item.block_net_vol);
+        field_vol.text(item.production_order_item_net_vol);
     }
     else {
         field_status.addClass('label label-default');
         field_vol.text(item.production_order_item_net_vol);
     }
 
+    var field_count = $(new_row.find("[template-field='count']"));
+    field_count.text(item.count_blocks);
 
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);

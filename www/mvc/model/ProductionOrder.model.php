@@ -330,14 +330,14 @@ class ProductionOrder_Model extends \Sys\Model {
                     quarry.name AS quarry_name,
                     quarry.id AS quarry_id,
                     quarry.name AS quarry_name,
-                    production_order_item.net_vol as production_order_item_net_vol,
-                    block.net_vol as block_net_vol,
+                    sum(production_order_item.net_vol)as production_order_item_net_vol,
                     production_order.date_production,
                     production_order.product_id,
                     product.name AS product_name,
                     product.weight_vol AS product_weight_vol,
                     production_order.block_type,
-                    production_order.status
+                    production_order.status,
+                    count(production_order_item.production_order_id) as count_blocks
                 FROM
                     production_order
                 INNER JOIN
@@ -371,6 +371,8 @@ class ProductionOrder_Model extends \Sys\Model {
             $sql.= ' AND Month(production_order.date_production) = ?';
             $params[] = $mes;
         }
+
+        $sql .= "GROUP BY production_order.id ";
 
         $sql .= "ORDER BY production_order.date_production DESC, production_order.id DESC ";
 

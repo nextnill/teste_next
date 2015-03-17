@@ -274,12 +274,15 @@ class ProductionOrderItem_Model extends \Sys\Model {
                     production_order_item.quality_id,
                     quality.name AS quality_name,
                     production_order_item.obs,
+                    production_order.status,
                     production_order_item.defects_json
                     
                 FROM
                     production_order_item
                 LEFT JOIN
                     quality ON (quality.id = production_order_item.quality_id)
+                INNER JOIN 
+                    production_order ON (production_order.id = production_order_item.production_order_id)
                 WHERE
                     production_order_item.production_order_id = ?
                     AND production_order_item.excluido = ?
