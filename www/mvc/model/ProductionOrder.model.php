@@ -331,6 +331,7 @@ class ProductionOrder_Model extends \Sys\Model {
                     quarry.id AS quarry_id,
                     quarry.name AS quarry_name,
                     sum(production_order_item.net_vol)as production_order_item_net_vol,
+                    sum(block.net_vol) as block_net_vol,
                     production_order.date_production,
                     production_order.product_id,
                     product.name AS product_name,
