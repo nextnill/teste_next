@@ -260,17 +260,16 @@ class ProductionOrderItem_Model extends \Sys\Model {
         $status = 'SELECT 
                     production_order.status 
                    FROM 
-                    production_order_item
-                   INNER JOIN
-                    production_order ON (production_order.id = production_order_item.production_order_id)
+                    production_order
                    WHERE
-                    production_order_item.id = ?
+                    production_order.id = ?
                     
                     ';
+
         $query_status = DB::query($status, array($po_id)); 
 
-    
-        if($query_status[0]['status'] != 1){
+        
+        if($query_status[0]['status'] == 0){
 
             $sql = 'SELECT
                         production_order_item.id,
@@ -301,6 +300,7 @@ class ProductionOrderItem_Model extends \Sys\Model {
                     ORDER BY
                         production_order_item.block_number
                     ';
+
              $query = DB::query($sql, array($po_id, 'N'));     
 
             // carrega os defeitos dos blocos
@@ -312,6 +312,7 @@ class ProductionOrderItem_Model extends \Sys\Model {
             }
             
             return $query;
+
             }
 
         else{
@@ -333,8 +334,7 @@ class ProductionOrderItem_Model extends \Sys\Model {
                         block.quality_id,
                         quality.name AS quality_name,
                         block.obs,
-                        block.defects_json,
-                        (SELECT production_order_item.id FROM production_order_item WHERE production_order_item.production_order_id = production_order.id) AS result
+                        block.defects_json
                         
                    FROM
                         block
