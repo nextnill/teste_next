@@ -257,39 +257,92 @@ class ProductionOrderItem_Model extends \Sys\Model {
     function get_by_po($po_id)
     {
 
-        $sql = 'SELECT
-                    production_order_item.id,
-                    production_order_item.excluido,
-                    production_order_item.production_order_id,
-                    production_order_item.block_number,
-                    production_order_item.tot_c,
-                    production_order_item.tot_a,
-                    production_order_item.tot_l,
-                    production_order_item.tot_vol,
-                    production_order_item.tot_weight,
-                    production_order_item.net_c,
-                    production_order_item.net_a,
-                    production_order_item.net_l,
-                    production_order_item.net_vol,
-                    production_order_item.quality_id,
-                    quality.name AS quality_name,
-                    production_order_item.obs,
-                    production_order.status,
-                    production_order_item.defects_json
-                    
-                FROM
+        $status = 'SELECT 
+                    production_order.status 
+                   FROM 
                     production_order_item
-                LEFT JOIN
-                    quality ON (quality.id = production_order_item.quality_id)
-                INNER JOIN 
+                   INNER JOIN
                     production_order ON (production_order.id = production_order_item.production_order_id)
-                WHERE
-                    production_order_item.production_order_id = ?
-                    AND production_order_item.excluido = ?
-                ORDER BY
-                    production_order_item.block_number
-                ';
-        $query = DB::query($sql, array($po_id, 'N'));
+                   WHERE
+                    production_order_item.id = ?
+                    
+                    ';
+        $query_status = DB::query($status, array($po_id)); 
+
+    
+        if($query_status[0]['status'] != 1){
+
+            $sql = 'SELECT
+                        production_order_item.id,
+                        production_order_item.excluido,
+                        production_order_item.production_order_id,
+                        production_order_item.block_number,
+                        production_order_item.tot_c,
+                        production_order_item.tot_a,
+                        production_order_item.tot_l,
+                        production_order_item.tot_vol,
+                        production_order_item.tot_weight,
+                        production_order_item.net_c,
+                        production_order_item.net_a,
+                        production_order_item.net_l,
+                        production_order_item.net_vol,
+                        production_order_item.quality_id,
+                        quality.name AS quality_name,
+                        production_order_item.obs,
+                        production_order_item.defects_json
+                        
+                    FROM
+                        production_order_item
+                    LEFT JOIN
+                        quality ON (quality.id = production_order_item.quality_id)
+                    WHERE
+                        production_order_item.production_order_id = ?
+                        AND production_order_item.excluido = ?
+                    ORDER BY
+                        production_order_item.block_number
+                    ';
+            }
+
+        else{
+
+           $sql = 'SELECT
+                        block.id,
+                        block.excluido,
+                        block.production_order_item_id,
+                        block.block_number,
+                        block.tot_c,
+                        block.tot_a,
+                        block.tot_l,
+                        block.tot_vol,
+                        block.tot_weight,
+                        block.net_c,
+                        block.net_a,
+                        block.net_l,
+                        block.net_vol,
+                        block.quality_id,
+                        quality.name AS quality_name,
+                        block.obs,
+                        block.defects_json,
+                        (SELECT production_order_item.id FROM production_order_item WHERE production_order_item.production_order_id = production_order.id) AS result
+                        
+                   FROM
+                        block
+                    LEFT JOIN
+                        quality ON (quality.id = block.quality_id)
+                    INNER JOIN 
+                          production_order_item ON (production_order_item.id = block.production_order_item_id)
+                    INNER JOIN
+                         production_order ON (production_order.id = production_order_item.production_order_id)
+                    WHERE
+                        production_order_item.production_order_id = ?
+                        AND block.excluido = ?
+                    ORDER BY
+                        block.block_number
+                    ';
+        }    
+
+
+        $query = DB::query($sql, array($po_id, 'N'));     
 
         // carrega os defeitos dos blocos
         $defect_model = $this->LoadModel('Defect', true);
@@ -298,7 +351,7 @@ class ProductionOrderItem_Model extends \Sys\Model {
             $query[$key]['defects'] = $defect_model->get_by_poi($row['id']);
             $query[$key]['photos'] = $block_photo_model->get_by_poi($row['id']);
         }
-
+        
         return $query;
     }
 
