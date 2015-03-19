@@ -380,7 +380,7 @@ class BlockPhoto_Model extends \Sys\Model {
     }
 
     // listar fotos de um bloco já produzido
-    function get_by_block($block_id)
+    function get_by_block($production_order_item_id)
     {
         $sql = 'SELECT
                     id,
@@ -394,10 +394,11 @@ class BlockPhoto_Model extends \Sys\Model {
                     size,
                     obs
                 FROM block_photo
-                WHERE block_id = ?
+                WHERE production_order_item_id = ?
                     AND excluido = \'N\' ';
 
-        $params[] = $block_id;
+        $params[] = $production_order_item_id;
+
 
         $query = DB::query($sql, $params);
 
@@ -408,7 +409,7 @@ class BlockPhoto_Model extends \Sys\Model {
             $photo->fill($row);
             $photos[] = $photo;
         }
-
+        
         return $photos;
     }
 

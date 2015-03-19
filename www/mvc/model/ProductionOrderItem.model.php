@@ -357,8 +357,9 @@ class ProductionOrderItem_Model extends \Sys\Model {
         $defect_model = $this->LoadModel('Defect', true);
         $block_photo_model = $this->LoadModel('BlockPhoto', true);
         foreach ($query as $key => $row) {
+
             $query[$key]['defects'] = $defect_model->get_by_block($row['id']);
-            $query[$key]['photos'] = $block_photo_model->get_by_block($row['id']);
+            $query[$key]['photos'] = $block_photo_model->get_by_block($row['production_order_item_id']);
         }
         
         return $query;
