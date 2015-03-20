@@ -134,46 +134,105 @@ class ProductionOrderItem_Model extends \Sys\Model {
     function update()
     {
         $validation = $this->validation();
+        $op_id = $this->production_order_id;
+        //print_r($this->production_order_id);exit();
+
 
         if ($validation->isValid())
         {
-            $sql = 'UPDATE production_order_item
-                    SET
-                        quality_id = ?,
-                        block_number = ?,
-                        tot_c = ?,
-                        tot_a = ?,
-                        tot_l = ?,
-                        tot_vol = ?,
-                        tot_weight = ?,
-                        net_c = ?,
-                        net_a = ?,
-                        net_l = ?,
-                        net_vol = ?,
-                        obs = ?,
-                        defects_json = ?
-                    WHERE id = ? ';
 
-            $query = DB::exec($sql, array(
-                $this->quality_id,
-                $this->block_number,
-                $this->tot_c,
-                $this->tot_a,
-                $this->tot_l,
-                $this->tot_vol,
-                $this->tot_weight,
-                $this->net_c,
-                $this->net_a,
-                $this->net_l,
-                $this->net_vol,
-                $this->obs,
-                $this->defects_json,
-                $this->id
-            ));
+            $status = ' SELECT 
+                    production_order.status 
+                   FROM 
+                    production_order
+                   WHERE
+                    production_order.id =                     
+                    '.$op_id;
 
-            $this->save_defects();
+            $query_status = DB::query($status, array($op_id)); 
 
-            return $this;
+        
+            if($query_status[0]['status'] == 0){
+
+                $sql = 'UPDATE production_order_item
+                        SET
+                            quality_id = ?,
+                            block_number = ?,
+                            tot_c = ?,
+                            tot_a = ?,
+                            tot_l = ?,
+                            tot_vol = ?,
+                            tot_weight = ?,
+                            net_c = ?,
+                            net_a = ?,
+                            net_l = ?,
+                            net_vol = ?,
+                            obs = ?,
+                            defects_json = ?
+                        WHERE id = ? ';
+
+                $query = DB::exec($sql, array(
+                    $this->quality_id,
+                    $this->block_number,
+                    $this->tot_c,
+                    $this->tot_a,
+                    $this->tot_l,
+                    $this->tot_vol,
+                    $this->tot_weight,
+                    $this->net_c,
+                    $this->net_a,
+                    $this->net_l,
+                    $this->net_vol,
+                    $this->obs,
+                    $this->defects_json,
+                    $this->id
+                ));
+
+                $this->save_defects();
+
+                return $this;
+            }
+            else{
+
+                 $sql = 'UPDATE block
+                        SET
+                            quality_id = ?,
+                            block_number = ?,
+                            tot_c = ?,
+                            tot_a = ?,
+                            tot_l = ?,
+                            tot_vol = ?,
+                            tot_weight = ?,
+                            net_c = ?,
+                            net_a = ?,
+                            net_l = ?,
+                            net_vol = ?,
+                            obs = ?,
+                            defects_json = ?
+                        WHERE id = ? ';
+
+                $query = DB::exec($sql, array(
+                    $this->quality_id,
+                    $this->block_number,
+                    $this->tot_c,
+                    $this->tot_a,
+                    $this->tot_l,
+                    $this->tot_vol,
+                    $this->tot_weight,
+                    $this->net_c,
+                    $this->net_a,
+                    $this->net_l,
+                    $this->net_vol,
+                    $this->obs,
+                    $this->defects_json,
+                    $this->id
+                ));
+
+                $this->save_defects();
+
+                return $this;
+            }
+
         }
         
         return $validation;
