@@ -22,7 +22,8 @@ class ProductionOrder_Controller extends \Sys\Controller
                 'production_order/items/list_item_template',
                 'production_order/items/defects_marker',
                 'production_order/items/photo_upload',
-                'production_order/items/photo_view'
+                'production_order/items/photo_view',
+                'block/detail'
             ) , $data
         );
 
