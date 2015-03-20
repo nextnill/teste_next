@@ -1,6 +1,7 @@
 
 var ProductOrderItems = function(id)
 {
+    var block_id = null;
     // static attributes
     ProductOrderItems.production_order_id = id;
 
@@ -31,6 +32,7 @@ var ProductOrderItems = function(id)
     ProductOrderItems.btn_po_add = $("#btn_po_add");
     ProductOrderItems.btn_po_refresh = $("#btn_po_refresh");
     ProductOrderItems.btn_po_save = $("#btn_po_save");
+
 
     ProductOrderItems.load_defects = function(callback_function) {
         // pesquisa a listagem em json
@@ -117,17 +119,15 @@ var ProductOrderItems = function(id)
             );
         };
 
+        
         if (ProductOrderItems.status == PRODUCTION_STATUS.CONFIRMED) {
             // se estiver confirmado, não pode editar
-            $("[template-ref] [type='text']").prop("readonly", true);
-            $("[template-ref] textarea").prop("readonly", true);
-            $("[template-ref] select").prop("disabled", true);
-            $("[template-ref] [type='checkbox']").prop("disabled", true);
-            $("[template-button='send_photo']").hide();
-            $("#btn_photo_delete").hide();
+         
+         
             $("[template-button='remove']").hide();
-            $(".btn_po_add, .btn_po_refresh, .btn_po_save, .btn_po_confirm, .btn_po_edit").hide();
+            $(".btn_po_add, .btn_po_confirm, .btn_po_edit").hide();
         }
+        
     }
 
     ProductOrderItems.calc_vol = function(val_c, val_a, val_l, edt_vol, edt_tot_weight)
