@@ -95,37 +95,37 @@ var ProductOrderItems = function(id)
         $('#po_items').empty();
 
         for (var i = 0; i < ProductOrderItems.blocks.length; i++) {
-            var block = ProductOrderItems.blocks[i];
+            var item = ProductOrderItems.blocks[i];
             
             //function(id, block_number, tot_c, tot_a, tot_l, tot_vol, net_c, net_a, net_l, net_vol, quality_id, obs, defects)
 
             poi.clone_item_template(
-                block.id,
-                block.block_number,
-                block.tot_c,
-                block.tot_a,
-                block.tot_l,
-                block.tot_vol,
-                block.tot_weight,
-                block.net_c,
-                block.net_a,
-                block.net_l,
-                block.net_vol,
-                block.quality_id,
-                block.obs,
-                block.defects_json,
-                block.defects,
-                block.photos
+                item.id,
+                item.block_number,
+                item.tot_c,
+                item.tot_a,
+                item.tot_l,
+                item.tot_vol,
+                item.tot_weight,
+                item.net_c,
+                item.net_a,
+                item.net_l,
+                item.net_vol,
+                item.quality_id,
+                item.obs,
+                item.defects_json,
+                item.defects,
+                item.photos,
+                item.block_id
             );
         };
 
         
         if (ProductOrderItems.status == PRODUCTION_STATUS.CONFIRMED) {
-            // se estiver confirmado, não pode editar
-         
          
             $("[template-button='remove']").hide();
-            $(".btn_po_add, .btn_po_confirm, .btn_po_edit").hide();
+            $(".btn_po_add,.btn_po_confirm, .btn_po_edit").hide();
+           // $(".btn_po_add").attr('disabled', true);
         }
         
     }
@@ -227,7 +227,7 @@ var ProductOrderItems = function(id)
     }
 
     // id = 0 = novo
-    this.clone_item_template = function(id, block_number, tot_c, tot_a, tot_l, tot_vol, tot_weight, net_c, net_a, net_l, net_vol, quality_id, obs, defects_json, defects, photos)
+    this.clone_item_template = function(id, block_number, tot_c, tot_a, tot_l, tot_vol, tot_weight, net_c, net_a, net_l, net_vol, quality_id, obs, defects_json, defects, photos, block_id)
     {
         var new_item = $("#item_template").clone();
         var new_item_id = "block_item_" + block_number;
@@ -237,6 +237,7 @@ var ProductOrderItems = function(id)
         new_item.css("padding-bottom", "5px");
 
         var rec_id = this.get_ref(new_item, 'rec_id');
+        var rec_block_id = this.get_ref(new_item, 'rec_block_id');
         var rec_removed = this.get_ref(new_item, 'rec_removed');
         var rec_block_number_exists = this.get_ref(new_item, 'rec_block_number_exists');
 
@@ -430,7 +431,7 @@ var ProductOrderItems = function(id)
         img_defect_marker.css('cursor', 'pointer');
         img_defect_marker.unbind('click');
         img_defect_marker.click(function(){
-            abre_defects_marker(block_number, rec_defects_json, img_defect_marker, (ProductOrderItems.status == PRODUCTION_STATUS.CONFIRMED));
+            abre_defects_marker(block_number, rec_defects_json, img_defect_marker);
             // habilito validação de saida da página
             valid_onunload(true);
         });
@@ -464,7 +465,8 @@ var ProductOrderItems = function(id)
         btn_send_photo.click(function() {
             //var id = $(this).attr('template-ref');            
             var id = new_item.find("[template-ref='rec_id']").val();
-            abre_photo_upload(null, block_number, id, div_photos, div_photo_template);
+            var block_id = new_item.find("[template-ref='rec_block_id']").val();
+            abre_photo_upload(block_id, block_number, id, div_photos, div_photo_template);
         });
 
         // btn remover
@@ -485,6 +487,7 @@ var ProductOrderItems = function(id)
         });        
 
         if (id) { rec_id.val(id); }
+        if (block_id) { rec_block_id.val(block_id); }
         if (block_number) { edt_block.val(block_number); }
         if (tot_c) { edt_tot_c.val(tot_c); }
         if (tot_a) { edt_tot_a.val(tot_a); }
@@ -539,6 +542,7 @@ var ProductOrderItems = function(id)
             if (edt_block.val().trim() != "") {
 
                 var rec_id = $(this).find("[template-ref='rec_id']");
+                var rec_block_id = $(this).find("[template-ref='rec_block_id']");
                 var rec_removed = $(this).find("[template-ref='rec_removed']");
                 var rec_block_number_exists = $(this).find("[template-ref='rec_block_number_exists']");
                 
@@ -570,6 +574,7 @@ var ProductOrderItems = function(id)
 
                 var block = {
                     id: rec_id.val(),
+                    block_id: rec_block_id.val(),
                     removed: rec_removed.val(),
                     block_number: edt_block.val(),
                     block_number_exists: rec_block_number_exists.val(),
@@ -699,10 +704,12 @@ var ProductOrderItems = function(id)
                         // update ids
                         $("[template-ref='div_block']").each(function() {
                             var update_rec_id = $(this).find("[template-ref='rec_id']");
+                            var update_rec_block_id = $(this).find("[template-ref='rec_block_id']");
                             var update_edt_block = $(this).find("[template-ref='edt_block']");
 
                             if (update_edt_block.val().trim() == response[i].block_number.trim()) {
                                 update_rec_id.val(response[i].id);
+                                update_rec_block_id.val(response[i].block_id);
                             }
                         });
                         var dt = new Date();

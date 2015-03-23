@@ -52,6 +52,7 @@ class BlockPhoto_Controller extends \Sys\Controller
             foreach ($files as $file) {
                 $block_photo_model = $this->LoadModel('BlockPhoto', true);
                 $block_photo_model->production_order_item_id = $production_order_item_id;
+                $block_photo_model->block_id = $block_id;
                 $block_photo_model->obs = $obs;
                 $return[] = $block_photo_model->save($file);
             }

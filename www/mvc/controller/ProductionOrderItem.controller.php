@@ -35,6 +35,7 @@ class ProductionOrderItem_Controller extends \Sys\Controller
             foreach ($blocks as $key => $block) {
                 
                 $id = 0;
+                $block_id = 0;
                 $removed = false;
                 $block_number = '';
                 $tot_c = 0;
@@ -53,6 +54,10 @@ class ProductionOrderItem_Controller extends \Sys\Controller
 
                 if (isset($block['id'])) {
                     $id = (int)$block['id'];
+                }
+
+                 if (isset($block['block_id'])) {
+                    $block_id = (int)$block['block_id'];
                 }
 
                 if (isset($block['removed'])) {
@@ -118,6 +123,7 @@ class ProductionOrderItem_Controller extends \Sys\Controller
                 
                 $poi_model = $this->LoadModel('ProductionOrderItem', true);
                 $poi_model->id = $id;
+                $poi_model->block_id = $block_id;
                 $poi_model->production_order_id = $production_order_id;
                 $poi_model->block_number = $block_number;
                 $poi_model->quality_id = ($quality_id == 0 ? null : $quality_id);

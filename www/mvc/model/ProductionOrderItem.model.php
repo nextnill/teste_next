@@ -11,6 +11,7 @@ use \Sys\Validation;
 class ProductionOrderItem_Model extends \Sys\Model {
     
     public $id;
+    public $block_id;
     public $excluido;
 
     public $production_order_id;
@@ -194,41 +195,27 @@ class ProductionOrderItem_Model extends \Sys\Model {
             }
             else{
 
-                 $sql = 'UPDATE block
-                        SET
-                            quality_id = ?,
-                            block_number = ?,
-                            tot_c = ?,
-                            tot_a = ?,
-                            tot_l = ?,
-                            tot_vol = ?,
-                            tot_weight = ?,
-                            net_c = ?,
-                            net_a = ?,
-                            net_l = ?,
-                            net_vol = ?,
-                            obs = ?,
-                            defects_json = ?
-                        WHERE id = ? ';
 
-                $query = DB::exec($sql, array(
-                    $this->quality_id,
-                    $this->block_number,
-                    $this->tot_c,
-                    $this->tot_a,
-                    $this->tot_l,
-                    $this->tot_vol,
-                    $this->tot_weight,
-                    $this->net_c,
-                    $this->net_a,
-                    $this->net_l,
-                    $this->net_vol,
-                    $this->obs,
-                    $this->defects_json,
-                    $this->id
-                ));
+                $block_model = $this->LoadModel('Block', true);
+                $block_model->populate($this->block_id);
 
-                $this->save_defects();
+                $block_model->quality_id = $this->quality_id;
+                $block_model->block_number = $this->block_number;
+                $block_model->tot_c = $this->tot_c;
+                $block_model->tot_a = $this->tot_a;
+                $block_model->tot_l = $this->tot_l;
+                $block_model->tot_vol = $this->tot_vol;
+                $block_model->tot_weight = $this->tot_weight;
+                $block_model->net_c = $this->net_c;
+                $block_model->net_a = $this->net_a;
+                $block_model->net_l = $this->net_l;
+                $block_model->net_vol = $this->net_vol;
+                $block_model->obs = $this->obs;
+                $block_model->defects_json = $this->defects_json;
+                $block_model->defects = $this->defects;
+                $block_model->id = $this->block_id;
+
+                $block_model->save();
 
                 return $this;
             }
@@ -322,7 +309,6 @@ class ProductionOrderItem_Model extends \Sys\Model {
                     production_order
                    WHERE
                     production_order.id = ?
-                    
                     ';
 
         $query_status = DB::query($status, array($po_id)); 
@@ -377,9 +363,9 @@ class ProductionOrderItem_Model extends \Sys\Model {
         else{
 
            $sql = 'SELECT
-                        block.id,
+                        block.id as block_id,
                         block.excluido,
-                        block.production_order_item_id,
+                        block.production_order_item_id as id,
                         block.block_number,
                         block.tot_c,
                         block.tot_a,
@@ -417,8 +403,8 @@ class ProductionOrderItem_Model extends \Sys\Model {
         $block_photo_model = $this->LoadModel('BlockPhoto', true);
         foreach ($query as $key => $row) {
 
-            $query[$key]['defects'] = $defect_model->get_by_block($row['id']);
-            $query[$key]['photos'] = $block_photo_model->get_by_block($row['production_order_item_id']);
+            $query[$key]['defects'] = $defect_model->get_by_block($row['block_id']);
+            $query[$key]['photos'] = $block_photo_model->get_by_poi($row['id']);
         }
         
         return $query;
