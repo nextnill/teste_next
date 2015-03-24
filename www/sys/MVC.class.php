@@ -37,7 +37,14 @@ class MVC
             $session = new Session();
             $user = $session->get_user();
             foreach ($user['permissions'] as $key => $permission) {
-                if ($permission == $permission_key) {
+                if(is_array($permission_key)){
+                    foreach($permission_key as $verifica_permissao_key => $permissao){
+                        if($permissao == $permission){    
+                            $allowed = true;
+                        }
+                    }
+                }
+                else if ($permission == $permission_key) {
                     $allowed = true;
                 }
             }

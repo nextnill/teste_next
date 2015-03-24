@@ -105,7 +105,7 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/block/with_lot/' => array('Block', 'list_blocks_with_lot_json'),
                 '/block/photo/' => array('BlockPhoto', 'show_photo_json'),
                 '/block/photo/delete/' => array('BlockPhoto', 'delete_json', 'block'),
-                '/block/photo/upload/' => array('BlockPhoto', 'upload_photo_json', 'block'),
+                '/block/photo/upload/' => array('BlockPhoto', 'upload_photo_json', array('block', 'production_order')),
 
                 '/block/reserve/' => array('Block', 'reserve_json', 'sobracolumay'),
                 '/block/reserve_selected/' => array('Block', 'reserve_selected_json', 'sobracolumay'),
