@@ -283,7 +283,19 @@ class ProductionOrderItem_Model extends \Sys\Model {
     }
     
     function get_header($id)
-    {
+    {   
+        $user = $this->ActiveUser();
+        $permissions = $user['permissions'];
+
+        if(in_array('block', $permissions)){
+
+            $permissao = 1;
+        }
+        else{
+
+            $permissao = 0;
+        }
+
         $sql = 'SELECT
                     production_order.id,
                     production_order.excluido,
@@ -305,7 +317,7 @@ class ProductionOrderItem_Model extends \Sys\Model {
                     production_order.id = ?
                 ';
         $query = DB::query($sql, array($id));
-
+        $query[0]['permissao'] = $permissao;
         return $query[0];
     }
 
@@ -355,7 +367,10 @@ class ProductionOrderItem_Model extends \Sys\Model {
                         production_order_item.block_number
                     ';
 
-             $query = DB::query($sql, array($po_id, 'N'));     
+                    $user = $this->ActiveUser();
+                    $permissions = $user['permissions'];
+
+             $query = DB::query($sql, array($po_id, 'N'), $permissao);     
 
             // carrega os defeitos dos blocos
             $defect_model = $this->LoadModel('Defect', true);

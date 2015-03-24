@@ -1,22 +1,6 @@
 
 var ProductOrderItems = function(id)
 {
-
-    <?php
-        $user = $this->ActiveUser();
-        $permissions = $user['permissions'];
-
-        if(in_array('block', $permissions)){
-
-            $permissao = 1;
-        }
-        else{
-
-            $permissao = 0;
-        }
-    ?>
-
-    var verifica_permissao = <?php echo $permissao; ?>;
     var block_id = null;
     // static attributes
     ProductOrderItems.production_order_id = id;
@@ -143,8 +127,8 @@ var ProductOrderItems = function(id)
             $(".btn_po_add,.btn_po_confirm, .btn_po_edit").hide();
             if(verifica_permissao == 0){
 
-            $(".btn_po_save").attr('disabled', true);
-        }
+                $(".btn_po_save").attr('disabled', true);
+            }
            // $(".btn_po_add").attr('disabled', true);
         }
 
@@ -194,6 +178,8 @@ var ProductOrderItems = function(id)
                     ProductOrderItems.po_detail_production_date.text(response.date_production.format_date());
                     ProductOrderItems.po_detail_product_name.text(response.product_name);
                     ProductOrderItems.po_detail_block_type.text(str_block_type(response.block_type));
+
+                    verifica_permissao = response.permissao;
 
                     if (!just_header) {
                         ProductOrderItems.load_defects();
