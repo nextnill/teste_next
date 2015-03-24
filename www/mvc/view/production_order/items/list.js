@@ -1,6 +1,22 @@
 
 var ProductOrderItems = function(id)
 {
+
+    <?php
+        $user = $this->ActiveUser();
+        $permissions = $user['permissions'];
+
+        if(in_array('block', $permissions)){
+
+            $permissao = 1;
+        }
+        else{
+
+            $permissao = 0;
+        }
+    ?>
+
+    var verifica_permissao = <?php echo $permissao; ?>;
     var block_id = null;
     // static attributes
     ProductOrderItems.production_order_id = id;
@@ -125,8 +141,14 @@ var ProductOrderItems = function(id)
          
             $("[template-button='remove']").hide();
             $(".btn_po_add,.btn_po_confirm, .btn_po_edit").hide();
+            if(verifica_permissao == 0){
+
+            $(".btn_po_save").attr('disabled', true);
+        }
            // $(".btn_po_add").attr('disabled', true);
         }
+
+      
         
     }
 
@@ -192,6 +214,7 @@ var ProductOrderItems = function(id)
     this.get_ref = function(obj, ref)
     {
         return obj.find("[template-ref='"+ref+"']");
+
     }
 
     this.add_item = function(scroll_bottom) {
@@ -512,6 +535,7 @@ var ProductOrderItems = function(id)
             ProductOrderItems.valida_tot_net(edt_tot_c, edt_net_c);
             ProductOrderItems.valida_tot_net(edt_tot_a, edt_net_a);
             ProductOrderItems.valida_tot_net(edt_tot_l, edt_net_l);
+
         });
         
         //gerar thumb
@@ -753,6 +777,7 @@ var ProductOrderItems = function(id)
         }
 
     });
+
 
     // add novo blocl
     ProductOrderItems.btn_po_add.unbind('click');

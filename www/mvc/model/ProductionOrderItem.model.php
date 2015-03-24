@@ -195,29 +195,38 @@ class ProductionOrderItem_Model extends \Sys\Model {
             }
             else{
 
+                $user = $this->ActiveUser();
+                $permissions = $user['permissions'];
 
-                $block_model = $this->LoadModel('Block', true);
-                $block_model->populate($this->block_id);
+                if(in_array('block', $permissions)){
 
-                $block_model->quality_id = $this->quality_id;
-                $block_model->block_number = $this->block_number;
-                $block_model->tot_c = $this->tot_c;
-                $block_model->tot_a = $this->tot_a;
-                $block_model->tot_l = $this->tot_l;
-                $block_model->tot_vol = $this->tot_vol;
-                $block_model->tot_weight = $this->tot_weight;
-                $block_model->net_c = $this->net_c;
-                $block_model->net_a = $this->net_a;
-                $block_model->net_l = $this->net_l;
-                $block_model->net_vol = $this->net_vol;
-                $block_model->obs = $this->obs;
-                $block_model->defects_json = $this->defects_json;
-                $block_model->defects = $this->defects;
-                $block_model->id = $this->block_id;
+                    $block_model = $this->LoadModel('Block', true);
+                    $block_model->populate($this->block_id);
 
-                $block_model->save();
+                    $block_model->quality_id = $this->quality_id;
+                    $block_model->block_number = $this->block_number;
+                    $block_model->tot_c = $this->tot_c;
+                    $block_model->tot_a = $this->tot_a;
+                    $block_model->tot_l = $this->tot_l;
+                    $block_model->tot_vol = $this->tot_vol;
+                    $block_model->tot_weight = $this->tot_weight;
+                    $block_model->net_c = $this->net_c;
+                    $block_model->net_a = $this->net_a;
+                    $block_model->net_l = $this->net_l;
+                    $block_model->net_vol = $this->net_vol;
+                    $block_model->obs = $this->obs;
+                    $block_model->defects_json = $this->defects_json;
+                    $block_model->defects = $this->defects;
+                    $block_model->id = $this->block_id;
 
-                return $this;
+                    $block_model->save();
+
+                    return $this;
+                }
+                else{
+
+                    exit();
+                }
             }
 
         }
