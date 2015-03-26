@@ -84,6 +84,12 @@ if (LOGGED):
                     Blocks
                 </a>
             </li>
+            
+              <li <?= (!verifica_acesso('poblo', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>poblo_status/color_status/list_color_status/">
+                    Poblo Status
+                </a>
+            </li>
 
         </ul>
     </li>

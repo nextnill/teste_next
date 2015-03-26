@@ -216,6 +216,9 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/poblo/obs/json/' => array('Poblo', 'obs_json', 'poblo'),
                 '/poblo/save/' => array('Poblo', 'salve_obs_json', 'poblo'),
 
+                '/poblo_status/' => array('PobloStatus', 'list_action', 'poblo'),
+                '/poblo_status/list/json/' => array('PobloStatus', 'list_json'),
+
                 
 
             );
