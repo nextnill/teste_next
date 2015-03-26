@@ -30,7 +30,7 @@ function add_row(table_body, item)
     field_status.text(item.status);
 
     var field_color = $(new_row.find("[template-field='color']"));
-    field_color.text(item.cor);
+    field_color.append('<span class="badge" style="padding-right: 100px; background: ' + item.cor + '">&nbsp;</span>');
 
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);

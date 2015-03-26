@@ -23,7 +23,7 @@ class PobloStatus_Controller extends \Sys\Controller
         $poblo_status_model = $this->LoadModel('PobloStatus', true);
         $poblo_status_model->populate($id);
         
-        $this->print_json($PobloStatus);
+        $this->print_json($poblo_status_model);
     }
 
     function save_json($params)

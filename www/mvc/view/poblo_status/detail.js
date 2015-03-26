@@ -1,49 +1,87 @@
-function listar_products(selected_values)
+function Colors(index)
 {
-    var cbo_products = $('#cbo_products');
-    cbo_products.find("option").remove();
+    var arr_cores = [];
 
-    // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>product/list/json/", function(response) {
-        if (response_validation(response)) {
-            $.each(response, function(i, item) {
-                add_option(cbo_products, item.id, item.name);
-            });
-            
-            if (selected_values)
-                cbo_products.val(selected_values).trigger("change");
-        }
-    }).fail(ajaxError);
+    arr_cores.push({hex: '#FFCCCC', nome:'Vermelho 1', nome_hex: '#000'});
+    arr_cores.push({hex: '#FF6666', nome:'Vermelho 2', nome_hex: '#000'});    
+    arr_cores.push({hex: '#FF0000', nome:'Vermelho 3', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#CC0000', nome:'Vermelho 4', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#990000', nome:'Vermelho 5', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#660000', nome:'Vermelho 6', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#330000', nome:'Vermelho 7', nome_hex: '#fff'});                        
+
+    arr_cores.push({hex: '#FFCC99', nome:'Laranja 1', nome_hex: '#000'});
+    arr_cores.push({hex: '#FFCC33', nome:'Laranja 2', nome_hex: '#000'});    
+    arr_cores.push({hex: '#FF9900', nome:'Laranja 3', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#FF6600', nome:'Laranja 4', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#CC6600', nome:'Laranja 5', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#993300', nome:'Laranja 6', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#663300', nome:'Laranja 7', nome_hex: '#fff'});                        
+    
+    arr_cores.push({hex: '#FFFFCC', nome:'Amarelo 1', nome_hex: '#000'});
+    arr_cores.push({hex: '#FFFF99', nome:'Amarelo 2', nome_hex: '#000'});    
+    arr_cores.push({hex: '#FFFF00', nome:'Amarelo 3', nome_hex: '#000'});    
+    arr_cores.push({hex: '#FFCC00', nome:'Amarelo 4', nome_hex: '#000'});    
+    arr_cores.push({hex: '#999900', nome:'Amarelo 5', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#666600', nome:'Amarelo 6', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#333300', nome:'Amarelo 7', nome_hex: '#fff'});                        
+
+    arr_cores.push({hex: '#99FF99', nome:'Verde 1', nome_hex: '#000'});
+    arr_cores.push({hex: '#66FF99', nome:'Verde 2', nome_hex: '#000'});    
+    arr_cores.push({hex: '#33ff33', nome:'Verde 3', nome_hex: '#000'});    
+    arr_cores.push({hex: '#00CC00', nome:'Verde 4', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#009900', nome:'Verde 5', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#006600', nome:'Verde 6', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#003300', nome:'Verde 7', nome_hex: '#fff'}); 
+
+    arr_cores.push({hex: '#CCFFFF', nome:'Azul 1', nome_hex: '#000'});
+    arr_cores.push({hex: '#66FFFF', nome:'Azul 2', nome_hex: '#000'});    
+    arr_cores.push({hex: '#33CCFF', nome:'Azul 3', nome_hex: '#000'});    
+    arr_cores.push({hex: '#3366FF', nome:'Azul 4', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#3333FF', nome:'Azul 5', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#000099', nome:'Azul 6', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#000066', nome:'Azul 7', nome_hex: '#fff'});
+
+    arr_cores.push({hex: '#FFCCFF', nome:'Roxo 1', nome_hex: '#000'});
+    arr_cores.push({hex: '#FF99FF', nome:'Roxo 2', nome_hex: '#000'});    
+    arr_cores.push({hex: '#CC66CC', nome:'Roxo 3', nome_hex: '#000'});    
+    arr_cores.push({hex: '#CC33CC', nome:'Roxo 4', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#993366', nome:'Roxo 5', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#663366', nome:'Roxo 6', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#330033', nome:'Roxo 7', nome_hex: '#fff'});                           
+
+    arr_cores.push({hex: '#FFFFFF', nome:'Branco', nome_hex: '#000'});
+    arr_cores.push({hex: '#CCCCCC', nome:'Cinza 1', nome_hex: '#000'});    
+    arr_cores.push({hex: '#C0C0C0', nome:'Cinza 2', nome_hex: '#000'});    
+    arr_cores.push({hex: '#999999', nome:'Cinza 3', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#666666', nome:'Cinza 4', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#333333', nome:'Cinza 5', nome_hex: '#fff'});    
+    arr_cores.push({hex: '#000000', nome:'Preto', nome_hex: '#fff'});     
+    
+    return index? arr_cores[index]: arr_cores;
 }
 
-function listar_defects(selected_values)
-{
-    var cbo_defects = $('#cbo_defects');
-    cbo_defects.find("option").remove();
-
-    // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>defect/list/json/", function(response) {
-        if (response_validation(response)) {
-            $.each(response, function(i, item) {
-                add_option(cbo_defects, item.id, item.name);
-            });
-
-            if (selected_values)
-                cbo_defects.val(selected_values).trigger("change");
-        }
-    }).fail(ajaxError);
-}
 
 function show_dialog(tipo, id)
 {
     var btn_save = $('#btn_save');
     limpa_formulario(tipo);
 
+    var colors = new Colors();
+    var cbo_color = $('#cbo_color');
+
+        for (var i = 0; i < colors.length; i++) {                 
+            cbo_color.append(
+                '<option value="'+colors[i].hex+'" style="background:'+colors[i].hex+'; color: '+colors[i].nome_hex+'">'+colors[i].nome+'</option>'                
+            );
+        }
+
     switch(tipo)
     {
         case FORMULARIO.NOVO:
             btn_save.text('Save');
             btn_save.addClass('btn btn-primary');
+            carrega_cor();
             break;
         case FORMULARIO.EDITAR:
             carrega_formulario(id);
@@ -68,23 +106,20 @@ function show_dialog(tipo, id)
     showModal('modal_detalhe');
 }
 
+function carrega_cor(){
+    
+    var cbo_color = $('#cbo_color');
+
+    $('#cor_exemplo').css('background', cbo_color.val() ? cbo_color.val() : '');
+}
+
 function permite_alterar(valor)
 {
-    var edt_name = $('#edt_name');
-    var cbo_products = $('#cbo_products');
-    var cbo_defects = $('#cbo_defects');
-    var edt_final_block_number = $('#edt_final_block_number');
-    var edt_interim_block_number = $('#edt_interim_block_number');
-    var edt_seq_final = $('#edt_seq_final');
-    var edt_seq_interim = $('#edt_seq_interim');
-
-    edt_name.prop("readonly", !valor);
-    cbo_products.select2("readonly", !valor);
-    cbo_defects.select2("readonly", !valor);
-    edt_final_block_number.prop("readonly", !valor);
-    edt_interim_block_number.prop("readonly", !valor);
-    edt_seq_final.prop("readonly", !valor);
-    edt_seq_interim.prop("readonly", !valor);
+    var edt_status = $('#edt_status');
+    var cbo_color = $('#cbo_color');
+    
+    edt_status.prop("readonly", !valor);
+    cbo_color.select2("readonly", !valor);
 }
 
 function limpa_formulario(tipo)
@@ -94,34 +129,19 @@ function limpa_formulario(tipo)
     var post_tipo = $('#post_tipo');
     var rec_id = $('#rec_id');
 
-    var edt_name = $('#edt_name');
-    var cbo_products = $('#cbo_products');
-    var cbo_defects = $('#cbo_defects');
-    var edt_final_block_number = $('#edt_final_block_number');
-    var edt_interim_block_number = $('#edt_interim_block_number');
-    var edt_seq_final = $('#edt_seq_final');
-    var edt_seq_interim = $('#edt_seq_interim');
-
+    var edt_status = $('#edt_status');
+    var cbo_color = $('#cbo_color');
+    
     alerta_form.hide();
     btn_save.removeClass();
     btn_save.show();
     post_tipo.val(tipo);
     rec_id.val('');
 
-    edt_name.val('');
-    cbo_products.val('').trigger('change');
-    cbo_defects.val('').trigger('change');
-    edt_final_block_number.val('');
-    edt_interim_block_number.val('');
-    edt_seq_final.val('');
-    edt_seq_interim.val('');
-
-    if (tipo == FORMULARIO.NOVO) {
-        listar_products();
-        listar_defects();
-    }
-
-    set_focus(edt_name);
+    edt_status.val('');
+    cbo_color.val('').trigger('change');
+    
+    set_focus(edt_status);
 
     permite_alterar(true);
 }
@@ -129,28 +149,19 @@ function limpa_formulario(tipo)
 function carrega_formulario(id)
 {
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>quarry/detail/json/" + id, function(response) {
+    $.getJSON("<?= APP_URI ?>poblo_status/detail/json/" + id, function(response) {
         if (response_validation(response)) {
             var rec_id = $('#rec_id');
-            var edt_name = $('#edt_name');
-            var cbo_products = $('#cbo_products');
-            var cbo_defects = $('#cbo_defects');
-            var edt_final_block_number = $('#edt_final_block_number');
-            var edt_interim_block_number = $('#edt_interim_block_number');
-            var edt_seq_final = $('#edt_seq_final');
-            var edt_seq_interim = $('#edt_seq_interim');
+            var edt_status = $('#edt_status');
+            var cbo_color = $('#cbo_color');
 
             if (response.hasOwnProperty('id'))
             {
                 rec_id.val(response.id);
 
-                edt_name.val(response.name);
-                listar_products(response.products);
-                listar_defects(response.defects);
-                edt_final_block_number.val(response.final_block_number);
-                edt_interim_block_number.val(response.interim_block_number);
-                edt_seq_final.val(response.seq_final);
-                edt_seq_interim.val(response.seq_interim);
+                edt_status.val(response.status);
+                cbo_color.val(response.cor);
+                $('#cor_exemplo').css('background', cbo_color.val() ? cbo_color.val() : '');
             }
         }
     }).fail(ajaxError);
@@ -160,29 +171,22 @@ function valida_formulario()
 {
     var alerta_form = $('#alerta_form');
 
-    var edt_name = $('#edt_name');
-    var edt_final_block_number = $('#edt_final_block_number');
-    var edt_interim_block_number = $('#edt_interim_block_number');
-
+    var edt_status = $('#edt_status');
+    var cbo_color = $('#cbo_color');
+    
     var valido = true;
     var msgs = new Array();
 
-    if (edt_name.val().length == 0)
+    if (edt_status.val().length == 0)
     {
         valido = false;
-        msgs.push('Enter the name');
+        msgs.push('Enter the status');
     }
 
-    if (edt_final_block_number.val().length == 0)
+    if (cbo_color.val().length == 0)
     {
         valido = false;
-        msgs.push('Enter the final block number');
-    }
-
-    if (edt_interim_block_number.val().length == 0)
-    {
-        valido = false;
-        msgs.push('Enter the interim block number');
+        msgs.push('Select a color');
     }
 
     if (!valido)
@@ -203,27 +207,17 @@ function envia_detalhes()
         var modal_detalhe = $('#modal_detalhe');
         var btn_save = $('#btn_save');
         var rec_id = $('#rec_id');
-        var edt_name = $('#edt_name');
-        var cbo_products = $('#cbo_products');
-        var cbo_defects = $('#cbo_defects');
-        var edt_final_block_number = $('#edt_final_block_number');
-        var edt_interim_block_number = $('#edt_interim_block_number');
-        var edt_seq_final = $('#edt_seq_final');
-        var edt_seq_interim = $('#edt_seq_interim');
+        var edt_status = $('#edt_status');
+        var cbo_color = $('#cbo_color');
         
         $.ajax({
             error: ajaxError,
             type: "POST",
-            url: "<?= APP_URI ?>quarry/" + (post_tipo.val() == FORMULARIO.EXCLUIR ? "delete" : "save") + "/",
+            url: "<?= APP_URI ?>poblo_status/" + (post_tipo.val() == FORMULARIO.EXCLUIR ? "delete" : "save") + "/",
             data: {
                 id: rec_id.val(),
-                name: edt_name.val(),
-                products: cbo_products.val(),
-                defects: cbo_defects.val(),
-                final_block_number: edt_final_block_number.val(),
-                interim_block_number: edt_interim_block_number.val(),
-                seq_final: edt_seq_final.val(),
-                seq_interim: edt_seq_interim.val()
+                status: edt_status.val(),
+                cor: cbo_color.val()
             },
             success: function (response) {
                 if (response_validation(response)) {
@@ -234,13 +228,13 @@ function envia_detalhes()
                     switch (tipo)
                     {
                         case FORMULARIO.NOVO:
-                            alert_saved($('#edt_name').val() + ' saved successfully');
+                            alert_saved($('#edt_status').val() + ' saved successfully');
                             break;
                         case FORMULARIO.EDITAR:
-                            alert_saved($('#edt_name').val() + ' saved successfully');
+                            alert_saved($('#edt_status').val() + ' saved successfully');
                             break;
                         case FORMULARIO.EXCLUIR:
-                            alert_saved($('#edt_name').val() + ' deleted successfully');
+                            alert_saved($('#edt_status').val() + ' deleted successfully');
                             break;
                     }
                 }
@@ -248,9 +242,3 @@ function envia_detalhes()
         });
     }
 }
-
-// on load window
-funcs_on_load.push(function() {
-    $("#cbo_products").select2();
-    $("#cbo_defects").select2();
-});

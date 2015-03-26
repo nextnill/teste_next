@@ -14,7 +14,7 @@ class PobloStatus_Model extends \Sys\Model {
     public $excluido;
 
     public $status;
-    public $color;
+    public $cor;
     
     function __construct()
     {
@@ -30,7 +30,7 @@ class PobloStatus_Model extends \Sys\Model {
             $validation->add(Validation::VALID_ERR_FIELD, 'Enter with a status');
         }
 
-        if (strlen($this->color) == 0)
+        if (strlen($this->cor) == 0)
         {
             $validation->add(Validation::VALID_ERR_FIELD, 'Enter with a color');
         }
@@ -94,7 +94,7 @@ class PobloStatus_Model extends \Sys\Model {
 
                 $this->id = DB::last_insert_id();
                 
-                return $this;
+                return $this->id;
             }
         }
         
@@ -180,7 +180,7 @@ class PobloStatus_Model extends \Sys\Model {
                     id,
                     excluido,
                     status,
-                    color
+                    cor
                 FROM
                     poblo_status
                 WHERE id = ?',
