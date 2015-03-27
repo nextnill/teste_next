@@ -3,6 +3,7 @@ var reserved_client_code = new Array();
 var colors = new Array();
 var colors = <?= json_encode(Sys\Util::Colors()); ?>;
 var divisoria = $('<hr>').css('border-color', '#8b0305').css('border-width', '8px');
+var btn_status = $('.btn_status_template');
 
 
 
@@ -14,8 +15,37 @@ funcs_on_load.push(function() {
 
 function init_list() {
     render_cores();
-    listar_blocks();
+    
+    listar_poblo_status();
     colors = ['#FFFF00','#00FF00','#00AFFF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];  
+}
+
+function listar_poblo_status(){
+
+   $.getJSON("<?= APP_URI ?>poblo_status/list/json/", function(response) {
+        if (response_validation(response)) {
+            var table_body = btn_status.find('.ul_listagem');
+            $.each(response, function(i, item) {
+                add_row_poblo(table_body, item);
+            });
+            listar_blocks();        
+        }
+    });
+}
+
+function add_row_poblo(table_body, item){
+
+    var template_row = table_body.find("li:first");
+    var new_row = template_row.clone();
+    new_row.removeAttr("template-row");
+    new_row.css("display", '');
+
+    var field_poblo_status_option = $(new_row.find("[template-field='poblo_status_option']"));
+    field_poblo_status_option.text(item.status);
+    field_poblo_status_option.attr('template-ref', item.poblo_status_id);
+    field_poblo_status_option.attr('template-cor', item.cor);
+
+    new_row.appendTo(table_body);
 }
 
 function listar_blocks(callback_function)
@@ -278,9 +308,6 @@ function listar_blocks(callback_function)
             	var nova_coluna = $('<td rowspan="' + linhas + '"></td>');
             	nova_coluna.append(template_obs);
             	nova_coluna.appendTo(primeira_linha);
-
-
-
             }
             
             var render_quality_totalizador = function(lot_number) {
@@ -411,17 +438,35 @@ function add_row(table_body, item, bold, style_class)
     	field_quarry.text(item.quarry_name || '');
     }
 
-    var field_block_number = $(new_row.find("[template-field='block_number_a']"));
-    field_block_number.text(item.block_number || '');
-    field_block_number.attr('template-client', item.reserved_client_id);
-    field_block_number.click(function() {
+    var field_block_number = $(new_row.find("[template-field='block_number']"));
+    var field_block_number_a = $(new_row.find("[template-field='block_number_a']"));
+    field_block_number_a.text(item.block_number || '');
+    field_block_number_a.attr('template-client', item.reserved_client_id);
+    field_block_number_a.click(function() {
     	show_dialog(FORMULARIO.VISUALIZAR, !is_sobra ? item.block_id : item.id);
     });
 
     $(field_block_number).each(function(){
             reserved_client_code.push(item.reserved_client_id);
     });
+    var btn_status_clone = btn_status.clone();
+    btn_status_clone.removeClass('btn_status_template');
+    var div_status = $(new_row.find(".div_status"));
+    div_status.append(btn_status_clone);
 
+
+    var poblo_status_option = $(new_row.find(".ul_listagem > li"));
+    poblo_status_option.click(function(){
+       
+        var elemento = $(this).find("[template-field='poblo_status_option']");
+        var cor = elemento.attr('template-cor');
+        var block_number_field = $(this).closest('td.block_number');
+       
+        block_number_field.css('background-color', cor);
+
+    });
+
+    
     var field_quality_name = $(new_row.find("[template-field='quality_name']"));
     field_quality_name.text(item.quality_name || '');
 

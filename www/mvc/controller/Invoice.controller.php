@@ -86,6 +86,11 @@ class Invoice_Controller extends \Sys\Controller
         $this->print_json($invoice_model);
     }
 
+    function color_save(){
+
+        
+    }
+
     function download($params){
     
     $id = (int)$this->ReadGet('invoice_id');

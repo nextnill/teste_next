@@ -210,10 +210,10 @@ class PobloStatus_Model extends \Sys\Model {
     }
 
     // lists
-    function get_list($excluido=false)
+    function get_list($excluido='N')
     {
         
-        $sql = 'SELECT id, excluido, status, cor FROM poblo_status WHERE excluido = ? ORDER BY status';
+        $sql = 'SELECT id as poblo_status_id, excluido, status, cor FROM poblo_status WHERE excluido = ? ORDER BY status';
 
         $params[] = ($excluido === true ? 'S' : 'N');
 

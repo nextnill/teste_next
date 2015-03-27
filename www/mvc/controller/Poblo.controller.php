@@ -40,6 +40,16 @@ class Poblo_Controller extends \Sys\Controller
         $this->print_json($list);
     }
 
+       function list_poblo_json($params)
+    {
+        // listar os blocos
+        $lot_transport_model = $this->LoadModel('LotTransport', true);
+        $list = $lot_transport_model->get_poblo();
+        
+        $this->print_json($list);
+    }
+
+
     function obs_json($params)
     {
         $lot_number = (string)$this->ReadGet('lot_number');

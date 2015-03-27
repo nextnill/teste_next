@@ -24,7 +24,7 @@ function add_row(table_body, item)
     new_row.css("display", '');
 
     var field_id = $(new_row.find("[template-field='id']"));
-    field_id.text(item.id);
+    field_id.text(item.poblo_status_id);
 
     var field_status = $(new_row.find("[template-field='status']"));
     field_status.text(item.status);
@@ -33,7 +33,7 @@ function add_row(table_body, item)
     field_color.append('<span class="badge" style="padding-right: 100px; background: ' + item.cor + '">&nbsp;</span>');
 
     var button_edit = new_row.find("[template-button='edit']");
-    button_edit.attr('template-ref', item.id);
+    button_edit.attr('template-ref', item.poblo_status_id);
     button_edit.click(
         function () {
             var id = $(this).attr('template-ref');
@@ -42,20 +42,20 @@ function add_row(table_body, item)
     );
 
     var button_visualize = new_row.find("[template-button='visualize']");
-    button_visualize.attr('template-ref', item.id);
+    button_visualize.attr('template-ref', item.poblo_status_id);
     button_visualize.click(
         function () {
             var id = $(this).attr('template-ref');
-            show_dialog(FORMULARIO.VISUALIZAR, id);
+            show_dialog(FORMULARIO.VISUALIZAR, poblo_status_id);
         }
     );
 
     var button_delete = new_row.find("[template-button='delete']");
-    button_delete.attr('template-ref', item.id);
+    button_delete.attr('template-ref', item.poblo_status_id);
     button_delete.click(
         function () {
             var id = $(this).attr('template-ref');
-            show_dialog(FORMULARIO.EXCLUIR, id);
+            show_dialog(FORMULARIO.EXCLUIR, poblo_status_id);
         }
     );
 
