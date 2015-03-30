@@ -358,7 +358,6 @@ function listar_blocks(callback_function)
                     table.find("tr:gt(1)").remove(); // limpa trs, menos a primeira
                     table.removeAttr("template-table");
                     table.css("display", '');
-                    
 
                     render_header(table, item);
 
@@ -416,7 +415,7 @@ function listar_blocks(callback_function)
     }).fail(ajaxError);
 }
 
-function add_row(table_body, item, bold, style_class)
+function add_row(table_body, item, totalizador, style_class)
 {
 	var is_sobra = item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false;
 	var is_inspection_certificate = item.lot_number ? item.lot_number.indexOf('Inspection Certificate') >= 0 : false;
@@ -442,30 +441,46 @@ function add_row(table_body, item, bold, style_class)
     var field_block_number_a = $(new_row.find("[template-field='block_number_a']"));
     field_block_number_a.text(item.block_number || '');
     field_block_number_a.attr('template-client', item.reserved_client_id);
+    field_block_number.css('background-color', item.cor);
     field_block_number_a.click(function() {
     	show_dialog(FORMULARIO.VISUALIZAR, !is_sobra ? item.block_id : item.id);
     });
 
     $(field_block_number).each(function(){
-            reserved_client_code.push(item.reserved_client_id);
-    });
-    var btn_status_clone = btn_status.clone();
-    btn_status_clone.removeClass('btn_status_template');
-    var div_status = $(new_row.find(".div_status"));
-    div_status.append(btn_status_clone);
-
-
-    var poblo_status_option = $(new_row.find(".ul_listagem > li"));
-    poblo_status_option.click(function(){
-       
-        var elemento = $(this).find("[template-field='poblo_status_option']");
-        var cor = elemento.attr('template-cor');
-        var block_number_field = $(this).closest('td.block_number');
-       
-        block_number_field.css('background-color', cor);
-
+        reserved_client_code.push(item.reserved_client_id);
     });
 
+    if((!is_sobra) && (!totalizador)){
+
+        var btn_status_clone = btn_status.clone();
+        btn_status_clone.css('display', '');
+        btn_status_clone.removeClass('btn_status_template');
+        var div_status = $(new_row.find(".div_status"));
+        div_status.append(btn_status_clone);
+
+
+        var poblo_status_option = $(new_row.find(".ul_listagem > li"));
+        poblo_status_option.click(function(){
+           
+            var elemento = $(this).find("[template-field='poblo_status_option']");
+            var cor_poblo_status = elemento.attr('template-cor');
+            var id_poblo_status = elemento.attr('template-ref');    
+            var block_number_field = $(this).closest('td.block_number');
+            var block_number_selected = item.invoice_item_id;
+           
+            block_number_field.css('background-color', cor_poblo_status);
+
+             $.ajax({
+            error: ajaxError,
+            type: "POST",
+            url: "<?= APP_URI ?>poblo_status/save_color/",
+            data: {
+                invoice_item_id: block_number_selected,
+                poblo_status_id: id_poblo_status
+            }
+        });
+        });
+    }
     
     var field_quality_name = $(new_row.find("[template-field='quality_name']"));
     field_quality_name.text(item.quality_name || '');
@@ -545,7 +560,7 @@ function add_row(table_body, item, bold, style_class)
     travel_plan_status = item.client_remove == '1' ? item.current_travel_plan_status : travel_plan_status;
     */
 
-    if (bold) {
+    if (totalizador) {
     	new_row.css('font-weight', 'bold');
     }
 
@@ -590,9 +605,7 @@ function associate_sobra(){
 
           return result;
         };
-
   client_color = colors.associate(reserved_client_code); 
-
 }
 
 function color_sobra(){

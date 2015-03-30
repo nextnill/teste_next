@@ -2,12 +2,13 @@
     <li class="active">Poblo</li>
 </ol>
 <!-- TEMPLATE STATUS DO POBLO -->
-<div class="btn-group btn_status btn_status_template">
-    <button type="button" template-button="btn_poblo_status" class="btn btn-default btn-xs dropdown-toggle btn_poblo_status" data-toggle="dropdown" aria-expanded="false">
+<div class="btn-group btn_status btn_status_template" style="display: none;">
+    <button type="button" template-button="btn_poblo_status" class="btn btn-default btn-xs dropdown-toggle btn_poblo_status" data-toggle="dropdown" aria-expanded="false" style="padding-top: 0px;
+    padding-bottom: 0px;">
     <span class="glyphicon glyphicon-tint" aria-hidden="true"></span><span class="caret"></span>
     </button>
     <ul class="dropdown-menu ul_listagem" role="menu">
-        <li template-row style="display:none;"><a href="#"><span template-field="poblo_status_option">{status_poblo}</span></a></li>
+        <li template-row style="display:none;"><a href="javascript:;"><span template-field="poblo_status_option">{status_poblo}</span></a></li>
     </ul>
 </div>
 <!-- TEMPLATE STATUS DO POBLO -->
@@ -80,7 +81,7 @@
                             <th style="width: 60px" class="text-center th_nf">NF</th>
                             <th style="width: 80px" class="text-center th_data">Date</th>
                             <th style="width: 80px" class="text-center th_price">Price</th>
-                            <th style="width: 110px" class="text-center">Block Number</th>
+                            <th style="width: 140px" class="text-center">Block Number</th>
                             <th style="width: 80px" class="text-center">Quality</th>
                             <th colspan="3" class="text-center">Net Meas</th>
                             <th class="text-center">Vol</th>
@@ -111,7 +112,7 @@
                             <td template-field="data" class="text-center">{data}</td>
                             <td template-field="price" class="text-right">{price}</td>
                             <td template-field="block_number" class="text-center block_number">
-                                <span template-field="block_number_a" style="cursor: pointer;">{block_number}</span>
+                                <span class="block_number_a" template-field="block_number_a" style="cursor: pointer;">{block_number}</span>
                                 <div class="pull-right div_status"></div>
                             </td>
                             <td template-field="quality_name" class="text-center">{quality_name}</td>

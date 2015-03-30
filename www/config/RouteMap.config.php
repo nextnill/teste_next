@@ -220,6 +220,7 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/poblo_status/list/json/' => array('PobloStatus', 'list_json'),
                 '/poblo_status/detail/json/' => array('PobloStatus', 'detail_json'),
                 '/poblo_status/save/' => array('PobloStatus', 'save_json', 'poblo'),
+                '/poblo_status/save_color/' => array('PobloStatus', 'save_color_json', 'poblo'),
                 '/poblo_status/delete/' => array('PobloStatus', 'delete_json', 'poblo'),
             );
         }

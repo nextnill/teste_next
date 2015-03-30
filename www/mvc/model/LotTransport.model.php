@@ -898,8 +898,10 @@ class LotTransport_Model extends \Sys\Model {
                     invoice_item.sale_net_c AS invoice_sale_net_c,
                     invoice_item.sale_net_a AS invoice_sale_net_a,
                     invoice_item.sale_net_l AS invoice_sale_net_l,
+                    invoice_item.poblo_status_id,
                     invoice.date_record AS invoice_date_record,
                     invoice.poblo_obs AS invoice_poblo_obs,
+                    poblo_status.cor AS cor,
                     lot_transport.client_id AS client_id,
                     client.code AS client_code,
                     client.name AS client_name,
@@ -930,6 +932,7 @@ class LotTransport_Model extends \Sys\Model {
                     INNER JOIN quality ON (quality.id = block.quality_id)
                     LEFT JOIN invoice_item ON (invoice_item.block_id = block.id AND invoice_item.excluido = 'N')
                     LEFT JOIN invoice ON (invoice.id = invoice_item.invoice_id)
+                    INNER JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
                 WHERE
                     block.quarry_id IN ({$this->active_quarries}) AND 
                     block.excluido = 'N' 

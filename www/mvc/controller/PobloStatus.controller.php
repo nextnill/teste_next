@@ -44,6 +44,24 @@ class PobloStatus_Controller extends \Sys\Controller
         $this->print_json($ret);
     }
 
+     function save_color_json($params)
+    {
+        $id = (int)$this->ReadPost('invoice_item_id');
+
+        $invoice_item_model = $this->LoadModel('InvoiceItem', true);
+        
+        if ($id > 0)
+        {
+            $invoice_item_model->populate($id);
+        } 
+        
+        $invoice_item_model->poblo_status_id = $this->ReadPost('poblo_status_id');
+
+        $ret = $invoice_item_model->save();
+
+        $this->print_json($ret);
+    }
+
     function delete_json($params)
     {
         $id = (int)$this->ReadPost('id');
