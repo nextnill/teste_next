@@ -55,7 +55,7 @@ function add_row(table_body, item)
     button_delete.click(
         function () {
             var id = $(this).attr('template-ref');
-            show_dialog(FORMULARIO.EXCLUIR, poblo_status_id);
+            show_dialog(FORMULARIO.EXCLUIR, item.poblo_status_id);
         }
     );
 
