@@ -14,7 +14,32 @@ $('.btn_reserve').hide();
 function init()
 {   
     listar_head_office();
-    colors = ['#FFFF00','#00FF00','#00AFFF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];   
+
+    colors = ['#FFFF00',
+              '#00FF00',
+              '#00AFFF',
+              '#FFA500',
+              '#FF0000',
+              '#FFFFE0',
+              '#90EE90',
+              '#00BFFF',
+              '#FFA07A',
+              '#01DFD7',
+              '#FE9A2E',
+              '#0404B4',
+              '#A9BCF5',
+              '#F5A9A9',
+              '#F7BE81',
+              '#B18904',
+              '#CEF6F5',
+              '#0B4C5F',
+              '#CECEF6',
+              '#D0F5A9',
+              '#2E2EFE',
+              '#FA5882',
+              '#F5ECCE',
+              '#FF4000',
+              '#FF4040'];   
 }
 
 function listar_head_office()
@@ -206,15 +231,16 @@ function add_row(table_body, item)
     for (var i = 0; i < head_office.length; i++) {
         var ho_item = head_office[i];
         add_option(cbo_reserved_client, ho_item.id, ho_item.code);
-        reserved_client_code.push(ho_item.id);
+        
 
     };
 
-    reserved_client_code.push('-1');
+    //reserved_client_code.push('-1');
    
-    if (item.reserved_client_id)
+    if (item.reserved_client_id){
+        reserved_client_code.push(item.reserved_client_id);
         cbo_reserved_client.val(item.reserved_client_id).trigger("change");
-
+    }    
     cbo_reserved_client.attr('template-ref', item.id);
     cbo_reserved_client.attr('template-ref-bn', item.block_number);
     cbo_reserved_client.attr('template-ref-default', item.reserved_client_id);
@@ -225,6 +251,19 @@ function add_row(table_body, item)
         if ($(this).attr('template-ref-active') == "false") {
             // marca janela como ativa
             $(this).attr('template-ref-active', "true");
+
+            var valor = $(this).val();
+            var teste = false;
+            
+            for(i=0; i<reserved_client_code.length; i++){
+                if(valor == reserved_client_code[i]){
+
+                    teste = true;
+                }    
+            }
+            if(teste == false&& typeof valor != 'undefined' && valor){
+                 reserved_client_code.push(valor);
+            }
 
             var id = $(this).attr('template-ref');
             var select_default = $(this).attr('template-ref-default');

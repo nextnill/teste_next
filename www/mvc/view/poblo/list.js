@@ -451,7 +451,20 @@ function add_row(table_body, item, totalizador, style_class)
     });
 
     $(field_block_number).each(function(){
-        reserved_client_code.push(item.reserved_client_id);
+
+        var valor = []; 
+        valor = item.reserved_client_id;
+        var teste = false;
+
+       for(i=0; i<reserved_client_code.length; i++){
+            if(valor == reserved_client_code[i]){
+
+                teste = true;
+            }    
+        }
+        if(teste == false && typeof valor != 'undefined' && valor){
+             reserved_client_code.push(valor);
+        }
     });
 
     if((!is_sobra) && (!totalizador)){
