@@ -4,6 +4,7 @@ var colors = new Array();
 var colors = <?= json_encode(Sys\Util::Colors()); ?>;
 var divisoria = $('<hr>').css('border-color', '#8b0305').css('border-width', '8px');
 var btn_status = $('.btn_status_template');
+var client_color;
 
 
 
@@ -14,10 +15,12 @@ funcs_on_load.push(function() {
 });
 
 function init_list() {
+   
     render_cores();
     
     listar_poblo_status();
-    colors = ['#FFFF00','#00FF00','#00AFFF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];  
+    colors = ['#FFFF00','#00FF00','#00AFFF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];
+      
 }
 
 function listar_poblo_status(){
@@ -28,7 +31,8 @@ function listar_poblo_status(){
             $.each(response, function(i, item) {
                 add_row_poblo(table_body, item);
             });
-            listar_blocks();        
+            listar_blocks(); 
+
         }
     });
 }
@@ -45,7 +49,9 @@ function add_row_poblo(table_body, item){
     field_poblo_status_option.attr('template-ref', item.poblo_status_id);
     field_poblo_status_option.attr('template-cor', item.cor);
 
+
     new_row.appendTo(table_body);
+
 }
 
 function listar_blocks(callback_function)
@@ -90,6 +96,7 @@ function listar_blocks(callback_function)
                 table.find("tr:gt(1)").remove();
                 table.removeAttr("template-table");
                 table.css("display", '');
+
 
             //}
             var render_header = function(table, item) {
@@ -308,6 +315,7 @@ function listar_blocks(callback_function)
             	var nova_coluna = $('<td rowspan="' + linhas + '"></td>');
             	nova_coluna.append(template_obs);
             	nova_coluna.appendTo(primeira_linha);
+
             }
             
             var render_quality_totalizador = function(lot_number) {
@@ -329,16 +337,14 @@ function listar_blocks(callback_function)
             var is_not_travel = false;
             
             $.each(arr_blocks, function(i, item) {
-
                 // se for o primeiro registro, seta o título na tabela
                 if (i == 0) {
 				    render_header(table, item);
-
                 }
                 
                 // se for um novo lote
                 if (item.lot_number != lot_number) {
-
+                
                 	// imprimo o totalizador referente ao ultimo registro do lote
                 	render_quality_totalizador(lot_number);
                 	render_totalizador(lot_transport_id, lot_number, quarry_id, invoice_id);
@@ -347,9 +353,7 @@ function listar_blocks(callback_function)
                     if (i > 0) {
                         // mostra a tabela
                         //list.append(divisoria);
-                        table.appendTo(list);
-
-                        
+                        table.appendTo(list);    
                     }
 
 
@@ -365,7 +369,6 @@ function listar_blocks(callback_function)
                 else {
                 	if (item.quarry_name != quarry_name || item.quality_name != quality_name) {
                 		render_quality_totalizador(lot_number);
-
 
                 	}
                 }
@@ -441,7 +444,8 @@ function add_row(table_body, item, totalizador, style_class)
     var field_block_number_a = $(new_row.find("[template-field='block_number_a']"));
     field_block_number_a.text(item.block_number || '');
     field_block_number_a.attr('template-client', item.reserved_client_id);
-    field_block_number.css('background-color', item.cor);
+
+   
     field_block_number_a.click(function() {
     	show_dialog(FORMULARIO.VISUALIZAR, !is_sobra ? item.block_id : item.id);
     });
@@ -457,7 +461,7 @@ function add_row(table_body, item, totalizador, style_class)
         btn_status_clone.removeClass('btn_status_template');
         var div_status = $(new_row.find(".div_status"));
         div_status.append(btn_status_clone);
-
+        field_block_number.css('background-color', item.cor_poblo_status);
 
         var poblo_status_option = $(new_row.find(".ul_listagem > li"));
         poblo_status_option.click(function(){
@@ -467,6 +471,7 @@ function add_row(table_body, item, totalizador, style_class)
             var id_poblo_status = elemento.attr('template-ref');    
             var block_number_field = $(this).closest('td.block_number');
             var block_number_selected = item.invoice_item_id;
+
            
             block_number_field.css('background-color', cor_poblo_status);
 
@@ -538,6 +543,8 @@ function add_row(table_body, item, totalizador, style_class)
     else {
     	if (is_sobra) {
     		field_wagon_number.text(item.reserved_client_code ? item.reserved_client_code : '');
+            render_cores();
+
     	}
     	else if (is_inspection_certificate) {
     		field_wagon_number.text(item.sold_client_code ? item.sold_client_code : '');
@@ -566,6 +573,7 @@ function add_row(table_body, item, totalizador, style_class)
 
     if (style_class) {
     	new_row.addClass(style_class);
+
     }
 
     
@@ -579,10 +587,12 @@ function add_row(table_body, item, totalizador, style_class)
     }
 
     new_row.appendTo(table_body);
+
     color_sobra();
 }
 
 function render_cores() {
+
     var template_cores = $('#template_cores');
     var keys = Object.keys(colors);
 
@@ -590,17 +600,24 @@ function render_cores() {
         var option = $('<option>').val(keys[i]).css('background', keys[i]);
         option.appendTo(template_cores);
     };
+
 }
 
 function associate_sobra(){
 
     Array.prototype.associate = function (keys) {
           var result = [];
+          var keys2 = [];
+
+          keys.forEach(function (el, i) {
+            if(typeof keys[i] != 'undefined' && keys[i])
+                keys2.push(el);
+          });
 
           this.forEach(function (el, i) {
-            if(typeof keys[i] != 'undefined')
-               // result[keys[i]] = el;
-                result.push({client_id:keys[i], cor:el});
+            if(typeof keys2[i] != 'undefined')
+               
+                result.push({client_id:keys2[i], cor:el});
           });
 
           return result;
@@ -609,7 +626,7 @@ function associate_sobra(){
 }
 
 function color_sobra(){
-   
+   //alert('entrou');
     associate_sobra();
 
     var linhas = $('[template-field="block_number"]'); 
@@ -626,19 +643,21 @@ function color_sobra(){
     $(blocos).each(function(indice, linha) {
 
         var client_id = $(linha).attr('template-client');
-        var cor = null;
+
+        var cor_final = null;
 
         $(client_color).each(function(indice_cliente, cor_cliente) {
 
             if(cor_cliente.client_id == client_id){
-                cor = cor_cliente.cor;
+                cor_final = cor_cliente.cor;
             }
         });
         if(client_id > 0)
-            $(linha).parent().css('background-color', cor);
+            $(linha).parent().css('background-color', cor_final);
 
         else{
-           $(linha).parent().css('background-color', ''); 
+            $(linha).parent().css('background-color', ''); 
         }        
     });
 }
+

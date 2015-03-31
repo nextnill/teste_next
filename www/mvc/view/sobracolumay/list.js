@@ -313,17 +313,22 @@ function associate(){
 
     Array.prototype.associate = function (keys) {
           var result = [];
+          var keys2 = [];
+
+          keys.forEach(function (el, i) {
+            if(typeof keys[i] != 'undefined' && keys[i])
+                keys2.push(el);
+          });
 
           this.forEach(function (el, i) {
-            if(typeof keys[i] != 'undefined')
-               // result[keys[i]] = el;
-                result.push({client_id:keys[i], cor:el});
+            if(typeof keys2[i] != 'undefined')
+               
+                result.push({client_id:keys2[i], cor:el});
           });
 
           return result;
         };
-
-  client_color = colors.associate(reserved_client_code);      
+  client_color = colors.associate(reserved_client_code);       
 }
 
 function color(){

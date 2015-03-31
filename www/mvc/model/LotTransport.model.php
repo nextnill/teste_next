@@ -901,7 +901,7 @@ class LotTransport_Model extends \Sys\Model {
                     invoice_item.poblo_status_id,
                     invoice.date_record AS invoice_date_record,
                     invoice.poblo_obs AS invoice_poblo_obs,
-                    poblo_status.cor AS cor,
+                    poblo_status.cor AS cor_poblo_status,
                     lot_transport.client_id AS client_id,
                     client.code AS client_code,
                     client.name AS client_name,
