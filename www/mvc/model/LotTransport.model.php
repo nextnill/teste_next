@@ -932,7 +932,7 @@ class LotTransport_Model extends \Sys\Model {
                     INNER JOIN quality ON (quality.id = block.quality_id)
                     LEFT JOIN invoice_item ON (invoice_item.block_id = block.id AND invoice_item.excluido = 'N')
                     LEFT JOIN invoice ON (invoice.id = invoice_item.invoice_id)
-                    INNER JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
+                    LEFT JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
                 WHERE
                     block.quarry_id IN ({$this->active_quarries}) AND 
                     block.excluido = 'N' 

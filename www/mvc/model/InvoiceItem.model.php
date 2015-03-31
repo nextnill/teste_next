@@ -487,8 +487,7 @@ class InvoiceItem_Model extends \Sys\Model {
                     invoice_item.sale_net_l,
                     invoice_item.sale_net_vol,
                     invoice_item.tot_weight,
-                    invoice_item.obs,
-                    invoice_item.poblo_status_id
+                    invoice_item.obs
                 FROM invoice_item
                 INNER JOIN block ON (block.id = invoice_item.block_id)
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)
@@ -496,7 +495,7 @@ class InvoiceItem_Model extends \Sys\Model {
                 INNER JOIN invoice ON (invoice.id = invoice_item.invoice_id)
                 INNER JOIN quarry ON (quarry.id = block.quarry_id)
                 INNER JOIN quality ON (quality.id = block.quality_id)
-                INNER JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
+                
                 WHERE
                     invoice_item.invoice_id = ?
                     AND invoice_item.excluido = ?
