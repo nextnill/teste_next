@@ -26,6 +26,10 @@ class Session
     	$_SESSION[SPRE.'last_activity'] = null;
         $_SESSION[SPRE.'user'] = null;
         $_SESSION[SPRE.'status'] = (!is_null($status) ? $status : self::STT_LOGOUT);
+        $_SESSION[SPRE.'po_ano_filtro'] = null;
+        $_SESSION[SPRE.'po_mes_filtro'] = null;
+        $_SESSION[SPRE.'po_block_type'] = null;
+        $_SESSION[SPRE.'po_quarry_id'] = null;
     }
 
     function refresh($user)

@@ -331,14 +331,15 @@ class ProductionOrder_Model extends \Sys\Model {
                     quarry.id AS quarry_id,
                     quarry.name AS quarry_name,
                     sum(production_order_item.net_vol)as production_order_item_net_vol,
-                    sum(block.net_vol) as block_net_vol,
+                    COALESCE(sum(block.net_vol), 0) as block_net_vol,
                     production_order.date_production,
                     production_order.product_id,
                     product.name AS product_name,
                     product.weight_vol AS product_weight_vol,
                     production_order.block_type,
                     production_order.status,
-                    count(production_order_item.production_order_id) as count_blocks
+                    count(production_order_item.production_order_id) as count_blocks_po,
+                    count(block.id) as count_blocks
                 FROM
                     production_order
                 INNER JOIN
@@ -348,7 +349,7 @@ class ProductionOrder_Model extends \Sys\Model {
                 INNER JOIN
                     production_order_item ON (production_order_item.production_order_id = production_order.id)
                 LEFT JOIN
-                    block ON (block.production_order_item_id = production_order_item.id)
+                    block ON (block.production_order_item_id = production_order_item.id AND block.excluido = 'N')
                 WHERE
                     production_order.quarry_id IN ({$this->active_quarries})
                     AND production_order.excluido = ? ";

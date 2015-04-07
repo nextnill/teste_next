@@ -6,7 +6,35 @@ class ProductionOrder_Controller extends \Sys\Controller
 	// WEB PAGES
     function list_action($params)
     {
-        $this->RenderView('masterpage', array('production_order/list', 'production_order/detail'));
+
+        $ano = null;
+        $mes = null;
+        $block_type = null;
+        $quarry_id = null;
+
+        
+        if(isset($_SESSION[SPRE.'po_ano_filtro'])){  
+            $ano =  $_SESSION[SPRE.'po_ano_filtro'];
+        }
+        
+        if(isset($_SESSION[SPRE.'po_mes_filtro'])){ 
+            $mes = $_SESSION[SPRE.'po_mes_filtro'];
+        }
+        
+        if(isset($_SESSION[SPRE.'po_block_type'])){
+            $block_type = $_SESSION[SPRE.'po_block_type'];
+        }
+        
+        if(isset($_SESSION[SPRE.'po_quarry_id'])){
+            $quarry_id = $_SESSION[SPRE.'po_quarry_id'];
+        }   
+
+        $parametro["ano"] = $ano;
+        $parametro["mes"] = $mes;
+        $parametro["block_type"] = $block_type;
+        $parametro["quarry_id"] = $quarry_id;
+
+        $this->RenderView('masterpage', array('production_order/list', 'production_order/detail'), $parametro);
     }
 
     function items_action($params)
@@ -41,6 +69,12 @@ class ProductionOrder_Controller extends \Sys\Controller
         $block_type = $this->ReadGet('block_type');
         $ano = $this->ReadGet('ano');
         $mes = $this->ReadGet('mes');
+
+        $_SESSION[SPRE.'po_ano_filtro'] = $ano;
+        $_SESSION[SPRE.'po_mes_filtro'] = $mes;
+        $_SESSION[SPRE.'po_block_type'] = $block_type;
+        $_SESSION[SPRE.'po_quarry_id'] = $quarry_id;
+
 
         $quarry_id = ($quarry_id > 0 ? $quarry_id : null);
         $block_type = ($block_type > 0 ? $block_type : null);

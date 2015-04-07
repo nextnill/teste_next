@@ -1,12 +1,7 @@
 // FUNCOES
-function listar_filter_quarry()
+function listar_filter_quarry(selected)
 {
     var cbo_filter_quarry = $('#cbo_filter_quarry');
-
-    cbo_filter_quarry.unbind('change');
-    cbo_filter_quarry.change(function() {
-        listar();
-    });
 
     cbo_filter_quarry.find("option").remove();
 
@@ -20,6 +15,17 @@ function listar_filter_quarry()
             };
 
             cbo_filter_quarry.select2();
+
+            if(typeof selected != 'undefined'){
+
+                cbo_filter_quarry.val(selected).trigger('change');
+            }
+
+            cbo_filter_quarry.unbind('change');
+            cbo_filter_quarry.change(function() {
+                listar();
+            });
+            listar();
         }
     }).fail(ajaxError);
 }
@@ -70,19 +76,23 @@ function add_row(table_body, item)
 
     var field_vol = $(new_row.find("[template-field='vol']"));
 
+    var field_count = $(new_row.find("[template-field='count']"));
+
     var field_status = $(new_row.find("[template-field='status']"));
     field_status.text(str_production_status(item.status));
     if (item.status == PRODUCTION_STATUS.CONFIRMED) {
         field_status.addClass('label label-success');
         field_vol.text(item.block_net_vol);
+        field_count.text(item.count_blocks);
     }
     else {
         field_status.addClass('label label-default');
         field_vol.text(item.production_order_item_net_vol);
+        field_count.text(item.count_blocks_po);
     }
 
-    var field_count = $(new_row.find("[template-field='count']"));
-    field_count.text(item.count_blocks);
+    
+    
 
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);
@@ -112,18 +122,35 @@ function add_row(table_body, item)
 
 funcs_on_load.push(function(){
 
-    listar_filter_quarry();
-
-    var agora = new Date();
-    var mes = ("0" + (agora.getMonth() + 1)).slice(-2);
-    var ano = agora.getFullYear();
-
-
+    
+    var parametros = <?php echo json_encode($data); ?>;
+    
     var edt_year = $('#edt_year');
     var cbo_month_filter = $('#cbo_month_filter');
-      
-    edt_year.val(ano);
-    cbo_month_filter.val(mes);
+    var cbo_filter_quarry = $('#cbo_filter_quarry');
+    var cbo_filter_type = $('#cbo_filter_type');
 
-    listar();
+    if(!parametros.ano && !parametros.mes){
+        var agora = new Date();
+        var mes = ("0" + (agora.getMonth() + 1)).slice(-2);
+        var ano = agora.getFullYear();
+        
+        edt_year.val(ano);
+        cbo_month_filter.val(mes);
+        listar_filter_quarry();
+        listar();
+    }
+
+    else{
+    
+    edt_year.val(parametros.ano);
+    cbo_month_filter.val(parametros.mes);
+    //cbo_filter_quarry.val(parametros.quarry_id);
+    listar_filter_quarry(parametros.quarry_id);
+    cbo_filter_type.val(parametros.block_type);
+    
+    }
+
+      
+    
 });
