@@ -7,6 +7,7 @@
 
 use \Sys\DB;
 use \Sys\Validation;
+use \Sys\Util;
 
 class LotTransport_Model extends \Sys\Model {
 
@@ -960,7 +961,11 @@ class LotTransport_Model extends \Sys\Model {
                 ";
         
         $query = DB::query($sql);
-        
+        foreach($query as $key => $row){
+
+           $cor = Util::Colors($row['cor_poblo_status']);
+           $query[$key]['cor_poblo_status_texto'] = $cor[1];
+        }
         foreach ($interim_sobracolumay as $key => $block) {
             $interim_sobracolumay[$key]['lot_number'] = 'Iterim Sobracolumay - ' . $block['quarry_name'];
         }

@@ -1,6 +1,6 @@
 var arr_blocks = [];
 var reserved_client_code = new Array();
-var colors = new Array();
+var colors_sobra_background = new Array();
 var colors = <?= json_encode(Sys\Util::Colors()); ?>;
 var divisoria = $('<hr>').css('border-color', '#8b0305').css('border-width', '8px');
 var btn_status = $('.btn_status_template');
@@ -19,8 +19,32 @@ function init_list() {
     render_cores();
     
     listar_poblo_status();
-    colors = ['#FFFF00','#00FF00','#00AFFF','#FFA500','#FF0000','#FFFFE0','#90EE90','#00BFFF','#FFA07A','#FF4040'];
-      
+
+    colors_sobra_background[0] = {cor: '#FFFF00', texto: '#000000'}
+    colors_sobra_background[1] = {cor: '#00FF00', texto: '#000000'}        
+    colors_sobra_background[2] = {cor: '#00AFFF', texto: '#000000'}          
+    colors_sobra_background[3] = {cor: '#FFA500', texto: '#000000'}          
+    colors_sobra_background[4] = {cor: '#FF0000', texto: '#FFFFFF'}                    
+    colors_sobra_background[5] = {cor: '#FFFFE0', texto: '#000000'}
+    colors_sobra_background[6] = {cor: '#90EE90', texto: '#000000'}
+    colors_sobra_background[7] = {cor: '#00BFFF', texto: '#000000'}
+    colors_sobra_background[8] = {cor: '#FFA07A', texto: '#000000'}
+    colors_sobra_background[9] = {cor: '#01DFD7', texto: '#000000'} 
+    colors_sobra_background[10] = {cor: '#FE9A2E', texto: '#000000'}      
+    colors_sobra_background[11] = {cor: '#0404B4', texto: '#FFFFFF'}
+    colors_sobra_background[12] = {cor: '#A9BCF5', texto: '#000000'}         
+    colors_sobra_background[13] = {cor: '#F5A9A9', texto: '#000000'}          
+    colors_sobra_background[14] = {cor: '#F7BE81', texto: '#000000'}         
+    colors_sobra_background[15] = {cor: '#B18904', texto: '#000000'}         
+    colors_sobra_background[16] = {cor: '#CEF6F5', texto: '#000000'}  
+    colors_sobra_background[17] = {cor: '#0B4C5F', texto: '#FFFFFF'} 
+    colors_sobra_background[18] = {cor: '#CECEF6', texto: '#000000'}      
+    colors_sobra_background[19] = {cor: '#D0F5A9', texto: '#000000'}                  
+    colors_sobra_background[20] = {cor: '#2E2EFE', texto: '#FFFFFF'}
+    colors_sobra_background[21] = {cor: '#FA5882', texto: '#000000'}        
+    colors_sobra_background[22] = {cor: '#F5ECCE', texto: '#000000'}          
+    colors_sobra_background[23] = {cor: '#FF4000', texto: '#FFFFFF'}
+    colors_sobra_background[24] = {cor: '#9ACD32', texto: '#000000'}   
 }
 
 function listar_poblo_status(){
@@ -475,6 +499,7 @@ function add_row(table_body, item, totalizador, style_class)
         var div_status = $(new_row.find(".div_status"));
         div_status.append(btn_status_clone);
         field_block_number.css('background-color', item.cor_poblo_status);
+        field_block_number.css('color', item.cor_poblo_status_texto);
 
         var poblo_status_option = $(new_row.find(".ul_listagem > li"));
         poblo_status_option.click(function(){
@@ -635,7 +660,7 @@ function associate_sobra(){
 
           return result;
         };
-  client_color = colors.associate(reserved_client_code); 
+  client_color = colors_sobra_background.associate(reserved_client_code); 
 }
 
 function color_sobra(){
@@ -662,14 +687,18 @@ function color_sobra(){
         $(client_color).each(function(indice_cliente, cor_cliente) {
 
             if(cor_cliente.client_id == client_id){
-                cor_final = cor_cliente.cor;
+                cor_final = cor_cliente.cor.cor;
+                cor_texto = cor_cliente.cor.texto;
             }
         });
-        if(client_id > 0)
+        if(client_id > 0){
             $(linha).parent().css('background-color', cor_final);
+            $(linha).css('color', cor_texto);
+        }
 
         else{
-            $(linha).parent().css('background-color', ''); 
+            $(linha).parent().css('background-color', '');
+            $(linha).css('color', ''); 
         }        
     });
 }

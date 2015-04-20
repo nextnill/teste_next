@@ -15,31 +15,31 @@ function init()
 {   
     listar_head_office();
 
-    colors = ['#FFFF00',
-              '#00FF00',
-              '#00AFFF',
-              '#FFA500',
-              '#FF0000',
-              '#FFFFE0',
-              '#90EE90',
-              '#00BFFF',
-              '#FFA07A',
-              '#01DFD7',
-              '#FE9A2E',
-              '#0404B4',
-              '#A9BCF5',
-              '#F5A9A9',
-              '#F7BE81',
-              '#B18904',
-              '#CEF6F5',
-              '#0B4C5F',
-              '#CECEF6',
-              '#D0F5A9',
-              '#2E2EFE',
-              '#FA5882',
-              '#F5ECCE',
-              '#FF4000',
-              '#FF4040'];   
+    colors[0] = {cor: '#FFFF00', texto: '#000000'}
+    colors[1] = {cor: '#00FF00', texto: '#000000'}        
+    colors[2] = {cor: '#00AFFF', texto: '#000000'}          
+    colors[3] = {cor: '#FFA500', texto: '#000000'}          
+    colors[4] = {cor: '#FF0000', texto: '#FFFFFF'}                    
+    colors[5] = {cor: '#FFFFE0', texto: '#000000'}
+    colors[6] = {cor: '#90EE90', texto: '#000000'}
+    colors[7] = {cor: '#00BFFF', texto: '#000000'}
+    colors[8] = {cor: '#FFA07A', texto: '#000000'}
+    colors[9] = {cor: '#01DFD7', texto: '#000000'} 
+    colors[10] = {cor: '#FE9A2E', texto: '#000000'}      
+    colors[11] = {cor: '#0404B4', texto: '#FFFFFF'}
+    colors[12] = {cor: '#A9BCF5', texto: '#000000'}         
+    colors[13] = {cor: '#F5A9A9', texto: '#000000'}          
+    colors[14] = {cor: '#F7BE81', texto: '#000000'}         
+    colors[15] = {cor: '#B18904', texto: '#000000'}         
+    colors[16] = {cor: '#CEF6F5', texto: '#000000'}  
+    colors[17] = {cor: '#0B4C5F', texto: '#FFFFFF'} 
+    colors[18] = {cor: '#CECEF6', texto: '#000000'}      
+    colors[19] = {cor: '#D0F5A9', texto: '#000000'}                  
+    colors[20] = {cor: '#2E2EFE', texto: '#FFFFFF'}
+    colors[21] = {cor: '#FA5882', texto: '#000000'}        
+    colors[22] = {cor: '#F5ECCE', texto: '#000000'}          
+    colors[23] = {cor: '#FF4000', texto: '#FFFFFF'}
+    colors[24] = {cor: '#9ACD32', texto: '#000000'}                    
 }
 
 function listar_head_office()
@@ -393,14 +393,17 @@ function color(){
         $(client_color).each(function(indice_cliente, cor_cliente) {
 
             if(cor_cliente.client_id == client_id){
-                cor = cor_cliente.cor;
+                cor = cor_cliente.cor.cor;
+                texto = cor_cliente.cor.texto;
             }
         });
-        if(client_id > 0)
+        if(client_id > 0){
             $(linha).parent().css('background-color', cor);
-
+            $(linha).css('color', texto);
+        }    
         else{
            $(linha).parent().css('background-color', ''); 
+           $(linha).css('color', ''); 
         }        
     });
     
