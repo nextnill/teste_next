@@ -138,6 +138,7 @@ function limpa_formulario(tipo)
     var post_tipo = $('#post_tipo');
     var rec_id = $('#rec_id');
     var rec_defects_json = $('#rec_defects_json');
+    var div_block_number_interim = $('.div_block_number_interim');
 
     var edt_block = template.find('[template-ref="edt_block"]');
     var edt_tot_c = template.find('[template-ref="edt_tot_c"]');
@@ -152,6 +153,7 @@ function limpa_formulario(tipo)
     var edt_observations = template.find('[template-ref="edt_observations"]');
     var cbo_quality = template.find('[template-ref="cbo_quality"]');
     var cbg_defects = template.find('[template-ref="cbg_defects"]');
+    var edt_block_number_interim = template.find('[template-ref="edt_block_number_interim"]');
 
     template.css('display', '');
     btn_remove.hide();
@@ -162,6 +164,7 @@ function limpa_formulario(tipo)
     post_tipo.val(tipo);
     rec_id.val('');
     rec_defects_json.val('');
+    div_block_number_interim.css('display', 'none');
 
     edt_block.val('');
     edt_tot_c.val('');
@@ -174,6 +177,7 @@ function limpa_formulario(tipo)
     edt_net_l.val('');
     edt_net_vol.val('');
     edt_observations.val('');
+    edt_block_number_interim.val('');
     cbo_quality.val('').trigger('change');
 
     set_focus(edt_block);
@@ -189,6 +193,7 @@ function carrega_formulario(id, tipo)
             var rec_id = $('#rec_id');
             var rec_defects_json = $('#rec_defects_json');
             var product_weight_vol = $('#product_weight_vol');
+            var div_block_number_interim = $('.div_block_number_interim');
             var template = $("[template-ref='div_block']");
             var edt_block = template.find('[template-ref="edt_block"]');
             var edt_tot_c = template.find('[template-ref="edt_tot_c"]');
@@ -203,6 +208,7 @@ function carrega_formulario(id, tipo)
             var edt_observations = template.find('[template-ref="edt_observations"]');
             var cbo_quality = template.find('[template-ref="cbo_quality"]');
             var cbg_defects = template.find('[template-ref="cbg_defects"]');
+            var edt_block_number_interim = template.find('[template-ref="edt_block_number_interim"]');
 
             if (response.hasOwnProperty('id'))
             {
@@ -225,6 +231,12 @@ function carrega_formulario(id, tipo)
                 edt_net_l.maskMoney('mask', parseFloat(response.net_l));
                 edt_net_vol.maskMoney('mask', parseFloat(response.net_vol));
                 edt_observations.val(response.obs);
+
+                if(response.block_number_interim){
+
+                    div_block_number_interim.css('display', '');
+                    edt_block_number_interim.val(response.block_number_interim);  
+                }
                 
                 cbo_quality.val();
                 

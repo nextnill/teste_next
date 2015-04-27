@@ -40,6 +40,7 @@ class Block_Model extends \Sys\Model {
     public $obs;
     public $defects_json;
     public $reinspection;
+    public $block_number_interim;
 
     public $defects;
 
@@ -268,6 +269,7 @@ class Block_Model extends \Sys\Model {
                         obs = ?,
                         defects_json = ?,
                         reinspection = ?,
+                        block_number_interim = ?,
                         reserved = ?,
                         reserved_client_id = ?,
                         sold = ?,
@@ -295,6 +297,7 @@ class Block_Model extends \Sys\Model {
                 $this->obs,
                 $this->defects_json,
                 trim($this->reinspection) == '' ? null : $this->reinspection,
+                trim($this->block_number_interim) == '' ? null : $this->block_number_interim,
                 $this->reserved,
                 $this->reserved_client_id,
                 $this->sold,
@@ -498,6 +501,7 @@ class Block_Model extends \Sys\Model {
                     obs,
                     defects_json,
                     reinspection,
+                    block_number_interim,
                     reserved,
                     reserved_client_id,
                     sold,
@@ -563,7 +567,7 @@ class Block_Model extends \Sys\Model {
         return $validation;
     }
 
-    function sell($block_id, $sold_client_id, $block_number, $sale_net_c, $sale_net_a, $sale_net_l, $sale_net_vol, $client_block_number='')
+    function sell($block_id, $sold_client_id, $block_number, $sale_net_c, $sale_net_a, $sale_net_l, $sale_net_vol, $client_block_number='', $block_number_interim)
     {
         $this->populate($block_id);
 
@@ -583,7 +587,8 @@ class Block_Model extends \Sys\Model {
                         sale_net_vol = ?,
                         client_block_number = ?,
                         sold = ?,
-                        sold_client_id = ?
+                        sold_client_id = ?,
+                        block_number_interim = ?
                     WHERE id = ? ';
 
             $params[] = $block_number;
@@ -595,6 +600,7 @@ class Block_Model extends \Sys\Model {
             $params[] = $client_block_number;
             $params[] = ($sold_client_id > 0);
             $params[] = ($sold_client_id > 0 ? $sold_client_id : null);
+            $params[] = $block_number_interim;
             $params[] = $block_id;
 
             $query = DB::exec($sql, $params);
@@ -663,6 +669,7 @@ class Block_Model extends \Sys\Model {
             $this->obs = (string)$row_query['obs'];
             $this->defects_json = (string)$row_query['defects_json'];
             $this->reinspection = (string)$row_query['reinspection'];
+            $this->block_number_interim = (string)$row_query['block_number_interim'];
             $this->reserved = (int)$row_query['reserved'] === 1;
             $this->reserved_client_id = (empty($row_query['reserved_client_id']) ? null : (int)$row_query['reserved_client_id']);
             $this->sold = (int)$row_query['sold'] === 1;
@@ -720,7 +727,8 @@ class Block_Model extends \Sys\Model {
                     block.sold_client_id,
                     sold_client.code AS sold_client_code,
                     sold_client.name AS sold_client_name,
-                    block.client_block_number
+                    block.client_block_number,
+                    block.block_number_interim
                 FROM
                     block
                 LEFT JOIN quality ON (quality.id = block.quality_id)
@@ -893,6 +901,7 @@ class Block_Model extends \Sys\Model {
                     block.reserved,
                     block.reserved_client_id,
                     block.sold,
+                    block.block_number_interim,
                     block.client_block_number
                 FROM block
                 INNER JOIN quarry ON (quarry.id = block.quarry_id)

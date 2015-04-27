@@ -16,6 +16,7 @@ function init_confirm() {
             blocks_accepted.push(blocks[i]);
             if (parseInt(blocks[i].type, 10) == BLOCK_TYPE.INTERIM) {
                 blocks_accepted_interim.push(blocks[i]); // copio os blocos provisórios em um array
+                blocks[i].block_number_interim = blocks[i].block_number;
             }
         }
     };

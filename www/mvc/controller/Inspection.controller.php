@@ -104,6 +104,7 @@ class Inspection_Controller extends \Sys\Controller
                     $invoice_item_model->obs = $block['obs'];
                     $invoice_item_model->poblo_status_id = $block['poblo_status_id'];
                     $invoice_item_model->client_block_number = $block['client_block_number'];
+                    $invoice_item_model->block_number_interim = $block['block_number_interim'];
 
                     $ret['invoice_item_id'][] = $invoice_item_model->save();
                 }

@@ -247,7 +247,8 @@ class InvoiceItem_Model extends \Sys\Model {
                     $this->sale_net_a,
                     $this->sale_net_l,
                     $this->sale_net_vol,
-                    $this->client_block_number
+                    $this->client_block_number,
+                    $this->block_number_interim
                 );
             }
 
