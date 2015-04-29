@@ -30,7 +30,7 @@ function init_confirm() {
         cb_get_block_number_count = 0;
 
         $.each(blocks_accepted, function(i, item) {
-            if (parseInt(blocks[i].type, 10) == BLOCK_TYPE.INTERIM) {
+            if (parseInt(blocks_accepted[i].type, 10) == BLOCK_TYPE.INTERIM) {
                 $.ajaxSetup({ cache: false });
                 $.getJSON("<?= APP_URI ?>quarry/nextval/final/" + item.quarry_id, function(response) {
                     if (response_validation(response)) {
