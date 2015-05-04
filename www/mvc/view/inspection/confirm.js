@@ -16,7 +16,9 @@ function init_confirm() {
             blocks_accepted.push(blocks[i]);
             if (parseInt(blocks[i].type, 10) == BLOCK_TYPE.INTERIM) {
                 blocks_accepted_interim.push(blocks[i]); // copio os blocos provisórios em um array
-                blocks[i].block_number_interim = blocks[i].block_number;
+                if(blocks[i].block_number_interim == null){
+                    blocks[i].block_number_interim = blocks[i].block_number;
+                }
             }
         }
     };
@@ -147,6 +149,9 @@ function render_list_cb(blocks_accepted) {
 
     var field_quality_name = $(new_row.find("[template-field='quality_name']"));
     field_quality_name.text('');
+
+    var field_block_number_interim = $(new_row.find("[template-field='block_number_interim']"));
+    field_block_number_interim.text('');
 
     var field_tot_c = $(new_row.find("[template-field='tot_c']"));
     field_tot_c.text('');
@@ -285,6 +290,16 @@ function cb_add_row(table_body, item)
         });
     }
     
+    var field_block_number_interim = $(new_row.find("[template-field='block_number_interim']"));
+
+    if(item.block_number_interim != null){
+        
+        field_block_number_interim.text(item.block_number_interim);
+    }
+    else{
+
+        field_block_number_interim.text('');
+    }
     var field_tot_c = $(new_row.find("[template-field='tot_c']"));
     field_tot_c.text(item.tot_c);
 
@@ -366,6 +381,9 @@ function cb_add_footer(table_body, block_count, block_net_vol_sum, block_tot_wei
 
     var field_quality_name = $(new_row.find("[template-field='quality_name']"));
     field_quality_name.text('');
+
+    var field_block_number_interim = $(new_row.find("[template-field='block_number_interim']"));
+    field_block_number_interim.text('');
 
     var field_tot_c = $(new_row.find("[template-field='tot_c']"));
     field_tot_c.text('');
@@ -452,5 +470,6 @@ function btn_confirm_ok_click() {
 }
 
 function btn_confirm_cancel_click() {
+
 	closeModal('modal_confirm');
 }
