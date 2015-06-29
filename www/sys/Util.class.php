@@ -210,8 +210,8 @@ class Util
 
     function send_email($emails, $arquivo, $titulo, $corpo_email){
 
-
-        require ('sys/libs/PHPMailer-master/PHPMailerAutoload.php');
+        require 'config/System.config.php';
+        require 'sys/libs/PHPMailer-master/PHPMailerAutoload.php';
         
         
         $mail = new \PHPMailer;
@@ -220,18 +220,18 @@ class Util
         // Define os dados do servidor e tipo de conexão
         // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         $mail->isSMTP(); // Define que a mensagem será SMTP
-        $mail->Host = "srv114.prodns.com.br"; // Endereço do servidor SMTP (caso queira utilizar a autenticação, utilize o host smtp.seudomínio.com.br)
+        $mail->Host = EMAIL_HOST; // Endereço do servidor SMTP (caso queira utilizar a autenticação, utilize o host smtp.seudomínio.com.br)
         $mail->SMTPAuth = true; // Usar autenticação SMTP (obrigatório para smtp.seudomínio.com.br)
         $mail->SMTPSecure = 'ssl'; 
-        $mail->Port = 465;
-        $mail->Username = 'portal.testes@nextsi.com.br'; // Usuário do servidor SMTP (endereço de email)
-        $mail->Password = 'tst2015'; // Senha do servidor SMTP (senha do email usado)
+        $mail->Port = EMAIL_PORT;
+        $mail->Username = EMAIL_USERNAME; // Usuário do servidor SMTP (endereço de email)
+        $mail->Password = EMAIL_PASSWORD; // Senha do servidor SMTP (senha do email usado)
 
         // Define o remetente
         // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-        $mail->From = "portal.testes@nextsi.com.br"; // Seu e-mail
-        $mail->Sender = "portal.testes@nextsi.com.br"; // Seu e-mail
-        $mail->FromName = "Monte Santo"; // Seu nome
+        $mail->From = EMAIL_FROM; // Seu e-mail
+        $mail->Sender = EMAIL_SENDER; // Seu e-mail
+        $mail->FromName = EMAIL_NAME; // Seu nome
 
         if (strlen($emails) > 0) {
             $emails = str_replace(",", ";", $emails);
