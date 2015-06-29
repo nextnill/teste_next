@@ -974,10 +974,10 @@ class LotTransport_Model extends \Sys\Model {
             $final_sobracolumay[$key]['lot_number'] = 'Final Sobracolumay - ' . $block['quarry_name'];
         }
 
-        return array('transport' => array_merge($interim_sobracolumay, $final_sobracolumay, $query));
+        return array('transport' => array_merge(/*$interim_sobracolumay,*/ $final_sobracolumay, $query));
 
         return array(
-                    'interim_sobracolumay' => $interim_sobracolumay,
+                    //'interim_sobracolumay' => $interim_sobracolumay,
                     'final_sobracolumay' => $final_sobracolumay,
                     'transport' => $query);
     }

@@ -3,6 +3,7 @@ namespace Sys;
 
 use PDO;
 
+
 class Util
 {    
 
@@ -204,5 +205,76 @@ class Util
         );
 
         return is_null($index) ? $arr_cores : $arr_cores[$index];
+    }
+
+
+    function send_email($emails, $arquivo, $titulo, $corpo_email){
+
+
+        require ('sys/libs/PHPMailer-master/PHPMailerAutoload.php');
+        
+        
+        $mail = new \PHPMailer;
+        $mail->CharSet = 'UTF-8';
+
+        // Define os dados do servidor e tipo de conexão
+        // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+        $mail->isSMTP(); // Define que a mensagem será SMTP
+        $mail->Host = "srv114.prodns.com.br"; // Endereço do servidor SMTP (caso queira utilizar a autenticação, utilize o host smtp.seudomínio.com.br)
+        $mail->SMTPAuth = true; // Usar autenticação SMTP (obrigatório para smtp.seudomínio.com.br)
+        $mail->SMTPSecure = 'ssl'; 
+        $mail->Port = 465;
+        $mail->Username = 'portal.testes@nextsi.com.br'; // Usuário do servidor SMTP (endereço de email)
+        $mail->Password = 'tst2015'; // Senha do servidor SMTP (senha do email usado)
+
+        // Define o remetente
+        // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+        $mail->From = "portal.testes@nextsi.com.br"; // Seu e-mail
+        $mail->Sender = "portal.testes@nextsi.com.br"; // Seu e-mail
+        $mail->FromName = "Monte Santo"; // Seu nome
+
+        if (strlen($emails) > 0) {
+            $emails = str_replace(",", ";", $emails);
+            $array_emails = explode(';', $emails);
+
+
+            // remove e-mails duplicados
+            $array_emails = array_unique($array_emails);
+            foreach ($array_emails as $key => $value) {
+                $value = trim($value);
+                if (!empty($value))
+                    $mail->addAddress($value); // aqui ele adiciona no phpmailer, mudar $mail
+            }
+        }
+
+        $mail->IsHTML(true); 
+        $mail->Subject  = $titulo; // Assunto da mensagem
+        $mail->Body = '<html>';
+        $mail->Body .= '<head>';
+        $mail->Body .= '<meta charset="UTF-8">';
+        $mail->Body .= '<style type="text/css"> 
+                            .titulo {
+                             font-size: 16px;
+                             font-family: arial;                               
+                            }
+                            .conteudo {
+                             font-size: 14px; 
+                             font-family: arial;                              
+                            }
+                            </style>';
+        $mail->Body .= '</head>';
+        $mail->Body .= '<body>';
+        $mail->Body .= $corpo_email;
+        $mail->Body .= '</body>';
+        $mail->Body .= '</html>';
+        //$mail->AltBody = 'Este é o corpo da mensagem de teste, em Texto Plano! \r\n ';
+        $mail->AddAttachment($arquivo);  // Insere um anexo
+
+        // Envia o e-mail
+        $enviado = $mail->Send();
+         
+        // Limpa os destinatários e os anexos
+        $mail->ClearAllRecipients();
+        $mail->ClearAttachments();
     }
 }

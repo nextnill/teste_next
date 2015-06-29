@@ -128,6 +128,12 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/inspection/blocks/' => array('Inspection', 'list_block_action'),
                 '/inspection/blocks/json/' => array('Inspection', 'list_block_json'),
                 '/inspection/save/' => array('Inspection', 'save_json', 'inspection'),
+                '/inspection/pdf_notification/' => array('Inspection', 'pdf_notification', 'inspection'),
+                '/inspection/load_email/' => array('Inspection', 'load_email_notification', 'inspection'),
+                
+
+                '/inspection/inspection_notification/' => array('Inspection', 'list_notification_action', 'inspection'),
+                '/inspection/inspection_notification/save/' => array('Inspection', 'save_notification_json'),
 
                 '/reinspection/blocks/' => array('Reinspection', 'list_block_action'),
                 '/reinspection/blocks/save/' => array('Reinspection', 'save_block_json'),

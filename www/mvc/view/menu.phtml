@@ -158,6 +158,12 @@ if (LOGGED):
         </li>
         
         <li role="presentation" class="divider"></li>
+
+         <li <?= (!verifica_acesso('inspection', $permissions) ? 'class="disabled"' : '') ?>>
+            <a href="<?= APP_URI ?>inspection/inspection_notification">
+                Inspection Notification
+            </a>
+        </li>
         
         <li <?= (!verifica_acesso('inspection', $permissions) ? 'class="disabled"' : '') ?>>
             <a href="<?= APP_URI ?>inspection_certificate/list/">

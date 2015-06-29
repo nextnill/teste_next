@@ -7,6 +7,8 @@ btn_confirm_cancel.click(btn_confirm_cancel_click);
 
 var cb_get_block_number_count = 0;
 
+var invoice_id = null;
+
 function init_confirm() {
     var blocks_accepted = [];
     var blocks_accepted_interim = [];
@@ -450,6 +452,7 @@ function btn_confirm_ok_click() {
     if ((blocks) && (blocks.length > 0)) {
         btn_confirm_ok.addClass('disabled');
         // chamar json de reserva
+       
         $.ajax({
             error: ajaxError,
             type: "POST",
@@ -461,6 +464,7 @@ function btn_confirm_ok_click() {
             dataType: 'json',
             success: function (response) {
                 if (response_validation(response)) {
+                    invoice_id = response.invoice_id;
                     closeModal('modal_confirm');
                     window.location = '<?= APP_URI ?>inspection_certificate/detail/' + response.invoice_id;
                 }

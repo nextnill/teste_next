@@ -1,11 +1,18 @@
 <?php
 
+use \Sys\Util;
+
 class Inspection_Controller extends \Sys\Controller
 {
 
     function list_client_action($params)
     {
         $this->RenderView('masterpage', array('inspection/client_list'));
+    }
+
+    function list_notification_action($params)
+    {
+        $this->RenderView('masterpage', array('inspection/inspection_notification'));
     }
 
     function list_block_action($params)
@@ -67,9 +74,6 @@ class Inspection_Controller extends \Sys\Controller
 
         }
 
-        //print_r($blocks_accepted);
-        //print_r($blocks_refused);
-        //exit;
 
         // se algum bloco foi aceito, crio a invoice
         if ($total_accepted > 0) {
@@ -123,7 +127,237 @@ class Inspection_Controller extends \Sys\Controller
                 $ret['refused_id'][] = $block_refused_model->save();
             }
         }
+        $this->pdf_notification($invoice_model->id);
+        $this->print_json($ret);
+
+    }
+
+    function save_notification_json($params){
+
+        $inspection_notification = $this->ReadPost('email_notification');
+
+        $parameters_model = $this->LoadModel('Parameters', true); 
+
+        $ret = $parameters_model->set('inspection_notification',  $inspection_notification);
+
         $this->print_json($ret);
     }
 
+    function load_email_notification(){
+
+        $parameters_model = $this->LoadModel('Parameters', true);
+        $ret = $parameters_model->get('inspection_notification');
+
+        $this->print_json($ret);
+    }
+
+
+    function pdf_notification($invoice_id){
+
+        $id = $invoice_id;
+       
+        $invoice_model = $this->LoadModel('Invoice', true);
+        $invoice_model->populate($id);
+
+        $invoice_item_model = $this->LoadModel('InvoiceItem', true);
+        $list = $invoice_item_model->get_by_invoice($id);
+
+        $client_model = $this->LoadModel('Client', true);
+        $client_model->populate($invoice_model->client_id);
+
+        $parameters_model = $this->LoadModel('Parameters', true);
+        $destinatario = $parameters_model->get('inspection_notification');
+
+
+        $html = '<table border="0" cellpadding="12" cellspacing="0">
+                    <tr>
+                        <td align="center"><font size="12"><b><span class="titulo">INSPECTION CERTIFICATE OF '. $client_model->name .'</span></b></font></td>
+                    </tr>           
+                 </table>';
+
+        $chave_anterior = '';
+        $bloco_count = 0;
+        $peso_count = 0;
+        $volume_count = 0;
+        $total_bloco = 0;
+        $total_peso = 0;
+        $total_volume = 0;
+        $html2 = '';
+        $cabecalho = '';
+
+    
+        function imprimir_cabecalho($quarry_name, $quality_name){
+            $cabecalho = '<table cellpadding="5">
+                    <tr>
+                        <td><font size="10"><b><span class="conteudo">'.strtoupper($quarry_name.' - '.$quality_name).'</span></b></font></td>
+                    </tr>
+                </table>
+                <table border="1" cellpadding="2" cellspacing="0" width="100%">
+                    <tr>    
+                        <td width="110"><font size="10"><b><span class="conteudo">BLOCK Nº.:</span></b></font></td>
+                        <td colspan="3" width="150" align="center"><font size="10"><b><span class="conteudo">TOT MEAS.:</span></b></font></td>
+                        <td colspan="3" width="150" align="center"><font size="10"><b><span class="conteudo">SALE NET MEAS.:</span></b></font></td>
+                        <td width="60"><font size="10" align="center"><b><span class="conteudo">SALE VOL.:</span></b></font></td>
+                        <td width="60"><font size="10" align="center"><b><span class="conteudo">WEIGH:</span></b></font></td> 
+                    </tr>';
+
+            return $cabecalho;
+        }
+
+        
+        function imprimir_linha($bloco){
+
+            $linhas = '<tr>
+                            <td width="110"><span class="conteudo">'. $bloco['block_number'] .'</span></td>
+                            <td width="50" align="right"><span class="conteudo">'. $bloco['tot_c'] .'</span></td>
+                            <td width="50" align="right"><span class="conteudo">'. $bloco['tot_a'] .'</span></td>
+                            <td width="50" align="right"><span class="conteudo">'. $bloco['tot_l'] .'</span></td>
+                            <td width="50" align="right"><span class="conteudo">'. $bloco['sale_net_c'] .'</span></td>
+                            <td width="50" align="right"><span class="conteudo">'. $bloco['sale_net_a'] .'</span></td>
+                            <td width="50" align="right"><span class="conteudo">'. $bloco['sale_net_l'] .'</span></td>
+                            <td width="60" align="right"><span class="conteudo">'. $bloco['sale_net_vol'] .'</span></td>
+                            <td width="60" align="right"><span class="conteudo">'. $bloco['tot_weight'] .'</span></td>
+                        </tr>';
+
+            return $linhas;
+        }
+
+        
+        function totalizador($bloco_count, $volume_count, $peso_count){
+
+            $total = '<tr>
+                        <td width="110" align="center"><span class="conteudo">'. $bloco_count .'</span></td>
+                        <td width="50" align="right"><span class="conteudo"></span></td>
+                        <td width="50" align="right"><span class="conteudo"></span></td>
+                        <td width="50" align="right"><span class="conteudo"></span></td>
+                        <td width="50" align="right"><span class="conteudo"></span></td>
+                        <td width="50" align="right"><span class="conteudo"></span></td>
+                        <td width="50" align="right"><span class="conteudo"></span></td>
+                        <td width="60" align="right"><span class="conteudo">'. number_format($volume_count, 3) .'</span></td>
+                        <td width="60" align="right"><span class="conteudo">'. number_format($peso_count, 3) .'</span></td>
+                    </tr>
+                    </table>
+                    <p></p>
+                    ';
+
+            return $total;                     
+        }
+
+        function totalizador_geral($total_bloco, $total_volume, $total_peso){
+
+            $total_geral =  '<table border="1" cellpadding="2" cellspacing="0" width="100%">
+                                <tr>
+                                    <td width="110" align="center"><span class="conteudo">'. $total_bloco .'</span></td>
+                                    <td width="50" align="right"><span class="conteudo"></span></td>
+                                    <td width="50" align="right"><span class="conteudo"></span></td>
+                                    <td width="50" align="right"><span class="conteudo"></span></td>
+                                    <td width="50" align="right"><span class="conteudo"></span></td>
+                                    <td width="50" align="right"><span class="conteudo"></span></td>
+                                    <td width="50" align="right"><span class="conteudo"></span></td>
+                                    <td width="60" align="right"><span class="conteudo">'. number_format($total_volume, 3) .'</span></td>
+                                    <td width="60" align="right"><span class="conteudo">'. number_format($total_peso, 3) .'</span></td>
+                                </tr>
+                            </table>';
+
+            return $total_geral;                        
+        }
+
+
+        function assinatura_observacoes(){
+
+            $assinatura =   '<br><br><br><br><br><br>
+                            <table align="center" cellpadding="10">
+                                <tr>
+                                    <td><span class="conteudo">ESPECIAL INSTRUCTIONS:</span>  _____________________________________________</td>
+                                </tr>
+                                <tr>
+                                    <td>_____________________________________________________________________</td>
+                                </tr>
+                            </table>
+                            <br><br><br><br>
+                            <br><br><br><br>
+                            <table>
+                                <tr>
+                                    <td width="250" align="center">________________________________</td>
+                                    <td width="250" align="center">________________________________</td>
+                                </tr>
+                                <tr>
+                                    <td width="250" align="center"><span class="conteudo">SELLER SIGNATURE</span></td>
+                                    <td width="250" align="center"><span class="conteudo">BUYER SIGNATURE</span></td>
+                                </tr>
+                            </table>';
+
+            return $assinatura;    
+        }
+        
+        foreach($list as $bloco){
+            
+            $nova_chave = $bloco['quarry_name'] . $bloco['quality_name'];
+
+            if($nova_chave != $chave_anterior){
+               if($chave_anterior != ''){
+
+                  
+                    //imprimir rodapé da tabela anterior
+                    $html .= totalizador($bloco_count, $volume_count, $peso_count);
+                }
+                //imprimir cabeçalho da tabela
+                $html .= imprimir_cabecalho($bloco['quarry_name'], $bloco['quality_name']);
+                $bloco_count = 0;
+                $volume_count = 0;
+                $peso_count = 0;                    
+            }
+            
+            // imprimir linhas da tabela
+            $html .= imprimir_linha($bloco);
+            $chave_anterior = $nova_chave;
+
+            $bloco_count++;
+            $volume_count += $bloco['sale_net_vol'];
+            $peso_count += $bloco['tot_weight'];
+
+            $total_bloco++;
+            $total_volume += $bloco['sale_net_vol'];
+            $total_peso += $bloco['tot_weight'];
+        }
+
+       
+        //imprimir rodape
+        
+        //imprimir rodapé da tabela anterior
+        $html .= totalizador($bloco_count, $volume_count, $peso_count);
+        $html .= totalizador_geral($total_bloco, $total_volume, $total_peso);
+        $email = $html;
+        $html .= assinatura_observacoes();
+       
+
+        require_once 'sys/libs/tcpdf.php';
+
+        $pdf = new MonteSantoPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        
+        $pdf->SetFont('helvetica', 'N', 9);
+        $pdf->AddPage();
+        $pdf->writeHTML($html, true, false, true, false, '');
+
+        $arquivo = CERTIFICATE.'/inspection_certificate.pdf'; 
+
+        @unlink($arquivo);
+
+        if (!file_exists(CERTIFICATE)) {
+            mkdir(CERTIFICATE, 0770, true);
+        }
+
+        // envia arquivo gerado para o usuario
+       $pdf->Output($arquivo, 'F'); // D = força download
+       
+       if($destinatario != ''){
+
+          $titulo = "Inspection Certificate";
+          
+         Util::send_email($destinatario, $arquivo, $titulo, $email);
+        } 
+
+        @unlink($arquivo);
+    }
 }
