@@ -1,0 +1,22 @@
+<!-- MODAL DETALHE -->
+<div class="modal" tabindex="-1" role="dialog" id = "modal_inspection_notification" aria-labelledby="modal_inspection_notification_label" aria-hidden="true" onload="javascript: show_dialog();">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn_cancelar close" onclick="javascript: close_modal();" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="modal_inspection_notification_label">Inspection Notification</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="modal_inspection_notification_edt_email" onload="javascript: carrega_email();">E-mail</label>
+                    <input type="text" class="edt_email form-control" maxlength="500">
+                </div>
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn_cancel btn btn-default" onclick="javascript: close_modal();">Cancel</button>
+                <button type="button" class="btn_save btn btn-primary" onclick="javascript: save_inspection_notification();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->
