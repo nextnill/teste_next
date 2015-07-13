@@ -203,8 +203,8 @@ class InvoiceItem_Model extends \Sys\Model {
                         sale_net_l,
                         sale_net_vol,
                         obs,
-                        poblo_status_id,
-                        client_block_number
+                        client_block_number,
+                        poblo_status_id
 	                ) VALUES (
 	                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 	                ) ';
@@ -230,8 +230,8 @@ class InvoiceItem_Model extends \Sys\Model {
                 $this->sale_net_l,
                 $this->sale_net_vol,
                 $this->obs,
-                $this->poblo_status_id,
-                $this->client_block_number
+                $this->client_block_number,
+                $this->poblo_status_id
             ));
 
             $this->id = DB::last_insert_id();
@@ -452,7 +452,7 @@ class InvoiceItem_Model extends \Sys\Model {
             $this->sale_net_vol = (float)$row_query['sale_net_vol'];
             $this->tot_weight = (float)$row_query['tot_weight'];
             $this->obs = (string)$row_query['obs'];
-            $this->poblo_status_id = (int)$row_query['poblo_status_id'];
+            $this->poblo_status_id = $row_query['poblo_status_id'] == '' ? null:(int)$row_query['poblo_status_id'];
         }
     }
     
@@ -488,7 +488,8 @@ class InvoiceItem_Model extends \Sys\Model {
                     invoice_item.sale_net_l,
                     invoice_item.sale_net_vol,
                     invoice_item.tot_weight,
-                    invoice_item.obs
+                    invoice_item.obs,
+                    invouce_item.poblo_status_id
                 FROM invoice_item
                 INNER JOIN block ON (block.id = invoice_item.block_id)
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)
