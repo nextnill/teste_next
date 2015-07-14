@@ -171,7 +171,7 @@ class Inspection_Controller extends \Sys\Controller
 
         $html = '<table border="0" cellpadding="12" cellspacing="0">
                     <tr>
-                        <td align="center"><font size="12"><b><span class="titulo">INSPECTION CERTIFICATE OF '. $client_model->name .'</span></b></font></td>
+                        <td align="center"><b><span class="titulo">INSPECTION CERTIFICATE OF '. $client_model->name .'</span></b></td>
                     </tr>           
                  </table>';
 
@@ -189,16 +189,16 @@ class Inspection_Controller extends \Sys\Controller
         function imprimir_cabecalho($quarry_name, $quality_name){
             $cabecalho = '<table cellpadding="5">
                     <tr>
-                        <td><font size="10"><b><span class="conteudo">'.strtoupper($quarry_name.' - '.$quality_name).'</span></b></font></td>
+                        <td><b><span class="conteudo">'.strtoupper($quarry_name.' - '.$quality_name).'</span></b></td>
                     </tr>
                 </table>
                 <table border="1" cellpadding="2" cellspacing="0" width="100%">
                     <tr>    
-                        <td width="110"><font size="10"><b><span class="conteudo">BLOCK Nº.:</span></b></font></td>
-                        <td colspan="3" width="150" align="center"><font size="10"><b><span class="conteudo">TOT MEAS.:</span></b></font></td>
-                        <td colspan="3" width="150" align="center"><font size="10"><b><span class="conteudo">SALE NET MEAS.:</span></b></font></td>
-                        <td width="60"><font size="10" align="center"><b><span class="conteudo">SALE VOL.:</span></b></font></td>
-                        <td width="60"><font size="10" align="center"><b><span class="conteudo">WEIGH:</span></b></font></td> 
+                        <td width="110"><b><span class="conteudo">BLOCK Nº.:</span></b></td>
+                        <td colspan="3" width="150" align="center"><b><span class="conteudo">TOT MEAS.:</span></b></td>
+                        <td colspan="3" width="150" align="center"><b><span class="conteudo">SALE NET MEAS.:</span></b></td>
+                        <td width="60"><b><span class="conteudo">SALE VOL.:</span></b></td>
+                        <td width="60"><b><span class="conteudo">WEIGH:</span></b></td> 
                     </tr>';
 
             return $cabecalho;
