@@ -489,7 +489,7 @@ class InvoiceItem_Model extends \Sys\Model {
                     invoice_item.sale_net_vol,
                     invoice_item.tot_weight,
                     invoice_item.obs,
-                    invouce_item.poblo_status_id
+                    invoice_item.poblo_status_id
                 FROM invoice_item
                 INNER JOIN block ON (block.id = invoice_item.block_id)
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)

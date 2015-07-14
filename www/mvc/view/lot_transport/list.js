@@ -202,5 +202,7 @@ function btn_lt_new_click() {
 
 $('.btn_lt_new').click(btn_lt_new_click);
 
-listar();
-listar_filter_client();
+funcs_on_load.push(function() {
+    listar();
+    listar_filter_client();
+});
