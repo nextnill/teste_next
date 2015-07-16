@@ -543,7 +543,7 @@ function add_row(table_body, item, totalizador, style_class)
     field_price.text(item.invoice_item_price ? item.invoice_item_price.format_number(2) : '');
     
     var field_sale_net_c = $(new_row.find("[template-field='sale_net_c']"));
-    if (!is_not_travel) {
+    if (!is_not_travel || is_inspection_certificate) {
     	field_sale_net_c.text(item.invoice_sale_net_c ? item.invoice_sale_net_c.format_number(2) : '');
     }
     else {
@@ -551,7 +551,7 @@ function add_row(table_body, item, totalizador, style_class)
     }
 
     var field_sale_net_a = $(new_row.find("[template-field='sale_net_a']"));
-    if (!is_not_travel) {
+    if (!is_not_travel || is_inspection_certificate) {
     	field_sale_net_a.text(item.invoice_sale_net_a ? item.invoice_sale_net_a.format_number(2) : '');
     }
     else {
@@ -559,7 +559,7 @@ function add_row(table_body, item, totalizador, style_class)
     }
 
     var field_sale_net_l = $(new_row.find("[template-field='sale_net_l']"));
-    if (!is_not_travel) {
+    if (!is_not_travel || is_inspection_certificate) {
     	field_sale_net_l.text(item.invoice_sale_net_l ? item.invoice_sale_net_l.format_number(2) : '');
     }
     else {
