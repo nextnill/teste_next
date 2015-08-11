@@ -459,7 +459,7 @@ function btn_confirm_ok_click() {
             url: "<?= APP_URI ?>inspection/save/",
             data: {
                 client_id: <?= $client_id ?>,
-                blocks: blocks
+                blocks: JSON.stringify(blocks)
             },
             dataType: 'json',
             success: function (response) {

@@ -52,7 +52,7 @@ class Inspection_Controller extends \Sys\Controller
     function save_json($params)
     {
         $client_id = $this->ReadPost('client_id');
-        $blocks = $this->ReadPost('blocks');
+        $blocks = json_decode($this->ReadPost('blocks'), true);
         $ret = array();
 
         // totaliza blocos
