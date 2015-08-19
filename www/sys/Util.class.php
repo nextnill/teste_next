@@ -209,7 +209,8 @@ class Util
 
 
     function send_email($emails, $arquivo, $titulo, $corpo_email){
-
+        
+       // print_r($corpo_email);exit();
         require 'config/System.config.php';
         require 'sys/libs/PHPMailer-master/PHPMailerAutoload.php';
         
@@ -222,7 +223,7 @@ class Util
         $mail->isSMTP(); // Define que a mensagem será SMTP
         $mail->Host = EMAIL_HOST; // Endereço do servidor SMTP (caso queira utilizar a autenticação, utilize o host smtp.seudomínio.com.br)
         $mail->SMTPAuth = true; // Usar autenticação SMTP (obrigatório para smtp.seudomínio.com.br)
-        $mail->SMTPSecure = 'ssl'; 
+       // $mail->SMTPSecure = ''; 
         $mail->Port = EMAIL_PORT;
         $mail->Username = EMAIL_USERNAME; // Usuário do servidor SMTP (endereço de email)
         $mail->Password = EMAIL_PASSWORD; // Senha do servidor SMTP (senha do email usado)
@@ -276,5 +277,7 @@ class Util
         // Limpa os destinatários e os anexos
         $mail->ClearAllRecipients();
         $mail->ClearAttachments();
+        
+        return $enviado;
     }
 }

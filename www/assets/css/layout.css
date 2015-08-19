@@ -2,7 +2,7 @@ body {
   padding-top: 60px;
 }
 
-#loading, #saved_successfully {
+#loading, #saved_successfully, #error {
   float: right;
   right: 10px;
   top: 50px;

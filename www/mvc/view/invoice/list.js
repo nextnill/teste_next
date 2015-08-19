@@ -28,10 +28,11 @@ function listar()
     var cbo_filter_client = $('#cbo_filter_client');
     var edt_year = $('#edt_year');
     var cbo_month_filter = $('#cbo_month_filter');
+        
     // limpa trs, menos a primeira
     //
     $('#tbl_listagem').find("tr:gt(1)").remove();
-
+    
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>inspection_certificate/list/json/" + (cbo_filter_client.val() ? cbo_filter_client.val() : ''), 
         {ano: edt_year.val(), mes: cbo_month_filter.val()}, function(response) {
@@ -80,7 +81,32 @@ function add_row(table_body, item)
         var invoice_id = $(this).attr('template-ref');
         window.location = '<?= APP_URI ?>inspection_certificate/download/?invoice_id='+invoice_id;
     });
+    
+    var button_email = new_row.find("[template-button='email']");
+    button_email.attr('template-ref', item.id);
+    button_email.click(function(){
+        var invoice_id = $(this).attr('template-ref');
+  
+        $.ajax({
 
+		error: ajaxError,
+		type: "GET",
+		url: '<?= APP_URI ?>inspection_certificate/download/?invoice_id='+invoice_id+'&send_email=1',
+		success: function(response){
+			if(response_validation(response)){
+                if(response.email_enviado == true){
+                    alert_saved('Email successfully sent');   
+                }
+				else{
+                     alert_error('Error sending e-mail');
+                }
+				
+			}
+		}
+	});
+    
+    });
+    
     var button_delete = new_row.find("[template-button='delete']");
     button_delete.attr('template-ref', item.id);
     button_delete.click(function() {
@@ -126,7 +152,6 @@ funcs_on_load.push(function() {
       
     edt_year.val(ano);
     cbo_month_filter.val(mes);
-
-
+    
     listar();
 });

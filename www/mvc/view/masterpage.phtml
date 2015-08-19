@@ -139,6 +139,7 @@
         <!-- Loading -->
         <div id="loading"><span class="label label-warning">Waiting...</span></div>
         <div id="saved_successfully"><span class="label label-success">Saved sucessfully</span></div>
+        <div id="error"><span class="label label-danger">Error</span></div>
         <script>
         var loading = $('#loading').hide();
         $(document).ajaxStart(function() {
@@ -152,6 +153,14 @@
             saved_successfully.find('span').text(msg ? msg : 'Saved successfully');
             saved_successfully.fadeIn('slow', function() {
                 $(this).fadeOut(2000);
+           });
+        }
+        
+        var error = $('#error').hide();
+        function alert_error(msgs) {
+            error.find('span').text(msgs ? msgs : 'Error');
+            error.fadeIn('slow', function() {
+                $(this).fadeOut(4000);
            });
         }
         </script>
