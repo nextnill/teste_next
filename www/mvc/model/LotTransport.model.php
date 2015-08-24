@@ -1017,8 +1017,7 @@ class LotTransport_Model extends \Sys\Model {
                     LEFT JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
                 WHERE
                     block.quarry_id IN ({$this->active_quarries})  
-                    AND block.excluido = 'N' 
-                    AND CONCAT('Lot Number ', lot_transport.lot_number) = 'Lot Number MSG15-023' ";
+                    AND block.excluido = 'N' ";
 
                     $params = array();
                     if($client_id > 0){
