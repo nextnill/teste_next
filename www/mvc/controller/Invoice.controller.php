@@ -290,6 +290,7 @@ require_once 'sys/libs/tcpdf.php';
             $pdf->writeHTML($html, true, false, true, false, '');
                @unlink($arquivo);
             // envia arquivo gerado para o usuario
+          
             if($send_email == 1){
                 
                 $arquivo = CERTIFICATE.'/inspection_certificate.pdf'; 
@@ -313,7 +314,7 @@ require_once 'sys/libs/tcpdf.php';
             }
            else{
             
-             $pdf->Output('inspecton_certificate.pdf', 'F'); // D = força download     
+             $pdf->Output('inspecton_certificate.pdf', 'D'); // D = força download     
         }
            
     }
