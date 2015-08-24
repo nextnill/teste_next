@@ -123,7 +123,7 @@ function add_row_end_locations(table_body, item)
             end_terminal_id: item.end_terminal_id,
             end_terminal_name: item.end_terminal_name,
             shipping_time: item.shipping_time,
-            blocks: item.blocks,
+            blocks: JSON.stringify(item.blocks),
             removed: 'false'
         };
 

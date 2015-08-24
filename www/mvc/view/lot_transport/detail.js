@@ -368,7 +368,7 @@ function btn_finish_click() {
                 id: lot_transport_id,
                 lot_number: edt_lot_number.val(),
                 client_id: ab_sel_client_id,
-                blocks: lot_blocks
+                blocks: JSON.stringify(lot_blocks)
             },
             dataType: 'json',
             success: function (response) {

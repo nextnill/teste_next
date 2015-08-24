@@ -435,6 +435,7 @@ class Quarry_Model extends \Sys\Model {
                     quarry ON (quarry.id = user_quarry.quarry_id)
                 WHERE
                     user_quarry.user_id = ?
+                    AND quarry.excluido = "N"
                 ORDER BY
                     quarry.name
                 ';

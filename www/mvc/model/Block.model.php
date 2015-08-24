@@ -42,6 +42,8 @@ class Block_Model extends \Sys\Model {
     public $reinspection;
     public $block_number_interim;
 
+    public $obs_poblo;
+
     public $defects;
 
     public $photos;
@@ -121,6 +123,11 @@ class Block_Model extends \Sys\Model {
             $validation->add(Validation::VALID_ERR_FIELD, 'Informe a classificação');
         }
 
+        if (strlen($this->obs_poblo) > 200)
+        {
+            $validation->add(Validation::VALID_ERR_FIELD, 'Texto de observação muito grande');
+        }
+
         return $validation;
     }
 
@@ -197,10 +204,11 @@ class Block_Model extends \Sys\Model {
                         reserved_client_id,
                         sold,
                         sold_client_id,
-                        current_lot_transport_id
+                        current_lot_transport_id,
+                        obs_poblo
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                               ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                              ?, ?, ?, ?, ?, ?, ?) ';
+                              ?, ?, ?, ?, ?, ?, ?, ?) ';
             
             $query = DB::exec($sql, array(
                 $this->quarry_id,
@@ -228,7 +236,8 @@ class Block_Model extends \Sys\Model {
                 $this->reserved_client_id,
                 (int)$this->sold,
                 $this->sold_client_id,
-                $this->current_lot_transport_id
+                $this->current_lot_transport_id,
+                $this->obs_poblo
             ));
 
             $this->id = DB::last_insert_id();
@@ -275,7 +284,8 @@ class Block_Model extends \Sys\Model {
                         sold = ?,
                         sold_client_id = ?,
                         client_block_number = ?,
-                        current_lot_transport_id = ?
+                        current_lot_transport_id = ?,
+                        obs_poblo = ?
                     WHERE id = ? ';
 
             $query = DB::exec($sql, array(
@@ -304,6 +314,7 @@ class Block_Model extends \Sys\Model {
                 $this->sold_client_id,
                 $this->client_block_number,
                 $this->current_lot_transport_id,
+                $this->obs_poblo,
                 $this->id
             ));
 
@@ -377,8 +388,9 @@ class Block_Model extends \Sys\Model {
                     sold,
                     sold_client_id,
                     client_block_number,
-                    current_lot_transport_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ';
+                    current_lot_transport_id,
+                    obs_poblo
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ';
         
         $dt_now = new DateTime('now');
         $query = DB::exec($sql, array(
@@ -411,7 +423,8 @@ class Block_Model extends \Sys\Model {
             (int)$block_now->sold,
             $block_now->sold_client_id,
             $block_now->client_block_number,
-            $block_now->current_lot_transport_id
+            $block_now->current_lot_transport_id,
+            $block_now->obs_poblo
         ));
 
         $history_id = DB::last_insert_id();
@@ -507,7 +520,8 @@ class Block_Model extends \Sys\Model {
                     sold,
                     sold_client_id,
                     client_block_number,
-                    current_lot_transport_id
+                    current_lot_transport_id,
+                    obs_poblo
                 FROM
                     block
                 WHERE ';
@@ -676,7 +690,7 @@ class Block_Model extends \Sys\Model {
             $this->sold_client_id = (empty($row_query['sold_client_id']) ? null : (int)$row_query['sold_client_id']);
             $this->client_block_number = (string)$row_query['client_block_number'];
             $this->current_lot_transport_id = (empty($row_query['current_lot_transport_id']) ? null : (int)$row_query['current_lot_transport_id']);
-
+            $this->obs_poblo = (string)$row_query['obs_poblo'];
             
             // carrega os defeitos dos blocos
             $defect_model = $this->LoadModel('Defect', true);
@@ -728,7 +742,8 @@ class Block_Model extends \Sys\Model {
                     sold_client.code AS sold_client_code,
                     sold_client.name AS sold_client_name,
                     block.client_block_number,
-                    block.block_number_interim
+                    block.block_number_interim,
+                    block.obs_poblo
                 FROM
                     block
                 LEFT JOIN quality ON (quality.id = block.quality_id)
@@ -754,7 +769,7 @@ class Block_Model extends \Sys\Model {
         return $query;
     }
 
-    function get_sobracolumay($type, $client_except=null)
+    function get_sobracolumay($type, $client_except=null, $client_id = -1)
     {
         $sql = "SELECT
                     block.id,
@@ -794,7 +809,8 @@ class Block_Model extends \Sys\Model {
                     reserved_client.code AS reserved_client_code,
                     reserved_client.name AS reserved_client_name,
                     block.sold,
-                    block.client_block_number
+                    block.client_block_number,
+                    block.obs_poblo
                 FROM block
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id AND production_order_item.excluido = 'N')
                 INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id AND production_order.excluido = 'N')
@@ -808,8 +824,13 @@ class Block_Model extends \Sys\Model {
                     AND block.type = ?
                     AND block.sold = ? ";
 
+
         if ($client_except) {
             $sql .= ' AND (block.reserved_client_id IS NULL OR block.reserved_client_id != ?) ';
+        }
+
+        if($client_id > 0){
+            $sql .= ' AND (block.reserved_client_id = ?) ';
         }
 
         $sql .= 'ORDER BY quarry.name, quality.order_number, block.block_number ';
@@ -822,6 +843,11 @@ class Block_Model extends \Sys\Model {
             $params[] = $client_except;
         }
 
+        if($client_id > 0){
+            $params[] = $client_id;
+        }
+
+        
         $query = DB::query($sql, $params);
 
         $defect_model = $this->LoadModel('Defect', true);
@@ -902,7 +928,8 @@ class Block_Model extends \Sys\Model {
                     block.reserved_client_id,
                     block.sold,
                     block.block_number_interim,
-                    block.client_block_number
+                    block.client_block_number,
+                    block.obs_poblo
                 FROM block
                 INNER JOIN quarry ON (quarry.id = block.quarry_id)
                 INNER JOIN quality ON (quality.id = block.quality_id)
@@ -1048,6 +1075,50 @@ class Block_Model extends \Sys\Model {
         $query = DB::query($sql, $params);
 
         return $query;
+    }
+
+    function get_poblo_obs($block_id) {
+        
+        $sql = "SELECT
+                    block.obs_poblo
+                FROM 
+                    block
+                WHERE
+                    block.excluido = 'N'
+                    AND block.id = :block_id
+                ";
+
+        $params[':block_id'] = $block_id;
+
+        $query = DB::query($sql, $params);
+
+
+
+        if (DB::has_rows($query)) {
+            return $query[0]['obs_poblo'];
+        }
+        
+        
+        return '';
+    }
+
+    function set_poblo_obs($block_id, $obs) {
+        
+        
+        $sql = "UPDATE
+                    block
+                SET
+                    obs_poblo = :obs
+                WHERE
+                    block.id = :block_id";
+        
+        $params[':block_id'] = $block_id;
+        $params[':obs'] = $obs;
+
+        DB::exec($sql, $params);
+        
+
+        return $this->get_poblo_obs($block_id);
     }
 
 }

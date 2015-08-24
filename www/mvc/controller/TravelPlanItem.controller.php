@@ -28,7 +28,9 @@ class TravelPlanItem_Controller extends \Sys\Controller
 
     function start_shipping_json($params)
     {
-        $blocks = $this->ReadPost('blocks');
+        $blocks = json_decode($this->ReadPost('blocks'));
+
+
 
         $travel_plan_item_model = $this->LoadModel('TravelPlanItem', false);
 
@@ -53,7 +55,7 @@ class TravelPlanItem_Controller extends \Sys\Controller
 
     function mark_completed_json($params)
     {
-        $blocks = $this->ReadPost('blocks');
+        $blocks = json_decode($this->ReadPost('blocks'));
 
         $travel_plan_item_model = $this->LoadModel('TravelPlanItem', true);
         $result = [];
@@ -67,7 +69,7 @@ class TravelPlanItem_Controller extends \Sys\Controller
 
     function client_removed_json($params)
     {
-        $blocks = $this->ReadPost('blocks');
+        $blocks = json_decode($this->ReadPost('blocks'));
 
         $travel_plan_item_model = $this->LoadModel('TravelPlanItem', false);
 

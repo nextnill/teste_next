@@ -73,7 +73,7 @@ class TravelRoute_Controller extends \Sys\Controller
         $travel_route_model->end_quarry_id = $this->ReadPost('end_quarry_id');
         $travel_route_model->end_terminal_id = $this->ReadPost('end_terminal_id');
         $travel_route_model->shipping_time = $this->ReadPost('shipping_time');
-        $travel_route_model->blocks = $this->ReadPost('blocks');
+        $travel_route_model->blocks = json_decode($this->ReadPost('blocks'));
         
         $this->print_json($travel_route_model->save());
     }

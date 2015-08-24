@@ -14,7 +14,7 @@ class Poblo_Controller extends \Sys\Controller
         if(in_array('poblo', $permissions)){
 
             $this->RenderView('masterpage', array(
-                    'poblo/list',
+                    'poblo/new_list_poblo',
                     'poblo/obs',
                     'block/detail',
                     'production_order/items/defects_marker',
@@ -33,9 +33,19 @@ class Poblo_Controller extends \Sys\Controller
 
     function list_json($params)
     {
+        $client_id = -1;
+        if (isset($params[0])) {
+            $client_id = (int)$params[0];
+        }
+        $client_id = ($client_id > 0 ? $client_id : null);
+
         // listar os blocos
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-    	$list = $lot_transport_model->get_poblo();
+    	
+
+        $list['lot'] = $lot_transport_model->get_lot($client_id);
+        $list['sobracolumay'] = $lot_transport_model->get_sobracolumay($client_id);
+        $list['inspection_certificate'] = $lot_transport_model->get_inspection_certificate($client_id);
     	
         $this->print_json($list);
     }
@@ -52,43 +62,26 @@ class Poblo_Controller extends \Sys\Controller
 
     function obs_json($params)
     {
-        $lot_number = (string)$this->ReadGet('lot_number');
-        $lot_transport_id = (int)$this->ReadGet('lot_transport_id');
-        $quarry_id = (int)$this->ReadGet('quarry_id');
-        $invoice_id = (int)$this->ReadGet('invoice_id');
+        $block_id = (string)$this->ReadGet('block_id');
         
         // salvar obs dos blocos do poblo
-        $lot_transport_model = $this->LoadModel('LotTransport', true);
-        $obs = $lot_transport_model->get_poblo_obs($lot_number, $lot_transport_id, $quarry_id, $invoice_id);
+        $block = $this->LoadModel('Block', true);
+        $obs = $block->get_poblo_obs($block_id);
 
-        $this->print_json(array(
-            'lot_number' => $lot_number,
-            'lot_transport_id' => $lot_transport_id,
-            'quarry_id' => $quarry_id,
-            'invoice_id' => $invoice_id,
-            'obs' => $obs
-        ));
+        $this->print_json(array('obs' => $obs));
     }
 
     function salve_obs_json($params)
     {
-        $lot_number = (string)$this->ReadPost('lot_number');
-        $lot_transport_id = (int)$this->ReadPost('lot_transport_id');
-        $quarry_id = (int)$this->ReadPost('quarry_id');
-        $invoice_id = (int)$this->ReadPost('invoice_id');
+
+        $block_id = (int)$this->ReadPost('block_id');
         $obs = (string)$this->ReadPost('obs');
 
         // salvar obs dos blocos do poblo
-        $lot_transport_model = $this->LoadModel('LotTransport', true);
-        $obs = $lot_transport_model->set_poblo_obs($lot_number, $lot_transport_id, $quarry_id, $invoice_id, $obs);
+        $block = $this->LoadModel('Block', true);
+        $obs = $block->set_poblo_obs($block_id, $obs);
 
-        $this->print_json(array(
-            'lot_number' => $lot_number,
-            'lot_transport_id' => $lot_transport_id,
-            'quarry_id' => $quarry_id,
-            'invoice_id' => $invoice_id,
-            'obs' => $obs
-        ));
+        $this->print_json(array('obs' => $obs));
     }
     
 }

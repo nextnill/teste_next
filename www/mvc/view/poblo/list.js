@@ -83,7 +83,7 @@ function listar_blocks(callback_function)
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>poblo/json/", function(response_poblo) {
         if (response_validation(response_poblo)) {
-            var transport = response_poblo.transport;
+            var transport = response_poblo.inspection_certificate;
 
             var list = $('#list');
             var table = $('[template-table="poblo"]').clone();
@@ -141,7 +141,7 @@ function listar_blocks(callback_function)
 
                     var is_sobra = item.lot_number ? item.lot_number.indexOf('Sobracolumay') >= 0 : false;
 					var is_inspection_certificate = item.lot_number ? item.lot_number.indexOf('Inspection Certificate') >= 0 : false;
-					var is_not_travel = (is_sobra || is_inspection_certificate);
+					var is_not_travel   = (is_sobra || is_inspection_certificate);
 
                     if(primeiro_certificado_inspecao != 2 && is_inspection_certificate){
 
@@ -255,6 +255,7 @@ function listar_blocks(callback_function)
                         icone.addClass('glyphicon-ok');
                     }
 
+                    var th_meas = table.find('.th_meas');
                     var th_quarry = table.find('.th_quarry');
                     if (is_not_travel) {
                     	var div_botoes = table.find('.div_botoes');
@@ -265,15 +266,16 @@ function listar_blocks(callback_function)
                     	var th_nf = table.find('.th_nf');
                     	var th_price = table.find('.th_price');
 
-
                     	if (is_sobra) {
 	                    	th_data.text('Production');
 	                    	th_wagon_number.text('Reserved');
 	                    	th_nf.hide();
                     		th_price.hide();
+                            th_meas.text('Net Meas');
                           
                     	}
                     	else if (is_inspection_certificate) {
+                            th_meas.text('Sale Meas');
                     		th_wagon_number.text('Client');
                     		th_nf.hide();
                     		th_price.hide();
@@ -281,6 +283,7 @@ function listar_blocks(callback_function)
                     	}
                     }
                     else {
+                        th_meas.text('Sale Meas');
                 		th_quarry.hide();
                         
                 	}

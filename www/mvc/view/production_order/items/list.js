@@ -706,7 +706,12 @@ var ProductOrderItems = function(id)
             error: ajaxError,
             type: "POST",
             url: "<?= APP_URI ?>po/items/save/",
-            data: { production_order_id: ProductOrderItems.production_order_id, blocks: ProductOrderItems.blocks_to_save, confirm: (confirm === true) },
+            data: { 
+
+                production_order_id: ProductOrderItems.production_order_id, 
+                blocks: JSON.stringify(ProductOrderItems.blocks_to_save), 
+                confirm: (confirm === true) 
+            },
             dataType: 'json',
             success: function (response) {
                 if (response_validation(response)) {

@@ -314,7 +314,8 @@ class ProductionOrderItem_Model extends \Sys\Model {
                 INNER JOIN
                     product ON (product.id = production_order.product_id)
                 WHERE
-                    production_order.id = ?
+                    production_order.excluido = "N"
+                    AND production_order.id = ?
                 ';
         $query = DB::query($sql, array($id));
         $query[0]['permissao'] = $permissao;

@@ -93,6 +93,12 @@ function show_dialog(tipo, id)
             carrega_formulario(id);
             btn_save.text('Save');
             btn_save.addClass('btn btn-primary');
+
+            var div_hide = $('.div_hide');
+
+            div_hide.addClass('hidden');
+           
+
             break;
         case FORMULARIO.VISUALIZAR:
             carrega_formulario(id);
@@ -246,7 +252,7 @@ function envia_detalhes()
                 end_quarry_id: end_quarry_id,
                 end_terminal_id: end_terminal_id,
                 shipping_time: edt_shipping_time.val(),
-                blocks: edt_blocks.val()
+                blocks: JSON.stringify(edt_blocks.val())
             },
             success: function (response) {
 

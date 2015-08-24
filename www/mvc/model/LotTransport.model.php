@@ -775,7 +775,8 @@ class LotTransport_Model extends \Sys\Model {
 	                FROM 
 	                    lot_transport
 	                WHERE
-	                    lot_transport.id = :lot_transport_id
+                        lot_transport.excluido = 'N'
+	                    AND lot_transport.id = :lot_transport_id
 	                ";
 
 	        $params[':lot_transport_id'] = $id;
@@ -839,11 +840,96 @@ class LotTransport_Model extends \Sys\Model {
 	    return $this->get_poblo_obs($lot_number, $id, $quarry_id, $invoice_id);
     }
 
-    function get_poblo() {
+
+    function get_inspection_certificate($client_id = -1){
+
+         $sql = "SELECT
+                    block.id AS block_id,
+                    block.block_number,
+                    block.tot_weight,
+                    block.quarry_id,
+                    block.product_id,
+                    block.quality_id,
+                    block.tot_c,
+                    block.tot_a,
+                    block.tot_l,
+                    block.tot_vol,
+                    block.net_c,
+                    block.net_a,
+                    block.net_l,
+                    block.net_vol,
+                    block.sold,
+                    block.obs_poblo,
+                    block.sold_client_id,
+                    sold_client.code AS sold_client_code,
+                    sold_client.name AS sold_client_name,
+                    quality.name AS quality_name,
+                    production_order.date_production,
+                    invoice.id AS invoice_id,
+                    invoice_item.id AS invoice_item_id,
+                    invoice_item.nf AS invoice_item_nf,
+                    invoice_item.price AS invoice_item_price,
+                    invoice_item.sale_net_c AS invoice_sale_net_c,
+                    invoice_item.sale_net_a AS invoice_sale_net_a,
+                    invoice_item.sale_net_l AS invoice_sale_net_l,
+                    invoice_item.poblo_status_id,
+                    invoice.date_record AS invoice_date_record,
+                    invoice.poblo_obs AS invoice_poblo_obs,
+                    CONCAT('Inspection Certificate #', invoice.id, ' - ', DATE_FORMAT(invoice.date_record, '%Y/%m/%d')) AS inspection_name,
+                    poblo_status.cor AS cor_poblo_status
+                    FROM block
+                    LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
+                    INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)
+                    INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id)
+                    INNER JOIN quality ON (quality.id = block.quality_id)
+                    INNER JOIN invoice_item ON (invoice_item.block_id = block.id AND invoice_item.excluido = 'N')
+                    INNER JOIN invoice ON (invoice.id = invoice_item.invoice_id)
+                    LEFT JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
+                WHERE
+                    block.quarry_id IN ({$this->active_quarries}) 
+                    AND block.excluido = 'N' 
+                    AND block.sold = 1 
+                    AND block.current_lot_transport_id IS NULL ";
+
+                $params = array();
+                if($client_id > 0){
+                    $sql .= " AND block.sold_client_id = :client_id ";
+                    $params[':client_id'] = $client_id;
+                }
+
+                $sql .= " ORDER BY
+                    invoice.date_record ASC,
+                    quality.order_number,
+                    block.block_number ";
+
+        $query = DB::query($sql , $params);
+        foreach($query as $key => $row){
+
+           $cor = Util::Colors($row['cor_poblo_status']);
+           $query[$key]['cor_poblo_status_texto'] = $cor[1];
+        }
+
+        return $query;
+
+    }
+
+    function get_sobracolumay($client_id = -1){
 
         $block_model = $this->LoadModel('Block', true);
-        $interim_sobracolumay = $block_model->get_sobracolumay($block_model::BLOCK_TYPE_INTERIM);
-        $final_sobracolumay = $block_model->get_sobracolumay($block_model::BLOCK_TYPE_FINAL);
+
+        $final_sobracolumay = $block_model->get_sobracolumay($block_model::BLOCK_TYPE_FINAL, null, $client_id);
+
+
+        foreach ($final_sobracolumay as $key => $block) {
+            $final_sobracolumay[$key]['lot_number'] = 'Final Sobracolumay - ' . $block['quarry_name'];
+        }
+
+
+        return $final_sobracolumay;
+
+    }
+
+    function get_lot($client_id = -1) {
 
         $sql = "SELECT
                     lot_transport_item.id,
@@ -853,13 +939,7 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.status AS lot_transport_status,
                     lot_transport.poblo_obs,
                     lot_transport.date_record,
-                    CASE
-                        -- se for lote, exibir informações do lote
-                        WHEN !ISNULL(lot_transport.lot_number) THEN CONCAT('Lot Number ', lot_transport.lot_number)
-                        -- se não tiver lote, exibir dados da inspeção (invoice)
-                        WHEN ISNULL(lot_transport.lot_number) AND !ISNULL(invoice.id) THEN CONCAT('Inspection Certificate #', invoice.id, ' - ', DATE_FORMAT(invoice.date_record, '%Y/%m/%d'))
-                        ELSE ''
-                    END AS lot_number,
+                    CONCAT('Lot Number ', lot_transport.lot_number) AS lot_number,
                     lot_transport.client_remove,
                     lot_transport.down_packing_list,
                     lot_transport.down_commercial_invoice,
@@ -888,6 +968,7 @@ class LotTransport_Model extends \Sys\Model {
                     block.net_vol,
                     block.sold,
                     block.sold_client_id,
+                    block.obs_poblo,
                     sold_client.code AS sold_client_code,
                     sold_client.name AS sold_client_name,
                     quality.name AS quality_name,
@@ -920,12 +1001,12 @@ class LotTransport_Model extends \Sys\Model {
                         INNER JOIN invoice_item on invoice_item.id = lot_transport_item.invoice_item_id
                         INNER JOIN invoice on invoice.id = invoice_item.invoice_id
                         WHERE lot_transport_id = lot_transport.id
-                        
+                        AND lot_transport_item.excluido = 'N'
                     ) AS menor_date_record
                     FROM block
                     LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
-                    LEFT JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
-                    LEFT JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
+                    INNER JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)
+                    INNER JOIN lot_transport ON (lot_transport.id = lot_transport_item.lot_transport_id)
                     LEFT JOIN client ON (client.id = lot_transport.client_id)
                     INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)
                     INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id)
@@ -935,51 +1016,54 @@ class LotTransport_Model extends \Sys\Model {
                     LEFT JOIN invoice ON (invoice.id = invoice_item.invoice_id)
                     LEFT JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
                 WHERE
-                    block.quarry_id IN ({$this->active_quarries}) AND 
-                    block.excluido = 'N' 
-                    AND ((
-                            block.sold = 1 and block.current_lot_transport_id IS NULL
-                        )
-                        OR
-                        (
+                    block.quarry_id IN ({$this->active_quarries})  
+                    AND block.excluido = 'N' 
+                    AND CONCAT('Lot Number ', lot_transport.lot_number) = 'Lot Number MSG15-023' ";
 
-                            lot_transport.status != 0 -- não exibo LOTES rascunhos
-                            AND (lot_transport.status != 3 -- não exibo LOTES entregues
-                                OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
-                                OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
-                            )
-                            AND lot_transport_item.dismembered != TRUE
-                            AND lot_transport.excluido = 'N'
-                            AND lot_transport_item.excluido = 'N'
-                    ))
+                    $params = array();
+                    if($client_id > 0){
 
-                ORDER BY
+                        $sql .= " AND block.sold_client_id = :client_id ";
+                        $params[':client_id'] = $client_id;
+
+                    }else{
+                        $sql .= " AND ((
+                                        block.sold = 1 and block.current_lot_transport_id IS NULL
+                                    )
+                                    OR
+                                    (
+
+                                        lot_transport.status != 0 -- não exibo LOTES rascunhos
+                                        AND (lot_transport.status != 3 -- não exibo LOTES entregues
+                                            OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
+                                            OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
+                                        )
+                                        AND lot_transport_item.dismembered != TRUE
+                                        AND lot_transport.excluido = 'N'
+                                        AND lot_transport_item.excluido = 'N'
+                                ))";
+                    }
+
+                    
+
+                $sql .= " ORDER BY
+
                     menor_date_record,
-                    invoice.date_record,
+                    quality.order_number,
+                    lot_transport.order_number,
                     quarry.name,
-                    quality.order_number
+                    invoice.date_record,
+                    block.block_number
                 ";
-        
-        $query = DB::query($sql);
+      
+        $query = DB::query($sql, $params);
         foreach($query as $key => $row){
 
            $cor = Util::Colors($row['cor_poblo_status']);
            $query[$key]['cor_poblo_status_texto'] = $cor[1];
         }
-        foreach ($interim_sobracolumay as $key => $block) {
-            $interim_sobracolumay[$key]['lot_number'] = 'Iterim Sobracolumay - ' . $block['quarry_name'];
-        }
 
-        foreach ($final_sobracolumay as $key => $block) {
-            $final_sobracolumay[$key]['lot_number'] = 'Final Sobracolumay - ' . $block['quarry_name'];
-        }
-
-        return array('transport' => array_merge(/*$interim_sobracolumay,*/ $final_sobracolumay, $query));
-
-        return array(
-                    //'interim_sobracolumay' => $interim_sobracolumay,
-                    'final_sobracolumay' => $final_sobracolumay,
-                    'transport' => $query);
+        return $query;
     }
     
 }

@@ -126,7 +126,7 @@ class Block_Controller extends \Sys\Controller
 
     function reserve_selected_json($params){
 
-            $id_reserve = $_POST['id'];
+            $id_reserve = json_decode($_POST['id']);
             $blocks_reserved = array();
 
             for($i=0; $i<count($id_reserve); $i++){

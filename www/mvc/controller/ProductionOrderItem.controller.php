@@ -25,7 +25,7 @@ class ProductionOrderItem_Controller extends \Sys\Controller
 
     function save_json($params)
     {
-        $blocks = $this->ReadPost('blocks');
+        $blocks = json_decode($this->ReadPost('blocks'));
         $production_order_id = (int)$this->ReadPost('production_order_id');
         $ret = array();
         $confirm = ($this->ReadPost('confirm') == 'true');

@@ -494,7 +494,7 @@ function abrir_modal_reserve(){
                         type: "POST",
                         url: "<?= APP_URI ?>block/reserve_selected/",
                         data: {
-                            id: campos_marcados,
+                            id: JSON.stringify(campos_marcados),
                             client_block_number: null,
                             reserved_client_id: cbo_reserved_client.val()
                         },

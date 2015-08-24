@@ -153,6 +153,7 @@ class Controller
 
     function ReadPost($name, $default=null)
     {
+
         if (isset($_POST[$name])) {
             return $_POST[$name];
         }

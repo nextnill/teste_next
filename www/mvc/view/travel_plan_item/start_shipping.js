@@ -297,7 +297,7 @@ function btn_start_shipping_click(type)
                 error: ajaxError,
                 type: "POST",
                 url: "<?= APP_URI ?>travel_plan/pending/" + url + "/",
-                data: { blocks: arr_pending_blocks_selected },
+                data: { blocks: JSON.stringify(arr_pending_blocks_selected) },
                 success: function (response) {
                     if (response_validation(response)) {
                         closeModal('modal_start_shipping');
@@ -317,7 +317,7 @@ function btn_mark_completed_click()
             error: ajaxError,
             type: "POST",
             url: "<?= APP_URI ?>travel_plan/pending/mark_completed/",
-            data: { blocks: arr_pending_blocks_selected },
+            data: { blocks:  JSON.stringify(arr_pending_blocks_selected) },
             success: function (response) {
                 if (response_validation(response)) {
                         closeModal('modal_start_shipping');

@@ -227,6 +227,7 @@ class Defect_Model extends \Sys\Model {
                     defect ON (defect.id = defect_poi.defect_id)
                 WHERE
                     defect_poi.production_order_item_id = ?
+                    AND defect_poi.excluido = "N"
                 ORDER BY
                     defect.name
                 ';

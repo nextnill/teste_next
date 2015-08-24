@@ -83,7 +83,7 @@ class LotTransport_Controller extends \Sys\Controller
     function save_json($params)
     {
         $id = $this->ReadPost('id');
-        $blocks = $this->ReadPost('blocks');
+        $blocks = json_decode($this->ReadPost('blocks'));
         $lot_number = $this->ReadPost('lot_number');
         $client_id = $this->ReadPost('client_id');
 
