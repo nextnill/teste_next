@@ -27,6 +27,8 @@ class Permissions_Config extends \Sys\Permissions
             'travel_plan' => array('name' => 'Travel Plan', 'description' => ''),
             'pointing_travel' => array('name' => 'Pointing Travel', 'description' => ''),
             'poblo' => array('name' => 'Poblo', 'description' => 'Position of the blocks'),
+            'truck_carrier' => array('name' => 'Truck Carrier', 'description' => ''),
+            
             
         );        
     }

@@ -49,6 +49,12 @@ if (LOGGED):
                 </a>
             </li>
 
+            <li <?= (!verifica_acesso('truck_carrier', $permissions) ? 'class="disabled"' : '') ?>>
+                <a href="<?= APP_URI ?>truck_carrier/list/">
+                    Truck Carrier
+                </a>
+            </li>
+
             <li role="presentation" class="divider"></li>
             
             <li <?= (!verifica_acesso('quarry', $permissions) ? 'class="disabled"' : '') ?>>

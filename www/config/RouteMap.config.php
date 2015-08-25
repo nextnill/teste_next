@@ -228,6 +228,13 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/poblo_status/save/' => array('PobloStatus', 'save_json', 'poblo'),
                 '/poblo_status/save_color/' => array('PobloStatus', 'save_color_json', 'poblo'),
                 '/poblo_status/delete/' => array('PobloStatus', 'delete_json', 'poblo'),
+
+
+                '/truck_carrier/list/' => array('Truck_Carrier', 'list_action', 'truck_carrier'),
+                '/truck_carrier/list/json/' => array('Truck_Carrier', 'list_json', 'truck_carrier'),
+                '/truck_carrier/detail/' => array('Truck_Carrier', 'detail_json'),
+                '/truck_carrier/save/' => array('Truck_Carrier', 'save_json', 'truck_carrier'),
+                '/truck_carrier/delete/' => array('Truck_Carrier', 'delete_json', 'truck_carrier'),
             );
         }
     }
