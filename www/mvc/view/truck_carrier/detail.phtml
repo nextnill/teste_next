@@ -1,0 +1,78 @@
+<!-- MODAL DETALHE -->
+<div class="modal bs-modal-lg" id="modal_detalhe" tabindex="-1" role="dialog" aria-labelledby="modal_detalhe_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_detalhe');">&times;</button>
+                <h4 class="modal-title" id="modal_detalhe_label">Carrier</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    
+                    <input type="hidden" id="post_tipo" name="post_tipo">
+                    <input type="hidden" id="rec_id">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edt_name">Carrier Name</label>
+                                <input type="text" class="form-control input" id="edt_name" placeholder="Name" maxlength="150">
+                            </div>
+                        </div>
+                    </div>    
+
+
+                    <div class="row">
+                        <div class="col-sm-2">
+                           
+                        </div>
+                        <div class="col-sm-8">
+                           <div class="table-responsive">
+                                <table class="table tbl_list_trucks">
+
+                                    <thead>
+                                        <tr>
+                                            <th >License Plate</th>
+                                            <th>
+                                                <button class="pull-right btn_add_truck" >
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr template-row style="display: none;">
+                                            <td>
+                                                <input type="text" class="form-control input" template-field="license_plate" placeholder="Truck's License Plate"></input>
+                                            </td>
+                                            <td>
+                                                <button class="btn_carrier pull-right " template-button="btn_remove">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>  
+                        </div>
+                        <div class="col-sm-2">
+                           
+                        </div>
+                    </div>    
+
+                     
+                </form>
+                
+                <!-- ALERTAS -->
+                <div id="alerta_form" class="hidden alert alert-danger">
+                </div>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_cancel" onclick="javascript:closeModal('modal_detalhe');">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_save" onclick="javascript:envia_detalhes();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->
