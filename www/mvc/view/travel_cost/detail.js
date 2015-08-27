@@ -1,7 +1,18 @@
+
+//elementos
+var edt_cost_tonne = $('#edt_cost_tonne');
+var alerta_form = $('#alerta_form');
+var btn_save = $('#btn_save');
+var post_tipo = $('#post_tipo');
+var rec_id = $('#rec_id');
+var edt_name = $('#edt_name');
+var cbo_type = $('#cbo_type');
+
 function show_dialog(tipo, id)
 {
-    var btn_save = $('#btn_save');
     limpa_formulario(tipo);
+
+    edt_cost_tonne.maskMoney({thousands:'.', decimal:',', allowZero:true, suffix: '', precision:2});
 
     switch(tipo)
     {
@@ -34,22 +45,14 @@ function show_dialog(tipo, id)
 
 function permite_alterar(valor)
 {
-    var edt_name = $('#edt_name');
-    var cbo_type = $('#cbo_type');
 
     edt_name.prop("readonly", !valor);
+    edt_cost_tonne.prop("readonly", !valor);
     cbo_type.prop("disabled", !valor);
 }
 
 function limpa_formulario(tipo)
 {
-    var alerta_form = $('#alerta_form');
-    var btn_save = $('#btn_save');
-    var post_tipo = $('#post_tipo');
-    var rec_id = $('#rec_id');
-
-    var edt_name = $('#edt_name');
-    var cbo_type = $('#cbo_type');
 
     alerta_form.hide();
     btn_save.removeClass();
@@ -58,6 +61,7 @@ function limpa_formulario(tipo)
     rec_id.val('');
 
     edt_name.val('');
+    edt_cost_tonne.val('');
     cbo_type.val('');
 
     set_focus(edt_name);
@@ -70,15 +74,14 @@ function carrega_formulario(id)
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>travel_cost/detail/json/" + id, function(response) {
         if (response_validation(response)) {
-            var rec_id = $('#rec_id');
-            var edt_name = $('#edt_name');
-            var cbo_type = $('#cbo_type');
 
             if (response.hasOwnProperty('id')) {
                 rec_id.val(response.id);
 
                 edt_name.val(response.name);
                 cbo_type.val(response.type);
+
+                edt_cost_tonne.maskMoney('mask', parseFloat(response.cost_per_tonne));
             }
         }
     }).fail(ajaxError);
@@ -86,10 +89,6 @@ function carrega_formulario(id)
 
 function valida_formulario()
 {
-    var alerta_form = $('#alerta_form');
-
-    var edt_name = $('#edt_name');
-    var cbo_type = $('#cbo_type');
 
     var valido = true;
     var msgs = new Array();
@@ -119,16 +118,11 @@ function valida_formulario()
 
 function envia_detalhes()
 {
-    var post_tipo = $('#post_tipo');
 
     if (post_tipo.val() == FORMULARIO.EXCLUIR || valida_formulario())
     {
         var modal_detalhe = $('#modal_detalhe');
-        var btn_save = $('#btn_save');
-        var rec_id = $('#rec_id');
-        var edt_name = $('#edt_name');
-        var cbo_type = $('#cbo_type');
-
+       
         $.ajax({
             error: ajaxError,
             type: "POST",
@@ -136,7 +130,8 @@ function envia_detalhes()
             data: {
                 id: rec_id.val(),
                 name: edt_name.val(),
-                type: 1
+                type: 1,
+                cost_per_tonne: edt_cost_tonne.maskMoney('unmasked')[0],
             },
             success: function (response) {
                 if (response_validation(response)) {
@@ -147,13 +142,13 @@ function envia_detalhes()
                     switch (tipo)
                     {
                         case FORMULARIO.NOVO:
-                            alert_saved($('#edt_name').val() + ' saved successfully');
+                            alert_saved(edt_name.val() + ' saved successfully');
                             break;
                         case FORMULARIO.EDITAR:
-                            alert_saved($('#edt_name').val() + ' saved successfully');
+                            alert_saved(edt_name.val() + ' saved successfully');
                             break;
                         case FORMULARIO.EXCLUIR:
-                            alert_saved($('#edt_name').val() + ' deleted successfully');
+                            alert_saved(edt_name.val() + ' deleted successfully');
                             break;
                     }
                 }

@@ -31,6 +31,10 @@ function add_row(table_body, item)
     var field_type = $(new_row.find("[template-field='type']"));
     field_type.text(str_lot_travel_cost_type(item.type));
 
+    var field_cost_per_tonne = $(new_row.find("[template-field='cost_per_tonne']"));
+    field_cost_per_tonne.text(item.cost_per_tonne != null ? item.cost_per_tonne : '');
+    
+
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);
     button_edit.click(

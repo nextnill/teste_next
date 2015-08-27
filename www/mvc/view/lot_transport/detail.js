@@ -2,6 +2,8 @@ var lot_transport_id = <?= $lot_transport_id ?>;
 var lot_transport_status = <?= $lot_transport->status ? $lot_transport->status : $lot_transport::LOT_TRANSPORT_STATUS_DRAFT ?>;
 var lot_transport;
 var lot_blocks = [];
+var tot_weight = 0;
+var btn_costs = $('#btn_costs');
 
 function init_lots() {
     var lt_detail_title = $('#lt_detail_title');
@@ -211,6 +213,8 @@ function add_row(table_body, item)
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
     field_tot_weight.text(item.tot_weight);
 
+    tot_weight += parseFloat(item.tot_weight);
+
 
     var field_destination = $(new_row.find("[template-field='destination']"));
     field_destination.text(item.last_end_location ? item.last_end_location : '');
@@ -403,6 +407,13 @@ function btn_finish_click() {
 
     }
 }
+
+
+//eventos
+btn_costs.unbind('click');
+btn_costs.click(function(){
+    abre_costs(tot_weight);
+});
 
 // on load window
 funcs_on_load.push(function() {

@@ -6,10 +6,12 @@ var tbl_list_cost_route_body = tbl_list_cost_route.find('tbody');
 
 var arr_travel_cost;
 var arr_travel_cost_route;
+var tot_weight = 0;
 
-function abre_costs() {
+function abre_costs(tot_weight_params) {
     list_travel_cost();
     list_travel_cost_route();
+    tot_weight = tot_weight_params;
     showModal('cost_modal_detalhe');
 }
 
@@ -78,6 +80,16 @@ function add_row_travel_cost(table_body, item) {
     if ((item.value) && (parseFloat(item.value) > 0)) {
         field_value.val(item.value);
     }
+
+    var field_cost_preview = $(new_row.find("[template-field='cost_preview']"));
+    field_cost_preview.text(item.cost_per_tonne != null ? parseFloat(tot_weight).format_number(2)*parseFloat(item.cost_per_tonne).format_number(2) : '' );
+
+    field_cost_preview.unbind('click');
+    field_cost_preview.click(function(){
+        field_value.val(this.textContent);
+    });
+
+    
 
     new_row.appendTo(table_body);
 }

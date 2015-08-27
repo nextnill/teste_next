@@ -27,6 +27,7 @@ var last_end_terminal_id = null;
 // FUNCOES
 function tp_listar()
 {
+
     if (lot_transport_id == 0) {
         div_travel_plan.hide();
         btn_costs.hide();

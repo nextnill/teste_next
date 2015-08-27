@@ -14,6 +14,7 @@
                         <thead>
                             <tr>
                                 <th>Fobbings</th>
+                                <th class="text-right small text-info" >Suggested cost</th>
                                 <th class="text-right" style="width: 180px">Value</th>
                             </tr>
                         </thead>
@@ -21,6 +22,7 @@
                             <!-- itens -->
                             <tr template-row style="display: none;">
                                 <td template-field="cost">{cost}</td>
+                                <td style="cursor: pointer;" class="text-right small text-info" template-field="cost_preview">{cost_preview}</td>
                                 <td class="text-right">
                                     <input template-field="value" type="text" class="form-control input_number text-right" placeholder="0.00" >
                                 </td>

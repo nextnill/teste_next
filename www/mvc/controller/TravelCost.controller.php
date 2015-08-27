@@ -37,6 +37,7 @@ class TravelCost_Controller extends \Sys\Controller
         
         $travel_cost_model->name = $this->ReadPost('name');
         $travel_cost_model->type = $this->ReadPost('type');
+        $travel_cost_model->cost_per_tonne = $this->ReadPost('cost_per_tonne');
 
         $this->print_json($travel_cost_model->save());
     }

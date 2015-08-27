@@ -244,10 +244,14 @@ class LotTransport_Model extends \Sys\Model {
                 
                 // adiciono os itens (lot_transport_item)
                 foreach ($this->items as $key => $block) {
+                    if(is_array($block)){
+                        (object)$block;
+                    }
+
                     $lot_transport_item_model = $this->LoadModel('LotTransportItem', true);
                     $lot_transport_item_model->lot_transport_id = $this->id;
-                    $lot_transport_item_model->block_id = $block['block_id'];
-                    $lot_transport_item_model->invoice_item_id = $block['invoice_item_id'];
+                    $lot_transport_item_model->block_id = $block->block_id;
+                    $lot_transport_item_model->invoice_item_id = $block->invoice_item_id;
                     $lot_transport_item_model->save();
                 }
             }

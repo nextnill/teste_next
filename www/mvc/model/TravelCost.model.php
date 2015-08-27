@@ -15,6 +15,7 @@ class TravelCost_Model extends \Sys\Model {
 
     public $name;
     public $type;
+    public $cost_per_tonne;
     
     function __construct()
     {
@@ -71,8 +72,8 @@ class TravelCost_Model extends \Sys\Model {
 
         if ($validation->isValid())
         {
-            $sql = 'INSERT INTO travel_cost (name, type) VALUES (?, ?) ';
-            $query = DB::exec($sql, array($this->name, $this->type));
+            $sql = 'INSERT INTO travel_cost (name, type, cost_per_tonne) VALUES (?, ?, ?) ';
+            $query = DB::exec($sql, array($this->name, $this->type, $this->cost_per_tonne));
 
             $this->id = DB::last_insert_id();
             return $this;
@@ -99,13 +100,15 @@ class TravelCost_Model extends \Sys\Model {
                         travel_cost
                     SET
                         name = ?,
-                        type = ?
+                        type = ?,
+                        cost_per_tonne = ?
                     WHERE
                         id = ? ';
                 $query = DB::exec($sql, array(
                     // set
                     $this->name,
                     $this->type,
+                    $this->cost_per_tonne,
                     // where
                     $this->id
                 ));
@@ -155,7 +158,8 @@ class TravelCost_Model extends \Sys\Model {
                     id,
                     excluido,
                     name,
-                    type
+                    type,
+                    cost_per_tonne
                 FROM
                     travel_cost
                 WHERE id = ?',
@@ -180,6 +184,7 @@ class TravelCost_Model extends \Sys\Model {
             $this->excluido = (string)$row_query['excluido'];
 
             $this->name = (string)$row_query['name'];
+            $this->cost_per_tonne = $row_query['cost_per_tonne'];
             $this->type = (int)$row_query['type'];
         }
     }
@@ -187,8 +192,18 @@ class TravelCost_Model extends \Sys\Model {
     function get_list($excluido=false)
     {
         $excluido = ($excluido === true ? 'S' : 'N');
+
+        $sql = "SELECT  
+                    id, 
+                    excluido, 
+                    name, 
+                    type, 
+                    cost_per_tonne 
+                FROM travel_cost 
+                WHERE excluido = ? 
+                ORDER BY name ";
         
-        $query = DB::query('SELECT id, excluido, name, type FROM travel_cost WHERE excluido = ? ORDER BY name', array($excluido));
+        $query = DB::query($sql, array($excluido));
         
         return $query;
     }
