@@ -1,6 +1,6 @@
-function add_option(select, value, text)
+function add_option(select, value, text, attr)
 {
-    select.append("<option value='" + value + "'>" + text + "</option>");
+    select.append("<option value='" + value + "' "+attr+" >" + text + "</option>");
 }
 
 function set_focus(obj) {
