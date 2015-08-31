@@ -1,6 +1,6 @@
 var tbl_list_cost = $('#tbl_list_cost');
 var tbl_list_cost_body = tbl_list_cost.find('tbody');
-
+var edt_tot_weight = $('.edt_tot_weight');
 var tbl_list_cost_route = $('#tbl_list_cost_route');
 var tbl_list_cost_route_body = tbl_list_cost_route.find('tbody');
 
@@ -12,6 +12,8 @@ function abre_costs(tot_weight_params) {
     list_travel_cost();
     list_travel_cost_route();
     tot_weight = tot_weight_params;
+    edt_tot_weight.text('Tot Weight: '+ parseFloat(tot_weight).format_number(2));
+
     showModal('cost_modal_detalhe');
 }
 
@@ -80,6 +82,10 @@ function add_row_travel_cost(table_body, item) {
     if ((item.value) && (parseFloat(item.value) > 0)) {
         field_value.val(item.value);
     }
+
+    var field_cost_per_tonne = $(new_row.find("[template-field='cost_per_tonne']"));
+    field_cost_per_tonne.text(item.cost_per_tonne != null ? parseFloat(item.cost_per_tonne).format_number(2) : '');
+    
 
     var field_cost_preview = $(new_row.find("[template-field='cost_preview']"));
     field_cost_preview.text(item.cost_per_tonne != null ? parseFloat(tot_weight).format_number(2)*parseFloat(item.cost_per_tonne).format_number(2) : '' );

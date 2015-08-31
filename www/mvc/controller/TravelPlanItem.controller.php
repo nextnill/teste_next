@@ -9,7 +9,9 @@ class TravelPlanItem_Controller extends \Sys\Controller
     {
         $this->RenderView('masterpage', array(
             'travel_plan_item/list_pending',
-            'travel_plan_item/start_shipping'  
+            'travel_plan_item/start_shipping',
+            'truck_carrier/save_new_truck'
+
         ));
     }
 
@@ -20,7 +22,9 @@ class TravelPlanItem_Controller extends \Sys\Controller
 
     function list_pending_json($params)
     {
+
         $travel_plan_item_model = $this->LoadModel('TravelPlanItem', true);
+
         $list = $travel_plan_item_model->get_list_pending();
         
         $this->print_json($list);
@@ -30,12 +34,15 @@ class TravelPlanItem_Controller extends \Sys\Controller
     {
         $blocks = json_decode($this->ReadPost('blocks'));
 
-
-
         $travel_plan_item_model = $this->LoadModel('TravelPlanItem', false);
 
         $result = [];
         foreach ($blocks as $key => $item) {
+            if(is_object($item)){
+                $item = (array)$item;
+            }
+
+            
             $travel_plan_item_model = new TravelPlanItem_Model();
             $result[] = $travel_plan_item_model->start_shipping(
                 $item['next_travel_plan_id'],
@@ -46,7 +53,9 @@ class TravelPlanItem_Controller extends \Sys\Controller
                 $item['invoice_item_nf'], 
                 $item['invoice_item_price'],
                 $item['next_travel_route_id'],
-                $item['invoice_item_wagon_number']
+                $item['invoice_item_wagon_number'],
+                $item['invoice_date_nf'],
+                $item['truck_id']
             );
         }
 

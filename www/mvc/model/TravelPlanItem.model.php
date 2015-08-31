@@ -124,7 +124,7 @@ class TravelPlanItem_Model extends \Sys\Model {
             $params[] = (int)$this->block_id;
             $params[] = (int)$this->status;
             $params[] = (!empty($this->date_completed) ? $this->date_completed : null);
-            $params[] = ($this->client_removed == 'true' ? true : false);
+            $params[] = ($this->client_removed == 'true' ? 1 : 0);
             $params[] = $this->wagon_number;
 
             $query = DB::exec($sql, $params);
@@ -138,17 +138,42 @@ class TravelPlanItem_Model extends \Sys\Model {
         return array('validation' => $validation);
     }
 
-    function start_shipping($travel_plan_id, $lot_transport_id, $lot_transport_item_id, $block_id, $invoice_item_id, $nf, $price, $travel_route_id=null, $wagon_number=null)
+    function update_wagon_number($block_id, $wagon_number){
+
+        $sql = 'UPDATE
+                    travel_plan_item
+                SET
+                    wagon_number = ?
+                WHERE
+                    block_id = ? ';
+
+        // set
+        $params[] = $wagon_number;
+        $params[] = (int)$block_id;
+        
+        $query = DB::exec($sql, $params);
+
+        return $block_id;
+    }
+
+    function start_shipping($travel_plan_id, $lot_transport_id, $lot_transport_item_id, $block_id, $invoice_item_id, $nf, $price, $travel_route_id=null, $wagon_number=null, $date_nf=null, $truck_id)
     {
         if (!empty($nf)) {
+
             // update NF e Price na Invoice
             if (isset($invoice_item_id) && ($invoice_item_id > 0)) {
                 $invoice_item_model = $this->LoadModel('InvoiceItem', true);
                 $invoice_item_model->populate($invoice_item_id);
                 $invoice_item_model->nf = $nf;
                 $invoice_item_model->price = $price;
+                $invoice_item_model->date_nf = $date_nf;
+
                 $invoice_item_model->save();
+
+
             }
+
+
 
             // update lot_transport_item
             $lot_transport_item_model = $this->LoadModel('LotTransportItem', true);
@@ -166,6 +191,12 @@ class TravelPlanItem_Model extends \Sys\Model {
             $this->block_id = $block_id;
             $this->wagon_number = $wagon_number;
             $this->status = self::TRAVEL_PLAN_STATUS_STARTED;
+
+            //block
+            $block_model = $this->LoadModel('Block', true);
+            $block_model->populate($block_id);
+            $block_model->truck_id = $truck_id;
+            $block_model->save();
              
             return $this->insert();
         }
@@ -237,6 +268,7 @@ class TravelPlanItem_Model extends \Sys\Model {
 
     function client_removed($lot_transport_id, $lot_transport_item_id, $block_id, $invoice_item_id, $nf, $price, $wagon_number)
     {
+        print_r($truck_id);exit();
         if (!empty($nf)) {
             // update NF e Price na Invoice
             if (isset($invoice_item_id) && ($invoice_item_id > 0)) {
@@ -417,11 +449,13 @@ class TravelPlanItem_Model extends \Sys\Model {
                         block.sale_net_a,
                         block.sale_net_l,
                         block.sale_net_vol,
+                        block.truck_id,
                         quality.name AS quality_name,
                         production_order.date_production,
                         invoice.id AS invoice_id,
                         invoice_item.id AS invoice_item_id,
                         invoice_item.nf AS invoice_item_nf,
+                        invoice_item.date_nf AS invoice_date_nf,
                         invoice_item.price AS invoice_item_price,
                         invoice.date_record AS invoice_date_record,
                     

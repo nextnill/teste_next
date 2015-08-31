@@ -129,6 +129,7 @@ class LotTransportItem_Model extends \Sys\Model {
             }
             else
             {
+
                 $sql = 'UPDATE
 	                        lot_transport_item
 	                    SET
@@ -149,14 +150,16 @@ class LotTransportItem_Model extends \Sys\Model {
                     $this->block_id,
                     $this->invoice_item_id,
                     $this->status,
-                    ($this->client_removed == 'true' ? true : false),
+                    ($this->client_removed != '' && $this->client_removed == 'true' ? 1 : 0),
                     ($this->last_travel_route_id > 0 ? $this->last_travel_route_id : null),
-                    ($this->dismembered == 'true' ? true : false),
+                    ($this->dismembered != '' && $this->dismembered == 'true' ? 1 : 0),
                     ($this->dismembered_lot_transport_id > 0 ? $this->dismembered_lot_transport_id : null),
                     // where
                     $this->id
 
                 ));
+                
+
                 
                 return $this->id;
             }
@@ -297,9 +300,9 @@ class LotTransportItem_Model extends \Sys\Model {
             $this->block_id = (int)$row_query['block_id'];
             $this->invoice_item_id = (int)$row_query['invoice_item_id'];
             $this->status = (int)$row_query['status'];
-            $this->client_removed = (int)$row_query['client_removed'] === 1;
+            $this->client_removed = (int)$row_query['client_removed'];
             $this->last_travel_route_id = (empty($row_query['last_travel_route_id']) ? null : (int)$row_query['last_travel_route_id']);
-            $this->dismembered = (int)$row_query['dismembered'] === 1;
+            $this->dismembered = (int)$row_query['dismembered'];
             $this->dismembered_lot_transport_id = (empty($row_query['dismembered_lot_transport_id']) ? null : (int)$row_query['dismembered_lot_transport_id']);
         }
     }

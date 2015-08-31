@@ -221,6 +221,7 @@ class RouteMap_Config extends \Sys\RouteMap
 
                 '/poblo/obs/json/' => array('Poblo', 'obs_json', 'poblo'),
                 '/poblo/save/' => array('Poblo', 'salve_obs_json', 'poblo'),
+                '/poblo/save_edit/' => array('Poblo', 'save_edit', 'poblo'),
 
                 '/poblo_status/' => array('PobloStatus', 'list_action', 'poblo'),
                 '/poblo_status/list/json/' => array('PobloStatus', 'list_json'),
@@ -235,6 +236,8 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/truck_carrier/detail/' => array('Truck_Carrier', 'detail_json'),
                 '/truck_carrier/save/' => array('Truck_Carrier', 'save_json', 'truck_carrier'),
                 '/truck_carrier/delete/' => array('Truck_Carrier', 'delete_json', 'truck_carrier'),
+                '/truck_carrier/list_truck/json/' => array('Truck_Carrier', 'list_truck_json', 'truck_carrier'),
+                '/truck_carrier/save_one_truck/' => array('Truck_Carrier', 'save_one_truck', 'truck_carrier'),
             );
         }
     }

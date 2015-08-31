@@ -4,8 +4,12 @@ var DLG_POINTING_TRAVEL = {
     MARK_COMPLETED: 3
 };
 
+var type_defined = null;
+
 function abre_start_shipping(type)
 {
+    type_defined = type;
+
     // altero o titulo da janela
     var modal_start_shipping_label = $('#modal_start_shipping_label');
     switch (type) {
@@ -84,6 +88,7 @@ function render_start_shipping_list(type)
         if (i == 0) {
             table.find("[template-title]").text(item.lot_number);
         }
+
         // se for uma nova pedreira
         if (item.lot_number != lot_number) {
             
@@ -101,9 +106,21 @@ function render_start_shipping_list(type)
             table.find("[template-title]").text(item.lot_number);
         }
 
-        add_row_shipping_list(table_body, item, type)
+        var div_trucks = table.find('.div_trucks');
+        var btn_new_truck = div_trucks.find('.btn_new_truck');
+
+        btn_new_truck.unbind('click');
+        btn_new_truck.click(function(){
+            show_modal_truck(div_trucks);
+        });
+        
+
+        add_row_shipping_list(table_body, item, type, div_trucks, table)
         lot_number = item.lot_number;
+
+
     });
+
 
     // mostra a tabela
     table.appendTo(list);
@@ -115,12 +132,38 @@ function render_start_shipping_list(type)
 
 }
 
-function add_row_shipping_list(table_body, item, type)
+
+function list_trucks(){
+
+    var cbo_trucks = $('.cbo_trucks');
+    cbo_trucks.find('option').remove();
+
+    $.getJSON("<?= APP_URI ?>truck_carrier/list_truck/json/", function(response) {
+         add_option(cbo_trucks, '', '- Select - ');
+        var carrier_name = "";
+        $.each(response, function(i, item) {
+
+            if(carrier_name != item.carrier_name){
+                carrier_name = item.carrier_name;
+                add_option(cbo_trucks, item.carrier_name, 'Carrier - '+item.carrier_name, 'class="text-info" disabled');
+            }
+
+            add_option(cbo_trucks, item.truck_id, item.truck_id, 'carrier_id="'+item.carrier_id+'"');
+        });
+
+        //cbo_trucks.selectpicker('refresh');
+
+    });
+}
+
+function add_row_shipping_list(table_body, item, type, div_trucks, table)
 {
     var template_row = table_body.find("tr:first");
     var new_row = template_row.clone();
     new_row.removeAttr("template-row");
     new_row.css("display", '');
+
+    $(new_row).find('#cbo_trucks').addClass('cbo_trucks');
 
     new_row.attr('template-row-ref', item.id);
 
@@ -132,7 +175,14 @@ function add_row_shipping_list(table_body, item, type)
         show_dialog(FORMULARIO.VISUALIZAR, id);
     });
 
+    var field_date_nf_edit = $(new_row.find("[template-field='date_nf_edit']"));
+    field_date_nf_edit.val(item.invoice_date_nf ? item.invoice_date_nf : '');
     
+    var field_date_nf = $(new_row.find("[template-field='date_nf']"));
+    if (item.invoice_date_nf) {
+        field_date_nf.text(item.invoice_date_nf);
+    }
+
     var field_nf = $(new_row.find("[template-field='nf']"));
     var field_nf_edit = $(new_row.find("[template-field='nf_edit']"));
     field_nf_edit.val(item.invoice_item_nf ? item.invoice_item_nf : '');
@@ -158,7 +208,9 @@ function add_row_shipping_list(table_body, item, type)
 
     if(terminal_wagon == "N" || type == DLG_POINTING_TRAVEL.CLIENT_REMOVED){
 
-        $(new_row.find("[template-field='wagon_number_edit']")).prop("disabled", true);
+        $(table.find(".colun_wagon")).addClass('hidden');
+    }else{
+        $(table.find(".colun_wagon")).removeClass('hidden');
     }
     
         var field_wagon_number = $(new_row.find("[template-field='wagon_number']"));
@@ -175,6 +227,30 @@ function add_row_shipping_list(table_body, item, type)
     var destination = item.current_location ? item.current_location : item.next_location;
     destination = destination ? destination : '';
     field_destination.text(destination);
+
+    
+    var field_truck = $(new_row.find("[template-field='truck']"));
+    if(item.truck_id){
+        field_truck.text(item.truck_id);
+    }
+
+    $.getJSON("<?= APP_URI ?>travel_plan/list/json/" + item.lot_transport_id, function(response) {
+            
+        $(response).each(function(j, item_travel_plan){
+                if(j == 0){
+
+                    if(destination == item_travel_plan.end_location){
+
+                        if(DLG_POINTING_TRAVEL.START_SHIPPING == type_defined){
+                            list_trucks();
+                            new_row.find('.div_trucks').removeClass('hidden');
+                            div_trucks.removeClass('hidden');
+                        }
+                    }
+                }
+        });
+    });
+    
 
     var field_status = $(new_row.find("[template-field='status']"));
     field_status.text(str_travel_plan_status(item.current_travel_plan_status));
@@ -211,10 +287,11 @@ function add_row_shipping_list(table_body, item, type)
     field_sale_net_l.text(item.sale_net_l);
 
     var field_sale_net_vol = $(new_row.find("[template-field='sale_net_vol']"));
-    field_sale_net_vol.text(item.sale_net_vol);
+    field_sale_net_vol.text('Vol: '+item.sale_net_vol);
 
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
-    field_tot_weight.text(item.tot_weight);
+    field_tot_weight.text('Weight: '+item.tot_weight);
+
 
     var field_selected = $(new_row.find("[template-field='selected']"));
     field_selected.attr('template-ref', item.id);
@@ -247,6 +324,16 @@ function btn_start_shipping_click(type)
         var price_edit = row.find('[template-field="price_edit"]');
         if (price_edit.length > 0) {
             arr_pending_blocks_selected[i].invoice_item_price = price_edit.val();
+        }
+
+        var date_nf_edit = row.find('[template-field="date_nf_edit"]');
+        if(date_nf_edit.val().length > 0){
+            arr_pending_blocks_selected[i].invoice_date_nf = date_nf_edit.val();
+        }
+
+        var cbo_trucks = row.find('.cbo_trucks');
+        if(cbo_trucks.val().length > 0){
+            arr_pending_blocks_selected[i].truck_id = cbo_trucks.val();
         }
 
         var wagon_number_edit = row.find('[template-field="wagon_number_edit"]');

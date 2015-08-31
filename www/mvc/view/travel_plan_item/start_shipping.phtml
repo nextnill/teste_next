@@ -14,7 +14,26 @@
                 <!-- template-table -->
                 <div class="panel panel-default" style="display: none;" template-table="start_shipping">
                     <div class="panel-heading" style="padding: 5px" >
-                        <h3 class="panel-title" style="font-weight: bold" template-title>Lote</h3>
+                        
+                        
+                        <div class="row ">
+                            <div class=" pull-left col-md-6">
+                                <h3 class="panel-title" style="font-weight: bold" template-title>Lote</h3>
+                            </div>
+
+
+                            <div class="col-md-4 pull-right div_trucks hidden">
+                               
+                                <button type="button" class="pull-right btn_new_truck btn btn-default">
+                                    Add Truck
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                                    
+                            </div>
+
+
+                        </div>
+                        
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped table-hover" id="travel_plan">
@@ -22,13 +41,13 @@
                                 <tr>
                                     <th style="width: 100px">Block Number</th>
                                     <th style="width: 90px">NF</th>
+                                    <th style="width: 130px">Date NF</th>
                                     <th style="width: 90px" class="text-right">Price</th>
-                                    <th class="text-center">Wagon</th>
+                                    <th width="90px" class="colun_wagon text-center">Wagon</th>
                                     <!--th colspan="3" class="text-center">Tot Meas</th-->
-                                    <th colspan="3" class="text-center">Net Meas</th>
-                                    <th class="text-center">Vol</th>
-                                    <th class="text-center">Weight</th>
-                                    <th template-header="destination">Destination</th>           
+                                    <th class="text-center">Net Meas</th>
+                                    <th >Truck</th>
+                                    <th width="90px" template-header="destination">Destination</th>           
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,23 +62,34 @@
                                         <input template-field="nf_edit" type="text" class="form-control text-left" placeholder="Enter" maxlength="50" style="padding:3px; width: 80px;">
                                     </td>
 
+                                    <td class="text-left" template-field="date_nf">
+                                        <input template-field="date_nf_edit" type="date" class="form-control" style="padding:3px; width: 130px;">
+                                    </td>
+
                                     <td class="text-right" template-field="price">
                                         <input template-field="price_edit" type="text" class="form-control input_number text-right" placeholder="0.00" style="padding:3px; width: 70px;">
                                     </td>
 
-                                    <td class="text-left" template-field="wagon_number" >
+                                    <td width="90px" class="text-left colun_wagon" template-field="wagon_number" >
                                         <input template-field="wagon_number_edit" type="text" class="form-control text-left small" placeholder="Enter" style="padding:3px; width: 120px;">
                                     </td>
 
-                                    <!--td template-field="tot_c" style="width: 45px" class="text-right">{C}</td-->
-                                    <!--td template-field="tot_a" style="width: 45px" class="text-right">{A}</td-->
-                                    <!--td template-field="tot_l" style="width: 45px" class="text-right">{L}</td-->
-                                    <td template-field="sale_net_c" style="width: 45px" class="text-right">{C}</td>
-                                    <td template-field="sale_net_a" style="width: 45px" class="text-right">{A}</td>
-                                    <td template-field="sale_net_l" style="width: 45px" class="text-right">{L}</td>
-                                    <td template-field="sale_net_vol" style="width: 70px" class="text-right">{sale_net_vol}</td>
-                                    <td template-field="tot_weight" style="width: 70px" class="text-right">{weight}</td>
-                                    <td template-field="destination">{destination}</td>
+                                    <td style="width: 45px" class="text-center" >
+                                        <span template-field="sale_net_c" >{C}</span>
+                                        <br>
+                                        <span template-field="sale_net_a">{A}</span>
+                                        <br>
+                                        <span template-field="sale_net_l">{L}</span>
+                                        <br>
+                                        <span template-field="sale_net_vol">{sale_net_vol}</span>
+                                        <br>
+                                        <span template-field="tot_weight" >{weight}</span>
+                                    </td>
+                                    <td template-field="truck">
+                                        <select id="cbo_trucks" class="div_trucks hidden form-control ">
+                                        </select>
+                                    </td>
+                                    <td width="90px"  template-field="destination">{destination}</td>
                                 </tr>
                             </tbody>
                         </table>

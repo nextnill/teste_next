@@ -1,0 +1,49 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_poblo_edit" tabindex="-1" role="dialog" aria-labelledby="modal_poblo_edit_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_poblo_edit');">&times;</button>
+                <h4 class="modal-title" id="modal_poblo_edit_label">Edit</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date NF</label>
+                                <input type="date" class="form-control edt_date_nf" id="edt_date_nf">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>NF</label>
+                                <input type="text" class="form-control edt_nf" id="edt_nf">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="text" class="form-control edt_price ext-right" placeholder="0.00" id="edt_price"></input>
+                            </div>
+                        </div>
+                        <div class="col-md-6 div_wagon">
+                            <div class="form-group">
+                                <label>Wagon Number</label>
+                                <input type="text" class="form-control text-left small edt_wagon_number" id="edt_wagon_number" placeholder="Enter">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_poblo_edit_cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_poblo_edit_save">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->

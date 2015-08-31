@@ -88,6 +88,17 @@ function response_validation(result) {
 
         alert_modal('Validation', vld_result);
         return false;
+    }else if(result.messages){
+        var vld_result = new Validation();
+       
+        for (var i = 0; i < result.messages.length; i++) {
+            vld_result.add(new ValidationMessage(result.messages[i].code, result.messages[i].message));
+        };
+        
+
+        alert_modal('Validation', vld_result);
+        return false;
     }
+
     return true;
 }

@@ -19,6 +19,26 @@ class Truck_Carrier_Controller extends \Sys\Controller
         $this->print_json($list);
     }
 
+    function list_truck_json($params)
+    {
+        $truck_carrier_model = $this->LoadModel('Truck_Carrier', true);
+        $list = $truck_carrier_model->get_list_trucks();
+        
+
+        $this->print_json($list);
+    }
+
+    function save_one_truck($params){
+
+        $truck_carrier_model = $this->LoadModel('Truck_Carrier', true);
+        $carrier_id = (int)$this->ReadPost('carrier_id');
+        $truck_id = $this->ReadPost('truck_id');
+
+        $list = $truck_carrier_model->save_one_truck($carrier_id, $truck_id);
+        
+        $this->print_json($list);
+    }
+
 
     function detail_json($params)
     {

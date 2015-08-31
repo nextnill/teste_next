@@ -36,6 +36,7 @@ class InvoiceItem_Model extends \Sys\Model {
     public $obs;
     public $client_block_number;
     public $poblo_status_id;
+    public $date_nf;
     
     function __construct()
     {
@@ -204,9 +205,10 @@ class InvoiceItem_Model extends \Sys\Model {
                         sale_net_vol,
                         obs,
                         client_block_number,
-                        poblo_status_id
+                        poblo_status_id,
+                        date_nf
 	                ) VALUES (
-	                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+	                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 	                ) ';
             $query = DB::exec($sql, array(
                 // values
@@ -231,7 +233,8 @@ class InvoiceItem_Model extends \Sys\Model {
                 $this->sale_net_vol,
                 $this->obs,
                 $this->client_block_number,
-                $this->poblo_status_id
+                $this->poblo_status_id,
+                ($this->date_nf != '' ? $this->date_nf : null),
             ));
 
             $this->id = DB::last_insert_id();
@@ -295,7 +298,8 @@ class InvoiceItem_Model extends \Sys\Model {
                             sale_net_l = ?,
                             sale_net_vol = ?,
                             obs = ?,
-                            poblo_status_id = ?
+                            poblo_status_id = ?,
+                            date_nf = ?
 	                    WHERE
 	                        id = ?
 	                    ';
@@ -322,6 +326,7 @@ class InvoiceItem_Model extends \Sys\Model {
                     $this->sale_net_vol,
                     $this->obs,
                     $this->poblo_status_id,
+                    ($this->date_nf != '' ? $this->date_nf : null),
                     // where
                     $this->id
 
@@ -402,7 +407,8 @@ class InvoiceItem_Model extends \Sys\Model {
                         sale_net_l,
                         sale_net_vol,
                         obs,
-                        poblo_status_id
+                        poblo_status_id,
+                        date_nf
 	                FROM
 	                    invoice_item
 	                WHERE
@@ -452,6 +458,8 @@ class InvoiceItem_Model extends \Sys\Model {
             $this->sale_net_vol = (float)$row_query['sale_net_vol'];
             $this->tot_weight = (float)$row_query['tot_weight'];
             $this->obs = (string)$row_query['obs'];
+            $this->date_nf = (string)$row_query['date_nf'];
+            
             $this->poblo_status_id = $row_query['poblo_status_id'] == '' ? null:(int)$row_query['poblo_status_id'];
         }
     }
@@ -489,7 +497,8 @@ class InvoiceItem_Model extends \Sys\Model {
                     invoice_item.sale_net_vol,
                     invoice_item.tot_weight,
                     invoice_item.obs,
-                    invoice_item.poblo_status_id
+                    invoice_item.poblo_status_id,
+                    invoice_item.date_nf
                 FROM invoice_item
                 INNER JOIN block ON (block.id = invoice_item.block_id)
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)

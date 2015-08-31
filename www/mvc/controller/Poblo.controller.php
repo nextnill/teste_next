@@ -22,7 +22,8 @@ class Poblo_Controller extends \Sys\Controller
                     'production_order/items/photo_view',
                     'poblo/down_packing_list',
                     'poblo/down_commercial_invoice',
-                    'poblo/up_draft'
+                    'poblo/up_draft',
+                    'poblo/poblo_edit'
                     ));
         }
         else{
@@ -82,6 +83,47 @@ class Poblo_Controller extends \Sys\Controller
         $obs = $block->set_poblo_obs($block_id, $obs);
 
         $this->print_json(array('obs' => $obs));
+    }
+
+    function save_edit($params){
+
+        $invoice_item_id = (int)$this->ReadPost('invoice_item_id');
+
+        $invoice_item_model = $this->LoadModel('InvoiceItem', true);
+        $invoice_item_model->populate($invoice_item_id);
+
+
+        $date_nf = (string)$this->ReadPost('date_nf');
+        $nf = (string)$this->ReadPost('nf');
+        $price = (string)$this->ReadPost('price');
+
+        
+        if($nf != null){
+            $invoice_item_model->nf = $nf;
+        }
+        
+        if($price != null){
+            $invoice_item_model->price = $price;
+        }
+
+        if($date_nf != ''){
+            
+            $invoice_item_model->date_nf = $date_nf;
+        }
+
+        $invoice_item_model->save();
+
+
+        $block_id = (int)$this->ReadPost('block_id');
+        $wagon_number = (int)$this->ReadPost('wagon_number');
+
+        if($wagon_number > 0){
+            $travel_plan_item_model = $this->LoadModel('TravelPlanItem', true);
+            $travel_plan_item_model->update_wagon_number($block_id, $wagon_number);
+        }
+       
+
+        $this->print_json(array('block_id' => $block_id));
     }
     
 }

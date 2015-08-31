@@ -138,6 +138,32 @@ class Truck_Carrier_Model extends \Sys\Model {
         }
     }
 
+
+    function save_one_truck($carrier_id=null, $truck_id=null){
+
+        $valida = true;
+        $validation = new Validation();
+        if($carrier_id == null){
+            $valida = false;
+            $validation->add(Validation::VALID_ERR_NOT_EXISTS, 'Carrier does not exists');
+        }
+
+        
+        if($truck_id == null){
+            $valida = false;
+            $validation->add(Validation::VALID_ERR_NOT_EXISTS, 'Truck Uninformed');
+        }
+
+        if(!$valida){
+            return $validation;
+        }
+       
+        $sql = "INSERT INTO carrier_truck (carrier_id, truck_id) VALUES (?, ?) ";
+        $query = DB::exec($sql, array($carrier_id, $truck_id));
+
+        return array('carrier_id' => $carrier_id, 'truck_id' => $truck_id);
+    }
+
    
 
     function delete()
@@ -214,6 +240,22 @@ class Truck_Carrier_Model extends \Sys\Model {
             $this->excluido = (string)$row_query['excluido'];
             $this->name = (string)$row_query['name'];
         }
+    }
+
+    function get_list_trucks()
+    {
+        
+        $sql = 'SELECT
+                    carrier_truck.carrier_id,
+                    carrier_truck.truck_id,
+                    carrier.name AS carrier_name
+                FROM carrier_truck
+                INNER JOIN carrier ON (carrier_truck.carrier_id = carrier.id)
+                ORDER BY carrier_truck.carrier_id';
+
+        $query = DB::query($sql);
+
+        return $query;
     }
     
     function get_list($excluido=false)

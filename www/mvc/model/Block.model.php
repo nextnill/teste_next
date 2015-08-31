@@ -41,7 +41,7 @@ class Block_Model extends \Sys\Model {
     public $defects_json;
     public $reinspection;
     public $block_number_interim;
-
+    public $truck_id;
     public $obs_poblo;
 
     public $defects;
@@ -205,10 +205,11 @@ class Block_Model extends \Sys\Model {
                         sold,
                         sold_client_id,
                         current_lot_transport_id,
-                        obs_poblo
+                        obs_poblo,
+                        truck_id
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                               ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                              ?, ?, ?, ?, ?, ?, ?, ?) ';
+                              ?, ?, ?, ?, ?, ?, ?, ?, ?) ';
             
             $query = DB::exec($sql, array(
                 $this->quarry_id,
@@ -237,7 +238,8 @@ class Block_Model extends \Sys\Model {
                 (int)$this->sold,
                 $this->sold_client_id,
                 $this->current_lot_transport_id,
-                $this->obs_poblo
+                $this->obs_poblo,
+                $this->truck_id
             ));
 
             $this->id = DB::last_insert_id();
@@ -285,7 +287,8 @@ class Block_Model extends \Sys\Model {
                         sold_client_id = ?,
                         client_block_number = ?,
                         current_lot_transport_id = ?,
-                        obs_poblo = ?
+                        obs_poblo = ?,
+                        truck_id = ?
                     WHERE id = ? ';
 
             $query = DB::exec($sql, array(
@@ -315,6 +318,7 @@ class Block_Model extends \Sys\Model {
                 $this->client_block_number,
                 $this->current_lot_transport_id,
                 $this->obs_poblo,
+                $this->truck_id,
                 $this->id
             ));
 
@@ -389,8 +393,9 @@ class Block_Model extends \Sys\Model {
                     sold_client_id,
                     client_block_number,
                     current_lot_transport_id,
-                    obs_poblo
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ';
+                    obs_poblo,
+                    truck_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ';
         
         $dt_now = new DateTime('now');
         $query = DB::exec($sql, array(
@@ -424,7 +429,8 @@ class Block_Model extends \Sys\Model {
             $block_now->sold_client_id,
             $block_now->client_block_number,
             $block_now->current_lot_transport_id,
-            $block_now->obs_poblo
+            $block_now->obs_poblo,
+            $block_now->truck_id
         ));
 
         $history_id = DB::last_insert_id();
@@ -521,7 +527,8 @@ class Block_Model extends \Sys\Model {
                     sold_client_id,
                     client_block_number,
                     current_lot_transport_id,
-                    obs_poblo
+                    obs_poblo,
+                    truck_id
                 FROM
                     block
                 WHERE ';
@@ -691,6 +698,7 @@ class Block_Model extends \Sys\Model {
             $this->client_block_number = (string)$row_query['client_block_number'];
             $this->current_lot_transport_id = (empty($row_query['current_lot_transport_id']) ? null : (int)$row_query['current_lot_transport_id']);
             $this->obs_poblo = (string)$row_query['obs_poblo'];
+            $this->truck_id = (string)$row_query['truck_id'];
             
             // carrega os defeitos dos blocos
             $defect_model = $this->LoadModel('Defect', true);
@@ -743,7 +751,8 @@ class Block_Model extends \Sys\Model {
                     sold_client.name AS sold_client_name,
                     block.client_block_number,
                     block.block_number_interim,
-                    block.obs_poblo
+                    block.obs_poblo,
+                    block.truck_id
                 FROM
                     block
                 LEFT JOIN quality ON (quality.id = block.quality_id)
@@ -810,7 +819,8 @@ class Block_Model extends \Sys\Model {
                     reserved_client.name AS reserved_client_name,
                     block.sold,
                     block.client_block_number,
-                    block.obs_poblo
+                    block.obs_poblo,
+                    block.truck_id
                 FROM block
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id AND production_order_item.excluido = 'N')
                 INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id AND production_order.excluido = 'N')
@@ -929,7 +939,8 @@ class Block_Model extends \Sys\Model {
                     block.sold,
                     block.block_number_interim,
                     block.client_block_number,
-                    block.obs_poblo
+                    block.obs_poblo,
+                    block.truck_id
                 FROM block
                 INNER JOIN quarry ON (quarry.id = block.quarry_id)
                 INNER JOIN quality ON (quality.id = block.quality_id)

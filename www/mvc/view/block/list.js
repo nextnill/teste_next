@@ -1,3 +1,14 @@
+var cbo_filter_client = $('#cbo_filter_client');
+var edt_filter_block = $('.edt_filter_block');
+
+// on load window
+funcs_on_load.push(function() {
+    listar();
+    list_filter_client();
+
+});
+
+
 function listar()
 {
     // limpa trs, menos a primeira
@@ -9,9 +20,51 @@ function listar()
         if (response_validation(response)) {
             var table_body = $('#tbl_listagem > tbody');
 
+
+            if(edt_filter_block.val() != ''){
+                response = response.filter(function(item, i){
+                    if(item.block_number.indexOf(edt_filter_block.val()) > -1){
+                        return item;
+                    }
+                });
+            }
+
+            if(cbo_filter_client.val() > 0){
+                response = response.filter(function(item, i){
+                    if(item.reserved_client_id == cbo_filter_client.val() || item.sold_client_id == cbo_filter_client.val()){
+                        return item;
+                    }
+
+                });
+            }
+
             $.each(response, function(i, item) {
                 add_row(table_body, item);
             });
+        }
+    }).fail(ajaxError);
+}
+
+function list_filter_client()
+{
+
+    cbo_filter_client.unbind('change');
+    cbo_filter_client.change(function() {
+        listar();
+    });
+
+    cbo_filter_client.find("option").remove();
+
+    // pesquisa a listagem em json
+    $.getJSON("<?= APP_URI ?>client/list_head_office/json/", function(response) {
+        if (response_validation(response)) {
+            add_option(cbo_filter_client, '-1', 'None');
+            for (var i = 0; i < response.length; i++) {
+                var item = response[i];
+                add_option(cbo_filter_client, item.id, item.code + ' - ' + item.name);
+            };
+
+            cbo_filter_client.select2();
         }
     }).fail(ajaxError);
 }
@@ -66,4 +119,8 @@ function add_row(table_body, item)
     new_row.appendTo(table_body);
 }
 
-listar();
+
+edt_filter_block.keyup(function(){
+    listar();
+});
+

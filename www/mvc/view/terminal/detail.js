@@ -99,7 +99,7 @@ function limpa_formulario(tipo)
     cbo_type.val('');
     edt_name.val('');
     edt_code.val('');
-    chk_wagon.val('checked', false);
+    chk_wagon.prop('checked', false);
     edt_country.val('');
     edt_shipping_cost_ton.val('');
     edt_shipping_cost_fixed.val('');

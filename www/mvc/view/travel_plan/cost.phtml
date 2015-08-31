@@ -8,12 +8,14 @@
             </div>
             <div class="modal-body">
                 
+                <span class="edt_tot_weight"></span>
                 <!-- Costs Fixed -->
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table_block_list" id="tbl_list_cost">
                         <thead>
                             <tr>
                                 <th>Fobbings</th>
+                                <th class="text-center">Cost Per Tonne</th>
                                 <th class="text-right small text-info" >Suggested cost</th>
                                 <th class="text-right" style="width: 180px">Value</th>
                             </tr>
@@ -22,6 +24,7 @@
                             <!-- itens -->
                             <tr template-row style="display: none;">
                                 <td template-field="cost">{cost}</td>
+                                <td class="text-center" template-field="cost_per_tonne"></td>
                                 <td style="cursor: pointer;" class="text-right small text-info" template-field="cost_preview">{cost_preview}</td>
                                 <td class="text-right">
                                     <input template-field="value" type="text" class="form-control input_number text-right" placeholder="0.00" >
