@@ -903,8 +903,9 @@ class Block_Model extends \Sys\Model {
         return $query = DB::query($sql, $params);
     }
 
-    function get_client_reservations($client_id)
+    function get_client_reservations($client_id, $invoice_id = null)
     {
+
         $sql = "SELECT
                     block.id,
                     block.excluido,
@@ -944,19 +945,41 @@ class Block_Model extends \Sys\Model {
                 FROM block
                 INNER JOIN quarry ON (quarry.id = block.quarry_id)
                 INNER JOIN quality ON (quality.id = block.quality_id)
-                INNER JOIN product ON (product.id = block.product_id)
-                WHERE
+                INNER JOIN product ON (product.id = block.product_id) ";
+
+                if($invoice_id > 0){
+                    $sql .= " INNER JOIN invoice_item ON (block.id = invoice_item.block_id)";
+                }
+
+                $sql .= " WHERE
                     block.quarry_id IN ({$this->active_quarries})
                     AND block.excluido = ?
-                    AND block.sold = ?
-                    AND block.reserved_client_id = ?
-                ORDER BY
+                    ";
+
+                if($invoice_id > 0){
+                    $sql .= " AND invoice_item.invoice_id = ?
+                              AND invoice_item.excluido = 'N' ";
+                }else{
+
+                    $sql .= " AND block.sold = ?
+                              AND block.reserved_client_id = ?  ";
+                    
+                }
+
+                $sql .= " ORDER BY
                     quarry.name, quality.order_number, block.block_number ";
 
         $params[] = 'N';
-        $params[] = false;
-        $params[] = $client_id;
+        
 
+        if($invoice_id > 0){
+            $params[] = $invoice_id;
+        }else{
+            $params[] = false;
+            $params[] = $client_id;
+        }
+
+       
         $query = DB::query($sql, $params);
 
         $defect_model = $this->LoadModel('Defect', true);

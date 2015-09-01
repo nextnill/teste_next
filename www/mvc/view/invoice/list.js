@@ -81,6 +81,13 @@ function add_row(table_body, item)
         var invoice_id = $(this).attr('template-ref');
         window.location = '<?= APP_URI ?>inspection_certificate/download/?invoice_id='+invoice_id;
     });
+
+    var button_edit = new_row.find("[template-button='edit']");
+    button_edit.attr('template-ref', item.id);
+    button_edit.click(function() {
+        var invoice_id = $(this).attr('template-ref');
+        window.location = '<?= APP_URI ?>inspection/blocks/' + item.client_id + '/' + invoice_id;
+    });
     
     var button_email = new_row.find("[template-button='email']");
     button_email.attr('template-ref', item.id);

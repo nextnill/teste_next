@@ -9,7 +9,8 @@ var cb_get_block_number_count = 0;
 
 var invoice_id = null;
 
-function init_confirm() {
+function init_confirm(invoice_id_param) {
+    invoice_id = invoice_id_param;
     var blocks_accepted = [];
     var blocks_accepted_interim = [];
 
@@ -458,6 +459,7 @@ function btn_confirm_ok_click() {
             type: "POST",
             url: "<?= APP_URI ?>inspection/save/",
             data: {
+                invoice_id: <?= $invoice_id ?>,
                 client_id: <?= $client_id ?>,
                 blocks: JSON.stringify(blocks)
             },

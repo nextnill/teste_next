@@ -204,6 +204,8 @@ class Notification_Model extends \Sys\Model
         if (!file_exists('inspection_certificate')) {
             mkdir('inspecton_certificate', 0760, true);
         }   
+
+       ob_clean();
         // envia arquivo gerado para o usuario
        $pdf->Output($arquivo, 'F'); // D = força download
 

@@ -19,6 +19,10 @@ class Inspection_Controller extends \Sys\Controller
     {
         $client_id = (int)$params[0];
         $data['client_id'] = $client_id;
+
+        
+        $invoice_id = (int)$params[1];
+        $data['invoice_id'] = $invoice_id;
         
         $client_model = $this->LoadModel('Client', true);
         $client_model->populate($client_id);
@@ -42,9 +46,16 @@ class Inspection_Controller extends \Sys\Controller
 
     function list_block_json($params)
     {
+    
         $client_id = (int)$params[0];
+
+        $invoice_id = null;
+        if(isset($params[1])){
+            $invoice_id = (int)$params[1];
+        }
+
         $block_model = $this->LoadModel('Block', true);
-        $list = $block_model->get_client_reservations($client_id);
+        $list = $block_model->get_client_reservations($client_id, $invoice_id);
         
         $this->print_json($list);
     }
@@ -52,6 +63,7 @@ class Inspection_Controller extends \Sys\Controller
     function save_json($params)
     {
         $client_id = $this->ReadPost('client_id');
+        $invoice_id = $this->ReadPost('invoice_id');
         $blocks = json_decode($this->ReadPost('blocks'), true);
         $ret = array();
 
@@ -63,7 +75,7 @@ class Inspection_Controller extends \Sys\Controller
         $blocks_accepted = array();
 
         foreach ($blocks as $key => $block) {
-            if (isset($block['refused']) && ($block['refused'] == 'true')) {
+            if (isset($block['refused']) && (($block['refused'] == 'true')||($block['refused'] === true))) {
                 $blocks_refused[] = $block;
                 $total_refused++;
             }
@@ -80,6 +92,10 @@ class Inspection_Controller extends \Sys\Controller
             // carrego os models
             $invoice_model = $this->LoadModel('Invoice', true);
 
+            if($invoice_id > 0){
+                $invoice_model->populate($invoice_id);
+            }
+
             // crio o cabeçalho (invoice)
             $invoice_model->client_id = $client_id;
             $ret['invoice_id'] = $invoice_model->save();
@@ -87,7 +103,13 @@ class Inspection_Controller extends \Sys\Controller
             if ($invoice_model->id > 0) {
                 // adiciono os itens (invoice_item)
                 foreach ($blocks_accepted as $key => $block) {
+
                     $invoice_item_model = $this->LoadModel('InvoiceItem', true);
+                    if($block['id'] > 0){
+                        $invoice_item_model->populate($block['id']); 
+                    }
+
+
                     $invoice_item_model->invoice_id = $invoice_model->id;
                     $invoice_item_model->block_id = $block['id'];
                     $invoice_item_model->client_id = $client_id;
@@ -103,7 +125,7 @@ class Inspection_Controller extends \Sys\Controller
                     $invoice_item_model->sale_net_c = $block['sale_net_c'];
                     $invoice_item_model->sale_net_a = $block['sale_net_a'];
                     $invoice_item_model->sale_net_l = $block['sale_net_l'];
-                    $invoice_item_model->sale_net_vol = $block['sale_net_vol'];
+                    $invoice_item_model->sale_net_vol = (double)$block['sale_net_vol'];
                     $invoice_item_model->tot_weight = $block['tot_weight'];
                     $invoice_item_model->obs = $block['obs'];
                     $invoice_item_model->poblo_status_id = $block['poblo_status_id'];
@@ -116,17 +138,24 @@ class Inspection_Controller extends \Sys\Controller
         }
 
         // se algum bloco foi recusado, registro no histórico do bloco e removo a reserva
-        if ($blocks_refused > 0) {
+        if ($total_refused > 0) {
+           
             foreach ($blocks_refused as $key => $block) {
-                $block_refused_model = $this->LoadModel('BlockRefused', true);
+                
 
+
+                $block_refused_model = $this->LoadModel('BlockRefused', true);
                 $block_refused_model->block_id = $block['id'];
+
                 $block_refused_model->client_id = $client_id;
                 $block_refused_model->reason = $block['refused_reason'];
-
+                $block_refused_model->invoice_id = $invoice_id;
+                
                 $ret['refused_id'][] = $block_refused_model->save();
             }
         }
+
+
         $this->pdf_notification($invoice_model->id);
         $this->print_json($ret);
 

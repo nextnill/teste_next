@@ -17,6 +17,7 @@ class BlockRefused_Model extends \Sys\Model {
     public $client_id;
     public $date_refuse;
     public $reason;
+    public $invoice_id;
     
     function __construct()
     {
@@ -47,6 +48,7 @@ class BlockRefused_Model extends \Sys\Model {
     
     function save()
     {
+    
         if (!$this->exists())
         {
             return $this->insert();
@@ -75,7 +77,7 @@ class BlockRefused_Model extends \Sys\Model {
     function insert()
     {
         $validation = $this->validation();
-
+       
         if ($validation->isValid())
         {
             $sql = 'INSERT INTO block_refused (
@@ -97,6 +99,12 @@ class BlockRefused_Model extends \Sys\Model {
             ));
 
             $this->id = DB::last_insert_id();
+
+
+            if($this->invoice_id > 0){
+                $this->delete_from_invoice($this->invoice_id, $this->block_id);
+            }
+                
             return $this->id;
         }
         
@@ -137,11 +145,35 @@ class BlockRefused_Model extends \Sys\Model {
 
                 ));
 
+                if($this->invoice_id > 0){
+                    $this->delete_from_invoice($this->invoice_id, $this->block_id);
+                }
+
                 return $this->id;
             }
         }
         
         return $valid;
+    }
+
+    static function delete_from_invoice($invoice_id, $block_id){
+
+        $sql = "UPDATE invoice_item 
+              SET excluido = 'S'
+              WHERE invoice_id = ? 
+              AND block_id = ? ";
+
+        $query = DB::exec($sql, array($invoice_id, $block_id));
+
+        $sql = " UPDATE block 
+                  SET 
+                  sold = 0,
+                  sold_client_id = NULL
+              WHERE  id = " . $block_id;
+
+
+        $query = DB::exec($sql);
+
     }
 
     function delete()

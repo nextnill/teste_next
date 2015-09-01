@@ -263,6 +263,7 @@ class InvoiceItem_Model extends \Sys\Model {
     
     function update()
     {
+        
         $validation = $this->validation();
         
         if ($validation->isValid())

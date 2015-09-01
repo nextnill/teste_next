@@ -19,7 +19,7 @@ function listar_blocks()
     $('#tbl_listagem').find("tr:gt(1)").remove();
 
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>inspection/blocks/json/<?= $client_id ?>", function(response) {
+    $.getJSON("<?= APP_URI ?>inspection/blocks/json/<?= $client_id . '/' .   $invoice_id ?>", function(response) {
         if (response_validation(response)) {
             blocks = response;
             render_list();
@@ -339,5 +339,5 @@ function btn_finish_click() {
 
 // on load window
 funcs_on_load.push(function() {
-    init();
+    init(<?= $invoice_id ?>);
 });
