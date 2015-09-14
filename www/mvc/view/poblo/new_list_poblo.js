@@ -99,7 +99,7 @@ function load_inspection_certificate (inspection)
         if(item.inspection_name != inspection_name){
 
             var block_count = {
-                net_vol: sum_volume,
+                invoice_sale_net_vol: sum_volume,
                 tot_weight: sum_weight,
                 block_number: count_blocks,
                 quality_name: count_quality_blocks,
@@ -108,7 +108,7 @@ function load_inspection_certificate (inspection)
             render_inspection(new_template_inspection, block_count, 'bg-warning');
 
             var block_count_final = {
-                net_vol: sum_volume_final,
+                invoice_sale_net_vol: sum_volume_final,
                 tot_weight: sum_weight_final,
                 block_number: count_blocks_final,
                 quality_name: count_quality_blocks_final,
@@ -135,7 +135,7 @@ function load_inspection_certificate (inspection)
         if(quality_name != item.quality_name){
 
             var block_count = {
-                net_vol: sum_volume,
+                invoice_sale_net_vol: sum_volume,
                 tot_weight: sum_weight,
                 block_number: count_blocks,
                 quality_name: count_quality_blocks,
@@ -155,12 +155,12 @@ function load_inspection_certificate (inspection)
 
         count_blocks_final++;
         count_quality_blocks_final++;
-        sum_volume_final += parseFloat(item.net_vol) || 0;
+        sum_volume_final += parseFloat(item.invoice_sale_net_vol) || 0;
         sum_weight_final += parseFloat(item.tot_weight) || 0;
 
         count_blocks++;
         count_quality_blocks++;
-        sum_volume += parseFloat(item.net_vol) || 0;
+        sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
         sum_weight += parseFloat(item.tot_weight) || 0;
 
         render_inspection(new_template_inspection, item);
@@ -168,7 +168,7 @@ function load_inspection_certificate (inspection)
         if(i >= inspection.length -1){
 
             var block_count = {
-                net_vol: sum_volume,
+                invoice_sale_net_vol: sum_volume,
                 tot_weight: sum_weight,
                 block_number: count_blocks,
                 quality_name: count_quality_blocks,
@@ -178,7 +178,7 @@ function load_inspection_certificate (inspection)
 
 
             var block_count_final = {
-                net_vol: sum_volume_final,
+                invoice_sale_net_vol: sum_volume_final,
                 tot_weight: sum_weight_final,
                 block_number: count_blocks_final,
                 quality_name: count_quality_blocks_final,
@@ -206,7 +206,6 @@ function render_header_inspection(new_template_inspection, item){
 }
 
 function render_inspection(new_template_inspection, item, color){
-
     var table_inspection = $(new_template_inspection.find('.table_block_list'));
     var table_body_inspection = $(table_inspection).find('tbody');
     var template_row = table_body_inspection.find("tr:first");
@@ -291,8 +290,8 @@ function render_inspection(new_template_inspection, item, color){
     var field_sale_net_l = $(new_row.find("[template-field='sale_net_l']"));
     field_sale_net_l.text(item.net_l ? item.invoice_sale_net_l.format_number(2) : '');
 
-    var field_net_vol = $(new_row.find("[template-field='net_vol']"));
-    field_net_vol.text(item.net_vol ? item.net_vol.format_number(3) : '');
+    var field_sale_net_vol = $(new_row.find("[template-field='sale_net_vol']"));
+    field_sale_net_vol.text(item.invoice_sale_net_vol ? item.invoice_sale_net_vol.format_number(3) : '');
 
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
     field_tot_weight.text(item.tot_weight ? item.tot_weight.format_number(3) : '');
@@ -600,7 +599,7 @@ function load_lot (lot){
             var block_count = {
                 block_number: count_blocks,
                 quality_name: count_quality_blocks,
-                net_vol: sum_volume,
+                invoice_sale_net_vol: sum_volume,
                 tot_weight: sum_weight,
                 invoice_item_price: sum_price,
             }
@@ -610,7 +609,7 @@ function load_lot (lot){
             var block_count_final = {
                 block_number: count_blocks_final,
                 quality_name: count_quality_blocks_final,
-                net_vol: sum_volume_final,
+                invoice_sale_net_vol: sum_volume_final,
                 tot_weight: sum_weight_final,
                 invoice_item_price: sum_price_final,
             }
@@ -622,7 +621,6 @@ function load_lot (lot){
             lot_number = item.lot_number;
 
             quality_name = item.quality_name;
-
             
             count_blocks = 0;
             sum_price = 0;
@@ -639,7 +637,7 @@ function load_lot (lot){
 
         count_blocks++;
         sum_price += parseFloat(item.invoice_item_price) || 0;
-        sum_volume += parseFloat(item.net_vol) || 0;
+        sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
         sum_weight += parseFloat(item.tot_weight) || 0;
         count_quality_blocks++;
 
@@ -648,7 +646,7 @@ function load_lot (lot){
             var block_count = {
                 block_number: count_blocks,
                 quality_name: count_quality_blocks,
-                net_vol: sum_volume,
+                invoice_sale_net_vol: sum_volume,
                 tot_weight: sum_weight,
                 invoice_item_price: sum_price,
             }
@@ -667,7 +665,7 @@ function load_lot (lot){
         count_blocks_final++;
         count_quality_blocks_final++;
         sum_price_final += parseFloat(item.invoice_item_price) || 0;
-        sum_volume_final += parseFloat(item.net_vol) || 0;
+        sum_volume_final += parseFloat(item.invoice_sale_net_vol) || 0;
         sum_weight_final += parseFloat(item.tot_weight) || 0;
 
         render_lot(new_template_lot, item);
@@ -677,7 +675,7 @@ function load_lot (lot){
             var block_count = {
                 block_number: count_blocks,
                 quality_name: count_quality_blocks,
-                net_vol: sum_volume,
+                invoice_sale_net_vol: sum_volume,
                 tot_weight: sum_weight,
                 invoice_item_price: sum_price,
             }
@@ -687,7 +685,7 @@ function load_lot (lot){
             var block_count_final = {
                 block_number: count_blocks_final,
                 quality_name: count_quality_blocks_final,
-                net_vol: sum_volume_final,
+                invoice_sale_net_vol: sum_volume_final,
                 tot_weight: sum_weight_final,
                 invoice_item_price: sum_price_final,
             }
@@ -807,7 +805,7 @@ function render_header_lot(new_template_lot, item){
 
 //listagem somente do lot
 function render_lot (new_template_lot, item, color){
-
+    console.log(item);
 
     var table_lot = $(new_template_lot.find('.table_block_list'));
     var table_body_lot = $(table_lot).find('tbody');
@@ -900,9 +898,9 @@ function render_lot (new_template_lot, item, color){
 
     var field_sale_net_l = $(new_row.find("[template-field='sale_net_l']"));
     field_sale_net_l.text(item.invoice_sale_net_l ? item.invoice_sale_net_l.format_number(2) : '');
-   
-    var field_net_vol = $(new_row.find("[template-field='net_vol']"));
-    field_net_vol.text(item.net_vol ? item.net_vol.format_number(3) : '');
+
+    var field_sale_net_vol = $(new_row.find("[template-field='sale_net_vol']"));
+    field_sale_net_vol.text(item.invoice_sale_net_vol ? item.invoice_sale_net_vol.format_number(3) : '');
 
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
     field_tot_weight.text(item.tot_weight ? item.tot_weight.format_number(3) : '');
