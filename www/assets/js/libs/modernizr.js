@@ -32,6 +32,7 @@ Date.prototype.timeNow = function () {
 function get_datepicker(datepicker_obj)
 {
     if (!Modernizr.inputtypes.date) {
+
         if (datepicker_obj.datepicker("getDate")) {
             return datepicker_obj.datepicker("getDate").toISOString().substr(0, 10);
         }
@@ -44,15 +45,18 @@ function get_datepicker(datepicker_obj)
 
 function set_datepicker(datepicker_obj, json_value)
 {
+    console.log('1');
 	var value = json_value.substr(0, 10);
 	if (!Modernizr.inputtypes.date)
 	{
+        console.log('2');
 		var dateParts = value.match(/(\d+)/g);
 		realDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]); // months are 0-based!
 		datepicker_obj.datepicker('setDate', realDate);
 	}
 	else
 	{
+        console.log('3');
 		datepicker_obj.val(value);
 	}
 }
