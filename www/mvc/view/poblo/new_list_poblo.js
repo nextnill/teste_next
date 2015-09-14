@@ -367,12 +367,27 @@ function load_sobracolumay (sobracolumay)
                 quality_name: count_quality_blocks_final,
             }
 
+            var block_count = {
+                net_vol: sum_volume,
+                tot_weight: sum_weight,
+                block_number: count_blocks,
+                quality_name: count_quality_blocks,
+            }
+
+            render_sobracolumay(new_template_sobracolumay, block_count, 'bg-warning');
             render_sobracolumay(new_template_sobracolumay, block_count_final, 'bg-info');
 
             count_blocks_final = 0;
             count_quality_blocks_final = 0;
             sum_volume_final = 0;
             sum_weight_final = 0;
+
+            quality_name = item.quality_name;
+            count_blocks = 0;
+            count_quality_blocks = 0;
+            sum_volume = 0;
+            sum_weight = 0;
+
 
             new_template_sobracolumay = template_sobracolumay.clone();
             render_header_sobracolumay(new_template_sobracolumay, item);
