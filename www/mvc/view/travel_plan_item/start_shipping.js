@@ -327,7 +327,7 @@ function btn_start_shipping_click(type)
         }
 
         var date_nf_edit = row.find('[template-field="date_nf_edit"]');
-        if(date_nf_edit.val().length > 0){
+        if(date_nf_edit.val() != null && date_nf_edit.val().length > 0){
             arr_pending_blocks_selected[i].invoice_date_nf = date_nf_edit.val();
         }
 
@@ -337,7 +337,7 @@ function btn_start_shipping_click(type)
         }
 
         var wagon_number_edit = row.find('[template-field="wagon_number_edit"]');
-        if (wagon_number_edit.length > 0) {
+        if (wagon_number_edit.val() != null && wagon_number_edit.val().length > 0) {
             arr_pending_blocks_selected[i].invoice_item_wagon_number = wagon_number_edit.val();
         }
     }

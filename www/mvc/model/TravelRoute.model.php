@@ -39,10 +39,10 @@ class TravelRoute_Model extends \Sys\Model {
             $validation->add(Validation::VALID_ERR_FIELD, 'Enter the end location');
         }
 
-        if ((!$this->blocks > 0) && (!$this->blocks > 0))
+        /*if ((!$this->blocks > 0) && (!$this->blocks > 0))
         {
             $validation->add(Validation::VALID_ERR_FIELD, 'Enter the number of blocks');
-        }
+        }*/
 
         if ($this->exists_equal())
         {

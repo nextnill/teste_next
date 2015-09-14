@@ -197,17 +197,17 @@ function valida_formulario()
         vld.add(new ValidationMessage(Validation.CODES.ERR_FIELD, 'The start and the end must be different'));
     }
 
-    if ((edt_shipping_time.val().length == 0) || (isNaN(edt_shipping_time.val())))
+    /*if (edt_shipping_time.val() != null && (edt_shipping_time.val().length == 0) || (isNaN(edt_shipping_time.val())))
     {
         valido = false;
         vld.add(new ValidationMessage(Validation.CODES.ERR_FIELD, 'Enter the shipping time'));
     }
 
-    if ((edt_blocks.val().length == 0) || (isNaN(edt_blocks.val())) || (edt_blocks.val() < 1))
+    if (edt_blocks.val() != null && (edt_blocks.val().length == 0) || (isNaN(edt_blocks.val())) || (edt_blocks.val() < 1))
     {
         valido = false;
         vld.add(new ValidationMessage(Validation.CODES.ERR_FIELD, 'Enter the number of blocks'));
-    }
+    }*/
 
     if (!valido)
     {

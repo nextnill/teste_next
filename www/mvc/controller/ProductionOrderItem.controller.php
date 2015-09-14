@@ -34,6 +34,9 @@ class ProductionOrderItem_Controller extends \Sys\Controller
 
             foreach ($blocks as $key => $block) {
                 
+                if(is_object($block)){
+                    $block = (array)$block;
+                }
                 $id = 0;
                 $block_id = 0;
                 $removed = false;

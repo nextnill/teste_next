@@ -88,7 +88,8 @@ function add_row_travel_cost(table_body, item) {
     
 
     var field_cost_preview = $(new_row.find("[template-field='cost_preview']"));
-    field_cost_preview.text(item.cost_per_tonne != null ? parseFloat(tot_weight).format_number(2)*parseFloat(item.cost_per_tonne).format_number(2) : '' );
+    var total = parseFloat(tot_weight)*parseFloat(item.cost_per_tonne);
+    field_cost_preview.text(item.cost_per_tonne != null ? total.format_number(2) : '' );
 
     field_cost_preview.unbind('click');
     field_cost_preview.click(function(){
