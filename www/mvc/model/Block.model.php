@@ -763,7 +763,7 @@ class Block_Model extends \Sys\Model {
                     block.quarry_id IN ({$this->active_quarries})
                     AND block.excluido = :excluido ";
 
-        if (!is_null($block_number)) {
+        if (!is_null($block_number) && $block_number != null && $block_number != '' && $block_number != 'undefined') {
             $sql .= " AND block.block_number LIKE :block_number ";
             $params[':block_number'] = '%' . $block_number . '%';
         }

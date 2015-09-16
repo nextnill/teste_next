@@ -15,6 +15,7 @@ function listar(block_number)
     //
     $('#tbl_listagem').find("tr:gt(1)").remove();
 
+
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>block/list/json/"+block_number, function(response) {
         if (response_validation(response)) {
