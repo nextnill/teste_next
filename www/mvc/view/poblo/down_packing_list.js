@@ -8,9 +8,21 @@ var edt_pl_packing_list_ref = $('#edt_pl_packing_list_ref');
 
 var down_pl_lot_transport_id = 0;
 
+function clear_packing_list(){
+
+    set_datepicker(edt_pl_dated, '00-00-0000');
+    edt_pl_vessel.val('');
+    edt_pl_dated.val('');
+    edt_pl_bl.val('');
+    edt_pl_shipped_from
+    edt_pl_packing_list_ref.val('');
+    edt_pl_commercial_invoice_number.val('');
+    edt_pl_client_notify_address.val('');
+}
+
 function init_down_packing_list(lot_transport_id) {
 	down_pl_lot_transport_id = lot_transport_id;
-	
+	clear_packing_list();
 	WS.get(
         "lots/detail/json/" + down_pl_lot_transport_id, {},
         function (response) {
@@ -41,7 +53,7 @@ function btn_down_packing_list_click() {
             packing_list_ref: edt_pl_packing_list_ref.val()
         },
         function (response) {
-        	listar_blocks();
+        	//listar_blocks();
 			window.open(
 			  '<?= APP_URI ?>travel_plan/packing_list/download/?lot_transport_id=' + down_pl_lot_transport_id,
 			  '_blank'

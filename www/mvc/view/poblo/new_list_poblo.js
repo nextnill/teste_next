@@ -805,7 +805,6 @@ function render_header_lot(new_template_lot, item){
 
 //listagem somente do lot
 function render_lot (new_template_lot, item, color){
-    console.log(item);
 
     var table_lot = $(new_template_lot.find('.table_block_list'));
     var table_body_lot = $(table_lot).find('tbody');
@@ -941,7 +940,7 @@ function render_lot (new_template_lot, item, color){
             }
         }
 
-        show_poblo_edit(item.block_id, item.invoice_item_id, callback, item.invoice_item_nf, item.invoice_date_nf, item.invoice_item_price.format_number(2), item.current_travel_plan_item_wagon_number);
+        show_poblo_edit(item.block_id, item.invoice_item_id, callback, item.invoice_item_nf, item.invoice_date_nf, (item.invoice_item_price != null ? item.invoice_item_price.format_number(2) : null) , item.current_travel_plan_item_wagon_number);
     });
 
     if(color){

@@ -65,6 +65,7 @@ class Inspection_Controller extends \Sys\Controller
         $client_id = $this->ReadPost('client_id');
         $invoice_id = $this->ReadPost('invoice_id');
         $blocks = json_decode($this->ReadPost('blocks'), true);
+
         $ret = array();
 
         // totaliza blocos
@@ -85,6 +86,7 @@ class Inspection_Controller extends \Sys\Controller
             }
 
         }
+
 
 
         // se algum bloco foi aceito, crio a invoice
@@ -132,6 +134,7 @@ class Inspection_Controller extends \Sys\Controller
                     $invoice_item_model->client_block_number = $block['client_block_number'];
                     $invoice_item_model->block_number_interim = $block['block_number_interim'];
 
+                    
                     $ret['invoice_item_id'][] = $invoice_item_model->save();
                 }
             }

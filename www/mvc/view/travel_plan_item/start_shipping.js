@@ -136,20 +136,30 @@ function render_start_shipping_list(type)
 function list_trucks(){
 
     var cbo_trucks = $('.cbo_trucks');
-    cbo_trucks.find('option').remove();
+    
 
     $.getJSON("<?= APP_URI ?>truck_carrier/list_truck/json/", function(response) {
-         add_option(cbo_trucks, '', '- Select - ');
-        var carrier_name = "";
-        $.each(response, function(i, item) {
 
-            if(carrier_name != item.carrier_name){
-                carrier_name = item.carrier_name;
-                add_option(cbo_trucks, item.carrier_name, 'Carrier - '+item.carrier_name, 'class="text-info" disabled');
-            }
+        $(cbo_trucks).each(function(j, cbo){
 
-            add_option(cbo_trucks, item.truck_id, item.truck_id, 'carrier_id="'+item.carrier_id+'"');
+            cbo = $(cbo);
+            cbo.find('option').remove();
+            add_option(cbo, '', '- Select - ');
+            var carrier_name = "";
+            $.each(response, function(i, item) {
+
+                if(carrier_name != item.carrier_name){
+                    carrier_name = item.carrier_name;
+                    add_option(cbo, item.carrier_name, 'Carrier - '+item.carrier_name, 'class="text-info" disabled');
+                }
+
+                add_option(cbo, item.truck_id, item.truck_id, 'carrier_id="'+item.carrier_id+'"');
+            });
+
         });
+
+
+        
 
         //cbo_trucks.selectpicker('refresh');
 

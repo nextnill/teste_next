@@ -24,10 +24,15 @@ function show_poblo_edit(block_id_param, invoice_item_id_param, callback, nf, da
         edt_nf.val(nf);
     }
     
-    if(date_nf){
-        edt_date_nf.val(date_nf);
-    }   
+    set_datepicker(edt_date_nf);
 
+    setTimeout(function(){
+        if(date_nf){
+            set_datepicker(edt_date_nf, date_nf);
+            //edt_date_nf.val(date_nf);
+        }   
+    }, 150);
+    
     if(price){
         edt_price.val(price);
     }
@@ -69,7 +74,7 @@ btn_poblo_edit_save.click(function() {
         {
             block_id: block_id,
             invoice_item_id: invoice_item_id,
-            date_nf: edt_date_nf.val(),
+            date_nf: get_datepicker(edt_date_nf),
             nf: edt_nf.val(),
             price: edt_price.val(),
             wagon_number: edt_wagon_number.val()

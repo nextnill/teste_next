@@ -95,7 +95,7 @@ class Poblo_Controller extends \Sys\Controller
 
         $date_nf = (string)$this->ReadPost('date_nf');
         $nf = (string)$this->ReadPost('nf');
-        $price = (string)$this->ReadPost('price');
+        $price = str_replace(',', '', (string)$this->ReadPost('price'));
 
         
         if($nf != null){

@@ -13,12 +13,27 @@ var tbl_ci_products_body = tbl_ci_products.find('tbody');
 var down_ci_lot_transport_id = 0;
 var arr_ci_products;
 
+function clear_packing_list(){
+
+    set_datepicker(edt_ci_date, '00-00-0000');
+    edt_ci_number.val('');
+    edt_ci_dv.val('');
+    edt_ci_vessel.val('');
+    edt_ci_client_notify_address
+    edt_ci_client_consignee.val('');
+    edt_ci_shipped_from.val('');
+    edt_ci_shipped_to.val('');
+}
+
 function init_down_commercial_invoice(lot_transport_id) {
 	down_ci_lot_transport_id = lot_transport_id;
-	
+
+	clear_packing_list();
+
 	WS.get(
         "lots/detail/json/" + down_ci_lot_transport_id, {},
         function (response) {
+
             set_datepicker(edt_ci_date, response.commercial_invoice_date);
             edt_ci_number.val(response.commercial_invoice_number);
             edt_ci_dv.val(response.packing_list_ref);
@@ -125,7 +140,7 @@ function btn_down_commercial_invoice_click() {
             products: arr_ci_products
         },
         function (response) {
-        	listar_blocks();
+        	
 			window.open(
 			  '<?= APP_URI ?>travel_plan/commercial_invoice/download/?lot_transport_id=' + down_ci_lot_transport_id,
 			  '_blank'

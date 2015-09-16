@@ -590,6 +590,7 @@ class Block_Model extends \Sys\Model {
 
     function sell($block_id, $sold_client_id, $block_number, $sale_net_c, $sale_net_a, $sale_net_l, $sale_net_vol, $client_block_number='', $block_number_interim)
     {
+        
         $this->populate($block_id);
 
         $validation = $this->validation();

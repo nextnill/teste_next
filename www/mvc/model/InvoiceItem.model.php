@@ -239,6 +239,7 @@ class InvoiceItem_Model extends \Sys\Model {
 
             $this->id = DB::last_insert_id();
 
+
             // atualizo o bloco (venda)
             if ($this->id > 0) {
                 $block_model = $this->LoadModel('Block', true);
@@ -254,6 +255,9 @@ class InvoiceItem_Model extends \Sys\Model {
                     $this->block_number_interim
                 );
             }
+
+
+            $this->atualizo_bloco();
 
             return $this->id;
         }
@@ -332,12 +336,53 @@ class InvoiceItem_Model extends \Sys\Model {
                     $this->id
 
                 ));
+
+                // atualizo o bloco (venda)
+                if ($this->id > 0) {
+                    $block_model = $this->LoadModel('Block', true);
+                    $block_model->sell(
+                        $this->block_id,
+                        $this->client_id,
+                        $this->block_number,
+                        $this->sale_net_c,
+                        $this->sale_net_a,
+                        $this->sale_net_l,
+                        $this->sale_net_vol,
+                        $this->client_block_number,
+                        $this->block_number_interim
+                    );
+                }
+
+                $this->atualizo_bloco();
                 
                 return $this->id;
             }
         }
         
         return $validation;
+    }
+
+    function atualizo_bloco(){
+
+        $sql = "
+
+                UPDATE 
+                    block
+                INNER JOIN invoice_item ON (block.id = invoice_item.block_id)
+                INNER JOIN invoice ON (invoice.id = invoice_item.invoice_id)
+                SET 
+                    sold = 1, 
+                    sold_client_id = invoice.client_id
+                WHERE block.sold_client_id IS NULL
+                      AND invoice_item.excluido = 'N'
+                      AND block.excluido = 'N'
+                      AND block.reserved > 0
+                      AND invoice.excluido = 'N'
+                      AND invoice_item.invoice_id = ?
+
+        ";
+
+        $query = DB::exec($sql, array($this->invoice_id));
     }
 
     function delete()

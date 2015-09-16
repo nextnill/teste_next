@@ -43,7 +43,7 @@ function get_datepicker(datepicker_obj)
     return '';
 }
 
-function set_datepicker(datepicker_obj, json_value)
+/*function set_datepicker(datepicker_obj, json_value)
 {
     console.log('1');
 	var value = json_value.substr(0, 10);
@@ -59,6 +59,61 @@ function set_datepicker(datepicker_obj, json_value)
         console.log('3');
 		datepicker_obj.val(value);
 	}
+}
+
+function get_datepicker(datepicker_obj)
+{
+
+    var date_picker = $(datepicker_obj).val();
+    var data = '';
+
+    if(date_picker != null && date_picker != ""){
+        data = date_picker.substring(6, 10)+'-';
+        data += date_picker.substring(3, 5)+'-';
+        data += date_picker.substring(0, 2);
+    }
+
+    if (!Modernizr.inputtypes.date) {
+        return data;
+    }
+    else {
+        return $(datepicker_obj).val();
+    }
+    
+    return '';
+}*/
+
+function set_datepicker(datepicker_obj, json_value)
+{
+
+    if (!Modernizr.inputtypes.date)
+    {
+        $(datepicker_obj).mask("99/99/9999");
+        $(datepicker_obj).datepicker();        
+    }
+
+    if ((typeof json_value == 'undefined') || (!json_value) || (json_value == '0000-00-00' || json_value == '0000/00/00') || (json_value == '00-00-0000' || json_value == '00/00/0000')) {  
+        $(datepicker_obj).val('0000-00-00');
+        $(datepicker_obj).datepicker('setDate', null);
+        return;
+    }
+    
+    var value = json_value.substr(0, 10);
+    if (!Modernizr.inputtypes.date)
+    {
+        var dateParts = value.match(/(\d+)/g);
+
+        //if(dateParts[0] != '' && dateParts[1] != '' && dateParts[2] != '' && parseInt(dateParts[0]) > 0 && parseInt(dateParts[1]) > 0 && parseInt(dateParts[2]) > 0){
+            console.log(parseInt(dateParts[0]));
+            realDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]); // months are 0-based!
+            $(datepicker_obj).datepicker('setDate', realDate);
+        //}
+    }
+    else
+    {
+        $(datepicker_obj).val(value);
+    }
+
 }
 
 

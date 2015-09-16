@@ -9,15 +9,17 @@ funcs_on_load.push(function() {
 });
 
 
-function listar()
+function listar(block_number)
 {
     // limpa trs, menos a primeira
     //
     $('#tbl_listagem').find("tr:gt(1)").remove();
 
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>block/list/json/", function(response) {
+    $.getJSON("<?= APP_URI ?>block/list/json/"+block_number, function(response) {
         if (response_validation(response)) {
+
+            $('#tbl_listagem').find("tr:gt(1)").remove();
             var table_body = $('#tbl_listagem > tbody');
 
 
@@ -121,6 +123,7 @@ function add_row(table_body, item)
 
 
 edt_filter_block.keyup(function(){
-    listar();
+    $('#tbl_listagem').find("tr:gt(1)").remove();
+    listar(this.value);
 });
 
