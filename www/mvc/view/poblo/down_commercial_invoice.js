@@ -6,6 +6,7 @@ var edt_ci_client_consignee = $('#edt_ci_client_consignee');
 var edt_ci_shipped_from = $('#edt_ci_shipped_from');
 var edt_ci_shipped_to = $('#edt_ci_shipped_to');
 var edt_ci_vessel = $('#edt_ci_vessel');
+var btn_save_comercial_invoice = $('.btn_save_comercial_invoice');
 
 var tbl_ci_products = $('#tbl_ci_products');
 var tbl_ci_products_body = tbl_ci_products.find('tbody');
@@ -100,7 +101,7 @@ function add_row_ci_products(item) {
     field_last_value.click(function(){
         if (!isNaN(parseFloat(item.last_value))) {
             var value = field_value.val();
-            if ((value.trim() == '') || (isNan(parseFloat(value)))) {
+            if ((value.trim() == '') || (isNaN(parseFloat(value)))) {
                 field_value.val(parseFloat(item.last_value));
             }            
         }
@@ -122,14 +123,14 @@ function persist_inputs_ci_values() {
     }
 }
 
-function btn_down_commercial_invoice_click() {
-	persist_inputs_ci_values();
+function save_commercial_invoice(download){
+    persist_inputs_ci_values();
     // chamar webservice que atualiza esses dados
-	WS.post(
+    WS.post(
         "travel_plan/commercial_invoice/save/",
         {
             lot_transport_id: down_ci_lot_transport_id,
-            commercial_invoice_date: get_datepicker(edt_ci_date),
+            commercial_invoice_date: (get_datepicker(edt_ci_date) != '' ? get_datepicker(edt_ci_date) : null),
             commercial_invoice_number: edt_ci_number.val(),
             packing_list_ref: edt_ci_dv.val(),
             client_notify_address: edt_ci_client_notify_address.val(),
@@ -140,13 +141,32 @@ function btn_down_commercial_invoice_click() {
             products: arr_ci_products
         },
         function (response) {
-        	
-			window.open(
-			  '<?= APP_URI ?>travel_plan/commercial_invoice/download/?lot_transport_id=' + down_ci_lot_transport_id,
-			  '_blank'
-			);
-			closeModal('modal_down_commercial_invoice');
+            
+
+            if(response){
+                if(download === true){
+                    window.open(
+                      '<?= APP_URI ?>travel_plan/commercial_invoice/download/?lot_transport_id=' + down_ci_lot_transport_id,
+                      '_blank'
+                    );
+                }
+
+                closeModal('modal_down_commercial_invoice');
+            }else{
+                closeModal('modal_down_commercial_invoice');
+            }
+            
+            
         }
     );
+}
 
+btn_save_comercial_invoice.unbind('click');
+btn_save_comercial_invoice.click(function(){
+    save_commercial_invoice(false);
+});
+
+function btn_down_commercial_invoice_click() {
+	
+    save_commercial_invoice(true);
 }

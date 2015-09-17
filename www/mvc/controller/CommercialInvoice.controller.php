@@ -21,6 +21,7 @@ class CommercialInvoice_Controller extends \Sys\Controller
         $lot_transport_model = $this->LoadModel('LotTransport', true);
         $lot_transport_model->populate($lot_transport_id);
 
+
         $ret = $lot_transport_model->set_commercial_invoice(
             $shipped_from,
             $shipped_to,

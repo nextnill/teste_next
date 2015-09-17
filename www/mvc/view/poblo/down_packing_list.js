@@ -5,6 +5,7 @@ var edt_pl_dated = $('#edt_pl_dated');
 var edt_pl_vessel = $('#edt_pl_vessel');
 var edt_pl_commercial_invoice_number = $('#edt_pl_commercial_invoice_number');
 var edt_pl_packing_list_ref = $('#edt_pl_packing_list_ref');
+var btn_save_packing_list = $('.btn_save_packing_list');
 
 var down_pl_lot_transport_id = 0;
 
@@ -38,9 +39,10 @@ function init_down_packing_list(lot_transport_id) {
 
 }
 
-function btn_down_packing_list_click() {
-	// chamar webservice que atualiza esses dados
-	WS.post(
+function save_packing_list(download){
+
+    // chamar webservice que atualiza esses dados
+    WS.post(
         "travel_plan/packing_list/save/",
         {
             lot_transport_id: down_pl_lot_transport_id,
@@ -53,13 +55,33 @@ function btn_down_packing_list_click() {
             packing_list_ref: edt_pl_packing_list_ref.val()
         },
         function (response) {
-        	//listar_blocks();
-			window.open(
-			  '<?= APP_URI ?>travel_plan/packing_list/download/?lot_transport_id=' + down_pl_lot_transport_id,
-			  '_blank'
-			);
-			closeModal('modal_down_packing_list');
+            
+
+            if(response){
+                if(download === true){
+                    window.open(
+                      '<?= APP_URI ?>travel_plan/packing_list/download/?lot_transport_id=' + down_pl_lot_transport_id,
+                      '_blank'
+                    );
+                }
+                closeModal('modal_down_packing_list');
+            }else{
+                closeModal('modal_down_packing_list');
+            }
         }
     );
+
+}
+
+btn_save_packing_list.unbind('click');
+btn_save_packing_list.click(function(){
+    
+    save_packing_list(false);
+    
+});
+
+function btn_down_packing_list_click() {
+	// chamar webservice que atualiza esses dados
+	save_packing_list(true);
 
 }

@@ -366,7 +366,7 @@ class LotTransport_Model extends \Sys\Model {
         $params[] = (string)$shipped_to;
         $params[] = (string)$client_notify_address;
         $params[] = (string)$client_consignee;
-        $params[] = (string)$commercial_invoice_date;
+        $params[] = (!is_null($commercial_invoice_date)  && $commercial_invoice_date != '' ? (string)$commercial_invoice_date : null);
         $params[] = (string)$commercial_invoice_number;
         $params[] = (string)$vessel;
         $params[] = (string)$packing_list_ref;
@@ -381,7 +381,7 @@ class LotTransport_Model extends \Sys\Model {
         $this->shipped_to = (string)$shipped_to;
         $this->client_notify_address = (string)$client_notify_address;
         $this->client_consignee = (string)$client_consignee;
-        $this->commercial_invoice_date = (string)$commercial_invoice_date;
+        $this->commercial_invoice_date = (!is_null($commercial_invoice_date)  && $commercial_invoice_date != '' ? (string)$commercial_invoice_date : null);
         $this->commercial_invoice_number = (string)$commercial_invoice_number;
         $this->vessel = (string)$vessel;
         $this->packing_list_ref = (string)$packing_list_ref;
