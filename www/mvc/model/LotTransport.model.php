@@ -324,7 +324,7 @@ class LotTransport_Model extends \Sys\Model {
         $params[] = (string)$shipped_from;
         $params[] = (string)$client_notify_address;
         $params[] = (string)$bl;
-        $params[] = (string)$dated;
+        $params[] = (!is_null($dated)  && $dated != '' ? (string)$dated : null);
         $params[] = (string)$vessel;
         $params[] = (string)$commercial_invoice_number;
         $params[] = (string)$packing_list_ref;
@@ -338,7 +338,7 @@ class LotTransport_Model extends \Sys\Model {
         $this->shipped_from = (string)$shipped_from;
         $this->client_notify_address = (string)$client_notify_address;
         $this->bl = (string)$bl;
-        $this->packing_list_dated = (string)$dated;
+        $this->packing_list_dated = (!is_null($dated)  && $dated != '' ? (string)$dated : null);
         $this->vessel = (string)$vessel;
 
         $this->set_down_packing_list();
@@ -953,6 +953,7 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.draft_file,
                     lot_transport.vessel,
                     lot_transport.shipped_to,
+                    lot_transport.packing_list_dated,
                     coalesce(lot_transport.order_number, 99999999) AS order_number,
                     block.id AS block_id,
                     block.block_number,

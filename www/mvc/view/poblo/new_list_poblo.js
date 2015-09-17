@@ -723,8 +723,12 @@ function render_header_lot(new_template_lot, item){
     var field_client_name = new_template_lot.find("[template-field='client_name']");
     field_client_name.text(item.client_name);
 
-    var field_vessel = new_template_lot.find("[template-field='vessel']")
-    field_vessel.text(item.shipped_to || '');
+    var field_vessel = new_template_lot.find('[template-field="vessel"]');
+    //field_vessel.text(item.shipped_to || '');
+    field_vessel.text(item.vessel || '');
+
+    var field_date = new_template_lot.find('[template-field="date"]');
+    field_date.text(item.packing_list_dated != null && item.packing_list_dated  != '0000-00-00' ? item.packing_list_dated.format_date() : '');
 
     var field_status = new_template_lot.find("[template-field='status']");
     field_status.text(str_lot_transport_status(item.lot_transport_status) || '');
