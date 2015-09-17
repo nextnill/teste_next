@@ -274,6 +274,7 @@ function render_inspection(new_template_inspection, item, color){
 
     var div_status = $(new_row.find(".div_status"));
     if(color){
+
         div_status.addClass('hidden');
     }
 
@@ -302,6 +303,13 @@ function render_inspection(new_template_inspection, item, color){
     var field_obs = $(new_row.find("[template-field='obs']"));
     field_obs.text(item.obs_poblo ? item.obs_poblo : '');
 
+    /*var field_compensation_measure = $(new_row.find('[template-field="compensation_measure"]'));
+
+    field_compensation_measure.unbind('click');
+    field_compensation_measure.click(function(){
+        console.log(item);
+    });*/
+
     var btn_obs = $(new_row.find("[template-button='obs']"));
     btn_obs.unbind('click');
     btn_obs.click(function() {
@@ -325,6 +333,7 @@ function render_inspection(new_template_inspection, item, color){
     if(color){
         btn_edit.addClass('hidden');
         btn_obs.addClass('hidden');
+        //field_compensation_measure.addClass('hidden');
     }
 
     new_row.appendTo(table_body_inspection);

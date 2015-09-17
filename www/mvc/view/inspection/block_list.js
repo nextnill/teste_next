@@ -51,6 +51,11 @@ function render_list()
     table.css("display", '');
 
     $.each(blocks, function(i, item) {
+
+        if(typeof item.compensation_measure == 'undefined'){
+            blocks[i].compensation_measure = false;
+        }
+
         // se for o primeiro registro, seta o título na tabela
         if (i == 0) {
             table.find("[template-title]").text(item.quarry_name);
@@ -156,6 +161,27 @@ function add_row(table_body, item)
 
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
     field_tot_weight.text(item.tot_weight);
+
+    var field_compensation_measure = $(new_row.find('[template-field="compensation_measure"]'));
+    if(typeof item.compensation_measure != 'undefined'){
+        field_compensation_measure.prop('checked', (parseInt(item.compensation_measure) > 0) ? true : false);
+        for (var i = 0; i < blocks.length; i++) {
+            var block = blocks[i];
+            if (blocks[i].id == item.id) {
+                blocks[i].compensation_measure = field_compensation_measure.prop('checked');
+            }
+        };
+    }
+
+    field_compensation_measure.unbind('click');
+    field_compensation_measure.click(function(){
+        for (var i = 0; i < blocks.length; i++) {
+            var block = blocks[i];
+            if (blocks[i].id == item.id) {
+                blocks[i].compensation_measure = field_compensation_measure.prop('checked');
+            }
+        };
+    });
 
     var field_client_block_number = $(new_row.find("[template-field='client_block_number']"));
     field_client_block_number.val(item.client_block_number);

@@ -1,6 +1,8 @@
 var defects = [];
 var qualities = [];
 
+var div_compensation_measure = $('.div_compensation_measure');
+
 function load_defects(quarry_id, selected_values) {
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>defect/list/json/" + quarry_id, function(response) {
@@ -67,8 +69,15 @@ function load_qualities(selected_value) {
     }).fail(ajaxError);
 }
 
-function show_dialog(tipo, id)
+function show_dialog(tipo, id, isInvoice, compensation_measure)
 {
+
+    if(isInvoice){
+        div_compensation_measure.removeClass('hidden');
+        $("#item_template").find('[template-field="chk_compensation_measure"]').prop("disabled", true);
+        $("#item_template").find('[template-field="chk_compensation_measure"]').prop('checked', (parseInt(compensation_measure) > 0 ? true : false));
+    }
+
     var btn_save = $('#btn_save');
     limpa_formulario(tipo);
 

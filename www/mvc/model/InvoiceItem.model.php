@@ -37,6 +37,7 @@ class InvoiceItem_Model extends \Sys\Model {
     public $client_block_number;
     public $poblo_status_id;
     public $date_nf;
+    public $compensation_measure;
     
     function __construct()
     {
@@ -206,9 +207,10 @@ class InvoiceItem_Model extends \Sys\Model {
                         obs,
                         client_block_number,
                         poblo_status_id,
-                        date_nf
+                        date_nf,
+                        compensation_measure
 	                ) VALUES (
-	                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+	                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 	                ) ';
             $query = DB::exec($sql, array(
                 // values
@@ -235,6 +237,7 @@ class InvoiceItem_Model extends \Sys\Model {
                 $this->client_block_number,
                 $this->poblo_status_id,
                 ($this->date_nf != '' ? $this->date_nf : null),
+                ($this->compensation_measure === true ? true : false)
             ));
 
             $this->id = DB::last_insert_id();
@@ -269,7 +272,7 @@ class InvoiceItem_Model extends \Sys\Model {
     {
         
         $validation = $this->validation();
-        
+        //print_r($this);exit();
         if ($validation->isValid())
         {
 
@@ -304,10 +307,12 @@ class InvoiceItem_Model extends \Sys\Model {
                             sale_net_vol = ?,
                             obs = ?,
                             poblo_status_id = ?,
-                            date_nf = ?
+                            date_nf = ?,
+                            compensation_measure = ?
 	                    WHERE
 	                        id = ?
 	                    ';
+                
                 $query = DB::exec($sql, array(
                     // set
                     $this->invoice_id,
@@ -332,9 +337,9 @@ class InvoiceItem_Model extends \Sys\Model {
                     $this->obs,
                     $this->poblo_status_id,
                     ($this->date_nf != '' ? $this->date_nf : null),
+                    ($this->compensation_measure === true ? 1 : 0),
                     // where
                     $this->id
-
                 ));
 
                 // atualizo o bloco (venda)
@@ -454,7 +459,8 @@ class InvoiceItem_Model extends \Sys\Model {
                         sale_net_vol,
                         obs,
                         poblo_status_id,
-                        date_nf
+                        date_nf,
+                        compensation_measure
 	                FROM
 	                    invoice_item
 	                WHERE
@@ -474,6 +480,58 @@ class InvoiceItem_Model extends \Sys\Model {
 
         return $validation;
     }
+
+
+    function populate_by_block($id)
+    {
+       
+        $sql = 'SELECT
+                    id,
+                    excluido,
+                    invoice_id,
+                    block_id,
+                    client_id,
+                    nf,
+                    price,
+                    block_number, 
+                    tot_c,
+                    tot_a,
+                    tot_l,
+                    tot_vol,
+                    tot_weight,
+                    net_c,
+                    net_a,
+                    net_l,
+                    net_vol,
+                    sale_net_c,
+                    sale_net_a,
+                    sale_net_l,
+                    sale_net_vol,
+                    obs,
+                    poblo_status_id,
+                    date_nf,
+                    compensation_measure
+                FROM
+                    invoice_item
+                WHERE
+                    block_id = ?
+                    AND excluido = "N"
+            ';
+        $query = DB::query($sql, array(
+            // where
+            $id
+        ));
+        
+        if (DB::has_rows($query))
+        {
+            $this->fill($query[0]);
+            return $this->id;
+        }
+        
+
+        return $this;
+    }
+
 
     function fill($row_query)
     {
@@ -505,6 +563,7 @@ class InvoiceItem_Model extends \Sys\Model {
             $this->tot_weight = (float)$row_query['tot_weight'];
             $this->obs = (string)$row_query['obs'];
             $this->date_nf = (string)$row_query['date_nf'];
+            $this->compensation_measure = $row_query['compensation_measure'];
             
             $this->poblo_status_id = $row_query['poblo_status_id'] == '' ? null:(int)$row_query['poblo_status_id'];
         }
@@ -544,7 +603,8 @@ class InvoiceItem_Model extends \Sys\Model {
                     invoice_item.tot_weight,
                     invoice_item.obs,
                     invoice_item.poblo_status_id,
-                    invoice_item.date_nf
+                    invoice_item.date_nf,
+                    invoice_item.compensation_measure
                 FROM invoice_item
                 INNER JOIN block ON (block.id = invoice_item.block_id)
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id)

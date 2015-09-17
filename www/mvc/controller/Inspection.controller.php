@@ -87,8 +87,6 @@ class Inspection_Controller extends \Sys\Controller
 
         }
 
-
-
         // se algum bloco foi aceito, crio a invoice
         if ($total_accepted > 0) {
             // carrego os models
@@ -107,8 +105,9 @@ class Inspection_Controller extends \Sys\Controller
                 foreach ($blocks_accepted as $key => $block) {
 
                     $invoice_item_model = $this->LoadModel('InvoiceItem', true);
+                    
                     if($block['id'] > 0){
-                        $invoice_item_model->populate($block['id']); 
+                        $invoice_item_model->populate_by_block($block['id']); 
                     }
 
 
@@ -133,8 +132,8 @@ class Inspection_Controller extends \Sys\Controller
                     $invoice_item_model->poblo_status_id = $block['poblo_status_id'];
                     $invoice_item_model->client_block_number = $block['client_block_number'];
                     $invoice_item_model->block_number_interim = $block['block_number_interim'];
+                    $invoice_item_model->compensation_measure = $block['compensation_measure'];
 
-                    
                     $ret['invoice_item_id'][] = $invoice_item_model->save();
                 }
             }

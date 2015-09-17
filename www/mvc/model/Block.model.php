@@ -942,8 +942,13 @@ class Block_Model extends \Sys\Model {
                     block.block_number_interim,
                     block.client_block_number,
                     block.obs_poblo,
-                    block.truck_id
-                FROM block
+                    block.truck_id ";
+
+                    if($invoice_id > 0){
+                        $sql .= ", invoice_item.compensation_measure ";
+                    }
+
+        $sql .= " FROM block
                 INNER JOIN quarry ON (quarry.id = block.quarry_id)
                 INNER JOIN quality ON (quality.id = block.quality_id)
                 INNER JOIN product ON (product.id = block.product_id) ";

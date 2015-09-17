@@ -175,7 +175,7 @@ function ab_add_row(table_body, item)
     field_block_number.click(
         function () {
             var id = $(this).attr('template-ref');
-            show_dialog(FORMULARIO.VISUALIZAR, id);
+            show_dialog(FORMULARIO.VISUALIZAR, id, true, item.compensation_measure);
         }
     );
 

@@ -183,6 +183,9 @@ function render_list_cb(blocks_accepted) {
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
     field_tot_weight.text(block_all_tot_weight_sum.toFixed(3));
 
+    var field_compensation_measure = $(new_row.find('[template-field="compensation_measure"]'));
+    field_compensation_measure.text('');
+
     var field_obs = $(new_row.find("[template-field='obs']"));
     field_obs.text('');
 
@@ -342,6 +345,9 @@ function cb_add_row(table_body, item)
     var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
     field_tot_weight.text(item.tot_weight);
 
+    var field_compensation_measure = $(new_row.find('[template-field="compensation_measure"]'));
+    field_compensation_measure.text(item.compensation_measure != null && item.compensation_measure === true ? 'Y' : 'N');
+
     var field_obs = $(new_row.find("[template-field='obs']"));
     field_obs.text(item.obs);
 
@@ -431,6 +437,9 @@ function cb_add_footer(table_body, block_count, block_net_vol_sum, block_tot_wei
     var field_reserved = $(new_row.find("[template-field='reserved']"));
     field_reserved.text('');
 
+    var field_compensation_measure = $(new_row.find('[template-field="compensation_measure"]'));
+    field_compensation_measure.text('');
+
     var field_selected = $(new_row.find("[template-field='selected']"));
     field_selected.text('');
     
@@ -449,6 +458,7 @@ function btn_confirm_ok_click() {
             }
         }
     }
+
 
     if ((blocks) && (blocks.length > 0)) {
         btn_confirm_ok.addClass('disabled');

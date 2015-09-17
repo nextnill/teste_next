@@ -42,6 +42,7 @@
                             <th colspan="3" class="text-center">Client Net Meas</th>
                             <th class="text-center">Vol</th>
                             <th class="text-center">Weight</th>
+                            <th width="10px" class="text-center" data-toggle="tooltip" title="Compensation Measure" style="cursor: pointer;">C</th>
                             <th class="text-center">Obs.</th>
                             <th class="text-center">Client Block Number</th>
                             <th class="text-center">Status</th>
@@ -74,6 +75,9 @@
                                 <span template-field="sale_net_vol_diff_per" class="small">{vol_diff_per}</span>
                             </td>
                             <td template-field="tot_weight" style="width: 70px" class="text-right">{weight}</td>
+                            <td  style="width: 70px" class="text-center">
+                                <input type="checkbox" template-field="compensation_measure">
+                            </td>
                             <td template-field="obs">{Obs}</td>
                             <td style="width: 80px" class="text-left">
                                 <input template-field="client_block_number" type="text" class="form-control input_number text-left" placeholder="Optional" maxlength="50" style="padding:3px; width: 100px;">
