@@ -165,19 +165,20 @@ class Inspection_Controller extends \Sys\Controller
 
     function save_notification_json($params){
 
-        $inspection_notification = $this->ReadPost('email_notification');
+        $inspection_notification = json_decode($this->ReadPost('email_notification'));
 
-        $parameters_model = $this->LoadModel('Parameters', true); 
-
-        $ret = $parameters_model->set('inspection_notification',  $inspection_notification);
+        $invoice_model = $this->LoadModel('Invoice', true);
+        
+        $ret = $invoice_model->save_email_notification($inspection_notification);
 
         $this->print_json($ret);
     }
 
     function load_email_notification(){
 
-        $parameters_model = $this->LoadModel('Parameters', true);
-        $ret = $parameters_model->get('inspection_notification');
+        $invoice_model = $this->LoadModel('Invoice', true);
+
+        $ret = $invoice_model->list_email_notification();
 
         $this->print_json($ret);
     }
@@ -196,9 +197,9 @@ class Inspection_Controller extends \Sys\Controller
         $client_model = $this->LoadModel('Client', true);
         $client_model->populate($invoice_model->client_id);
 
-        $parameters_model = $this->LoadModel('Parameters', true);
-        $destinatario = $parameters_model->get('inspection_notification');
-
+        //$parameters_model = $this->LoadModel('Parameters', true);
+        //$destinatario = $parameters_model->get('inspection_notification');
+        $destinatario = $invoice_model->list_email_notification($invoice_model->client_id, true);
 
         $html = '<table border="0" cellpadding="12" cellspacing="0">
                     <tr>

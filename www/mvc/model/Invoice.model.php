@@ -358,6 +358,115 @@ class Invoice_Model extends \Sys\Model {
         return $query;
     }
 
+    function save_email_notification($arr_email_notification){
+
+        $sql = 'DELETE FROM email_notification WHERE id > 0 ';
+
+        $query = DB::exec($sql);
+                                
+        $sql = 'INSERT INTO email_notification 
+                (
+                    excluido,
+                    email_notification,
+                    client_group_id
+
+                )
+                VALUES
+                (
+                    ?,
+                    ?,
+                    ?
+                )';
+        
+        foreach ($arr_email_notification as $key => $value) {
+
+            if(is_object($value)){
+                $value = (array)$value;
+            }
+
+            $query = DB::exec(
+                                $sql, 
+                                array(
+                                        $value['excluido'],
+                                        $value['email_notification'],
+                                        $value['client_group_id']
+                                     )
+                               );
+        }
+
+        return $arr_email_notification;
+    }
+
+    function list_email_notification($client_id = -1, $just_mails = false){
+
+        $params = array();
+
+        $sql = 'SELECT 
+                    email_notification.excluido,
+                    email_notification.email_notification,
+                    email_notification.client_group_id,
+                    client_group.name
+                FROM email_notification
+                INNER JOIN client_group ON (client_group.id = email_notification.client_group_id)
+                WHERE 
+                    email_notification.excluido = "N" ';
+
+                if($client_id > 0){
+                    $sql .= ' AND client_group_id IN (
+                                                        SELECT 
+                                                            client_group_id
+                                                        FROM client_group_client
+                                                        WHERE client_id = :client_id 
+                                                     )';
+                    
+                    $params[':client_id'] = $client_id;
+                }
+
+
+        $sql .= 'ORDER BY client_group.name';
+
+        $group_clients_emails = DB::query($sql, $params);
+
+        $sql = 'SELECT 
+                    email_notification.excluido,
+                    email_notification.email_notification
+                FROM email_notification
+                WHERE 
+                    email_notification.excluido = "N" 
+                    AND email_notification.client_group_id IS NULL';
+                    
+
+        $emails = DB::query($sql);
+
+        $query = array_merge($emails, $group_clients_emails);
+
+        if($just_mails === true){
+            
+            $emails = '';
+
+            foreach ($query as $key => $value) {
+                if($emails != ''){
+                    $emails = $emails .';'.$value['email_notification'];
+                }else{
+                    $emails = $value['email_notification'];
+                }
+            }
+
+           
+            if (strlen($emails) > 0) {
+                $emails = str_replace(",", ";", $emails);
+                $array_emails = explode(';', $emails);
+
+                $array_emails = array_unique($array_emails);
+                // remove e-mails duplicados
+                $emails = implode(';', $array_emails);
+                return $emails;
+            }
+        }
+
+        return $query;
+    }
+
     function get_clients()
     {
         $sql = 'SELECT

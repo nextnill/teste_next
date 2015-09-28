@@ -241,6 +241,7 @@ class Util
 
             // remove e-mails duplicados
             $array_emails = array_unique($array_emails);
+
             foreach ($array_emails as $key => $value) {
                 $value = trim($value);
                 if (!empty($value))

@@ -102,8 +102,9 @@ class Invoice_Controller extends \Sys\Controller
     $client_model = $this->LoadModel('Client', true);
     $client_model->populate($invoice_model->client_id);
     
-    $parameters_model = $this->LoadModel('Parameters', true);
-    $destinatario = $parameters_model->get('inspection_notification');
+    $destinatario = $invoice_model->list_email_notification($invoice_model->client_id, true);
+    //$parameters_model = $this->LoadModel('Parameters', true);
+    //$destinatario = $parameters_model->get('inspection_notification');
     
 
     $html = '<table border="0" cellpadding="12" cellspacing="0">

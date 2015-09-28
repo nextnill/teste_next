@@ -11,6 +11,33 @@
                     <label for="modal_inspection_notification_edt_email" onload="javascript: carrega_email();">E-mail</label>
                     <input type="text" class="edt_email form-control" maxlength="500">
                 </div>
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover tab_list_notification_group">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Client Group</th>
+                                        <th class="text-center">E-mail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr template-row style="display: none">
+                                        <td template-field="group_name">{group_name}</td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input class="form-control" template-field="edt_email">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <div class="modal-footer" style="bottom: 0px;">
                 <button type="button" class="btn_cancel btn btn-default" onclick="javascript: close_modal();">Cancel</button>

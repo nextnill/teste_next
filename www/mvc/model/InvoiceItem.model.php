@@ -237,7 +237,7 @@ class InvoiceItem_Model extends \Sys\Model {
                 $this->client_block_number,
                 $this->poblo_status_id,
                 ($this->date_nf != '' ? $this->date_nf : null),
-                ($this->compensation_measure === true ? true : false)
+                ($this->compensation_measure === true ? 1 : 0)
             ));
 
             $this->id = DB::last_insert_id();
