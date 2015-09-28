@@ -45,11 +45,12 @@ class BlockList_Controller extends \Sys\Controller
                     </table>
                     <table border="1" cellpadding="2" cellspacing="0" width="100%">
                         <tr>    
-                            <td width="110"><font size="10"><b>BLOCK Nº.:</b></font></td>
+                            <td width="95"><font size="10"><b>BLOCK Nº.:</b></font></td>
                             <td colspan="3" width="150" align="center"><font size="10"><b>TOT MEAS.:</b></font></td>
                             <td colspan="3" width="150" align="center"><font size="10"><b>NET MEAS.:</b></font></td>
                             <td width="60"><font size="10" align="center"><b>VOL.:</b></font></td>
                             <td width="60"><font size="10" align="center"><b>WEIGH:</b></font></td> 
+                            <td width="30"><font size="10" align="center"><b>C:</b></font></td> 
                         </tr>';
 
                         return $cabecalho;
@@ -59,7 +60,7 @@ class BlockList_Controller extends \Sys\Controller
     function imprimir_linha($bloco){
 
         $linhas = '<tr>
-                            <td width="110">'. $bloco['block_number'] .'</td>
+                            <td width="95">'. $bloco['block_number'] .'</td>
                             <td width="50" align="right">'. $bloco['tot_c'] .'</td>
                             <td width="50" align="right">'. $bloco['tot_a'] .'</td>
                             <td width="50" align="right">'. $bloco['tot_l'] .'</td>
@@ -68,6 +69,7 @@ class BlockList_Controller extends \Sys\Controller
                             <td width="50" align="right">'. $bloco['net_l'] .'</td>
                             <td width="60" align="right">'. $bloco['net_vol'] .'</td>
                             <td width="60" align="right">'. $bloco['tot_weight'] .'</td>
+                            <td width="30" align="center"></td>
                         </tr>';
 
                         return $linhas;
@@ -77,7 +79,7 @@ class BlockList_Controller extends \Sys\Controller
     function totalizador($bloco_count, $volume_count, $peso_count){
 
     $total =       '<tr>
-                            <td width="110" align="center">'. $bloco_count .'</td>
+                            <td width="95" align="center">'. $bloco_count .'</td>
                             <td width="50" align="right"></td>
                             <td width="50" align="right"></td>
                             <td width="50" align="right"></td>
@@ -86,6 +88,7 @@ class BlockList_Controller extends \Sys\Controller
                             <td width="50" align="right"></td>
                             <td width="60" align="right">'. number_format($volume_count, 3) .'</td>
                             <td width="60" align="right">'. number_format($peso_count, 3) .'</td>
+                            <td width="30" align="center"></td>
                         </tr>
                         </table>
                         <p></p>
@@ -100,7 +103,7 @@ class BlockList_Controller extends \Sys\Controller
 
     $total_geral =       '<table border="1" cellpadding="2" cellspacing="0">
                         <tr>
-                            <td width="110" align="center">'. $total_bloco .'</td>
+                            <td width="95" align="center">'. $total_bloco .'</td>
                             <td width="50" align="right"></td>
                             <td width="50" align="right"></td>
                             <td width="50" align="right"></td>
@@ -109,6 +112,7 @@ class BlockList_Controller extends \Sys\Controller
                             <td width="50" align="right"></td>
                             <td width="60" align="right">'. number_format($total_volume, 3) .'</td>
                             <td width="60" align="right">'. number_format($total_peso, 3) .'</td>
+                            <td width="30" align="center"></td>
                         </tr>
                         </table>';
 
