@@ -5,13 +5,18 @@ class Block_Controller extends \Sys\Controller
 
     function list_action($params)
     {
+
+        $user = $this->ActiveUser();
+        $permissions = $user['permissions'];
+        $data['permissions'] = $permissions;
+
         $this->RenderView('masterpage', array(
             'block/list',
             'block/detail',
             'production_order/items/defects_marker',
             'production_order/items/photo_upload',
             'production_order/items/photo_view',
-        ));
+        ), $data);
     }
 
     function list_json($params)

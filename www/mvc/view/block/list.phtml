@@ -52,7 +52,7 @@
                     <td template-field="sold">{sold}</td>
                     <td style="text-align: right;">
                         <div class="btn-group" style="text-align: left;">
-                            <button type="button" class="btn btn-default" template-button="edit">
+                            <button type="button" class="btn btn-default <?= (!verifica_acesso('block_change', $permissions) ? 'disabled' : '') ?> " template-button="edit">
                                 <span class="glyphicon glyphicon-pencil"></span> Edit
                             </button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -62,12 +62,17 @@
                                 <li><a href="#" template-button="visualize">
                                     Visualize
                                 </a></li>
-                                <li><a href="#" template-button="edit">
-                                    Edit
-                                </a></li>
-                                <li><a href="#" template-button="delete">
-                                    Delete
-                                </a></li>
+                                
+                                <li class=" <?= (!verifica_acesso('block_change', $permissions) ? 'disabled' : '') ?>">
+                                    <a <?= (!verifica_acesso('block_change', $permissions) ? '' : 'href="#" template-button="edit"' ) ?> >
+                                        Edit
+                                    </a>
+                                </li>
+                                <li class=" <?= (!verifica_acesso('block_change', $permissions) ? 'disabled' : '') ?>">
+                                    <a  <?= (!verifica_acesso('block_change', $permissions) ? '' :'href="#" template-button="delete"' ) ?> >
+                                        Delete
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </td>

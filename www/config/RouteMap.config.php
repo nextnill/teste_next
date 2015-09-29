@@ -98,14 +98,14 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/block/list/json/' => array('Block', 'list_json'),
                 '/block/detail/json/' => array('Block', 'detail_json'),
                 '/block/exists/json/' => array('Block', 'exists_json'),
-                '/block/save/' => array('Block', 'save_json', 'block'),
-                '/block/delete/' => array('Block', 'delete_json', 'block'),
+                '/block/save/' => array('Block', 'save_json', 'block_change'),
+                '/block/delete/' => array('Block', 'delete_json', 'block_change'),
                 '/block/clients/reservations/json/' => array('Block', 'list_clients_with_reservations_json'),
                 '/block/without_lot/' => array('Block', 'list_blocks_without_lot_json'),
                 '/block/with_lot/' => array('Block', 'list_blocks_with_lot_json'),
                 '/block/photo/' => array('BlockPhoto', 'show_photo_json'),
-                '/block/photo/delete/' => array('BlockPhoto', 'delete_json', 'block'),
-                '/block/photo/upload/' => array('BlockPhoto', 'upload_photo_json', array('block', 'production_order')),
+                '/block/photo/delete/' => array('BlockPhoto', 'delete_json', 'block_change'),
+                '/block/photo/upload/' => array('BlockPhoto', 'upload_photo_json', array('block_change', 'production_order')),
 
                 '/block/reserve/' => array('Block', 'reserve_json', 'sobracolumay'),
                 '/block/reserve_selected/' => array('Block', 'reserve_selected_json', 'sobracolumay'),
@@ -132,7 +132,7 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/inspection/load_email/' => array('Inspection', 'load_email_notification', 'inspection'),
                 
 
-                '/inspection/inspection_notification/' => array('Inspection', 'list_notification_action', 'inspection'),
+                '/inspection/inspection_notification/' => array('Inspection', 'list_notification_action', 'inspection_notification'),
                 '/inspection/inspection_notification/save/' => array('Inspection', 'save_notification_json'),
 
                 '/reinspection/blocks/' => array('Reinspection', 'list_block_action'),
@@ -223,12 +223,12 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/poblo/save/' => array('Poblo', 'salve_obs_json', 'poblo'),
                 '/poblo/save_edit/' => array('Poblo', 'save_edit', 'poblo'),
 
-                '/poblo_status/' => array('PobloStatus', 'list_action', 'poblo'),
+                '/poblo_status/' => array('PobloStatus', 'list_action', 'poblo_status'),
                 '/poblo_status/list/json/' => array('PobloStatus', 'list_json'),
                 '/poblo_status/detail/json/' => array('PobloStatus', 'detail_json'),
-                '/poblo_status/save/' => array('PobloStatus', 'save_json', 'poblo'),
-                '/poblo_status/save_color/' => array('PobloStatus', 'save_color_json', 'poblo'),
-                '/poblo_status/delete/' => array('PobloStatus', 'delete_json', 'poblo'),
+                '/poblo_status/save/' => array('PobloStatus', 'save_json', 'poblo_status'),
+                '/poblo_status/save_color/' => array('PobloStatus', 'save_color_json', 'poblo_status'),
+                '/poblo_status/delete/' => array('PobloStatus', 'delete_json', 'poblo_status'),
 
 
                 '/truck_carrier/list/' => array('Truck_Carrier', 'list_action', 'truck_carrier'),

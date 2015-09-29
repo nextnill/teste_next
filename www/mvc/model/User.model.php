@@ -95,7 +95,7 @@ class User_Model extends \Sys\Model {
             else
             {
                 $sql = 'INSERT INTO user (name, password, blocked, admin) VALUES (?, ?, ?, ?) ';
-                $query = DB::exec($sql, array($this->name, $this->password, ($this->blocked == 'true' ? true : false), ($this->admin == 'true' ? true : false)));
+                $query = DB::exec($sql, array($this->name, $this->password, ($this->blocked == 'true' ? 1 : 0), ($this->admin == 'true' ? 1 : 0)));
 
                 $this->id = DB::last_insert_id();
 
@@ -140,8 +140,8 @@ class User_Model extends \Sys\Model {
                     // set
                     $this->name,
                     $this->password,
-                    ($this->blocked == 'true' ? true : false),
-                    ($this->admin == 'true' ? true : false),
+                    ($this->blocked == 'true' ? 1 : 0),
+                    ($this->admin == 'true' ? 1 : 0),
                     // where
                     $this->id
                 ));

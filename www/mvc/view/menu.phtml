@@ -4,7 +4,7 @@ if (LOGGED):
     //$user = unserialize($_SESSION[SPRE.'user']);
     $user = $this->ActiveUser();
     $permissions = $user['permissions'];
-
+    
     function verifica_acesso($key, $permissions) {
         return in_array($key, $permissions);
     }
@@ -29,7 +29,7 @@ if (LOGGED):
                 </a>
             </li>
 
-            <li <?= (!verifica_acesso('client', $permissions) ? 'class="disabled"' : '') ?>>
+            <li <?= (!verifica_acesso('client_group', $permissions) ? 'class="disabled"' : '') ?>>
                 <a href="<?= APP_URI ?>client_group/list/">
                     Client Groups
                 </a>
@@ -91,7 +91,7 @@ if (LOGGED):
                 </a>
             </li>
             
-              <li <?= (!verifica_acesso('poblo', $permissions) ? 'class="disabled"' : '') ?>>
+              <li <?= (!verifica_acesso('poblo_status', $permissions) ? 'class="disabled"' : '') ?>>
                 <a href="<?= APP_URI ?>poblo_status/color_status/list_color_status/">
                     Poblo Status
                 </a>
@@ -165,7 +165,7 @@ if (LOGGED):
         
         <li role="presentation" class="divider"></li>
 
-         <li <?= (!verifica_acesso('inspection', $permissions) ? 'class="disabled"' : '') ?>>
+         <li <?= (!verifica_acesso('inspection_notification', $permissions) ? 'class="disabled"' : '') ?>>
             <a href="<?= APP_URI ?>inspection/inspection_notification">
                 Inspection Notification
             </a>
