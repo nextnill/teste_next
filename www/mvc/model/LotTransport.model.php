@@ -1057,11 +1057,10 @@ class LotTransport_Model extends \Sys\Model {
                 $sql .= " ORDER BY
 
                     menor_date_record,
-                    quality.order_number,
                     lot_transport.order_number,
-                    quarry.name,
-                    invoice.date_record,
+                    quality.order_number,
                     block.block_number
+                    
                 ";
       
         $query = DB::query($sql, $params);

@@ -613,8 +613,6 @@ function load_lot (lot){
                 invoice_item_price: sum_price,
             }
 
-            render_lot(new_template_lot, block_count, 'bg-warning');
-
             var block_count_final = {
                 block_number: count_blocks_final,
                 quality_name: count_quality_blocks_final,
@@ -623,13 +621,8 @@ function load_lot (lot){
                 invoice_item_price: sum_price_final,
             }
 
+            render_lot(new_template_lot, block_count, 'bg-warning');
             render_lot(new_template_lot, block_count_final, 'bg-info');
-
-            new_template_lot = template_lot.clone();
-            render_header_lot(new_template_lot, item);
-            lot_number = item.lot_number;
-
-            quality_name = item.quality_name;
             
             count_blocks = 0;
             sum_price = 0;
@@ -642,13 +635,12 @@ function load_lot (lot){
             sum_volume_final = 0;
             sum_weight_final = 0;
             count_quality_blocks_final = 0;
-        }
 
-        count_blocks++;
-        sum_price += parseFloat(item.invoice_item_price) || 0;
-        sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
-        sum_weight += parseFloat(item.tot_weight) || 0;
-        count_quality_blocks++;
+            new_template_lot = template_lot.clone();
+            render_header_lot(new_template_lot, item);
+            lot_number = item.lot_number;
+            quality_name = item.quality_name;
+        }
 
         if(item.quality_name != quality_name){
             
@@ -670,6 +662,12 @@ function load_lot (lot){
 
             quality_name = item.quality_name;
         }
+
+        count_blocks++;
+        sum_price += parseFloat(item.invoice_item_price) || 0;
+        sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
+        sum_weight += parseFloat(item.tot_weight) || 0;
+        count_quality_blocks++;
 
         count_blocks_final++;
         count_quality_blocks_final++;
