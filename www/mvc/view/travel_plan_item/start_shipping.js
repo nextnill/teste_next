@@ -342,7 +342,7 @@ function btn_start_shipping_click(type)
         }
 
         var cbo_trucks = row.find('.cbo_trucks');
-        if(cbo_trucks.val().length > 0){
+        if(cbo_trucks.val() != null && cbo_trucks.val().length > 0){
             arr_pending_blocks_selected[i].truck_id = cbo_trucks.val();
         }
 

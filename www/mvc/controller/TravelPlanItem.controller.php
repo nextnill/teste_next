@@ -85,14 +85,15 @@ class TravelPlanItem_Controller extends \Sys\Controller
         $result = [];
         foreach ($blocks as $key => $item) {
             $travel_plan_item_model = new TravelPlanItem_Model();
+            
             $result[] = $travel_plan_item_model->client_removed(
-                $item['lot_transport_id'],
-                $item['lot_transport_item_id'],
-                $item['block_id'],
-                $item['invoice_item_id'],
-                $item['invoice_item_nf'],
-                $item['invoice_item_price'],
-                $item['invoice_item_wagon_number']
+                $item->lot_transport_id,
+                $item->lot_transport_item_id,
+                $item->block_id,
+                $item->invoice_item_id,
+                $item->invoice_item_nf,
+                $item->invoice_item_price,
+                $item->invoice_item_wagon_number
             );
         }
 
@@ -110,6 +111,6 @@ class TravelPlanItem_Controller extends \Sys\Controller
         $list = $travel_plan_item_model->get_history($lot_transport_id);
 
         $this->print_json($list);
-    }    
+    }
 
 }

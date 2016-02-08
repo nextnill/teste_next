@@ -144,15 +144,17 @@ class LotTransport_Model extends \Sys\Model {
             $sql = 'INSERT INTO lot_transport (
                         date_record,
                         lot_number,
-                        client_id
+                        client_id,
+                        client_remove
 	                ) VALUES (
-	                    ?, ?, ?
+	                    ?, ?, ?, ?
 	                ) ';
                         
             $dt_now = new DateTime('now');
             $params[] = $dt_now->format('Y-m-d H:i:s');
             $params[] = (string)$this->lot_number;
             $params[] = (int)$this->client_id;
+            $params[] = ($this->client_remove == 'true' ? 1 : 0);
 
             $query = DB::exec($sql, $params);
 
@@ -212,8 +214,8 @@ class LotTransport_Model extends \Sys\Model {
                 // set
                 $params[] = (string)$this->lot_number;
                 $params[] = (int)$this->client_id;
-                $params[] = ($this->client_remove == 'true' ? true : false);
-                $params[] = ($this->local_market == 'true' ? true : false);
+                $params[] = ($this->client_remove == 'true' ? 1 : 0);
+                $params[] = ($this->local_market == 'true' ? 1 : 0);
                 $params[] = (int)$this->status;
                 $params[] = (string)$this->draft_file;
                 $params[] = (string)$this->draft_type;
