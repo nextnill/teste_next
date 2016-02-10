@@ -1,8 +1,15 @@
 var cbo_filter_client = $('#cbo_filter_client');
 var edt_filter_block = $('.edt_filter_block');
+var limit_blocks_list = 0;
+var num_max_carregados = false;
+var block_number_param = null;
 
 // on load window
 funcs_on_load.push(function() {
+    limit_blocks_list = 0;
+    block_number_param = null;
+    $('#tbl_listagem').find("tr:gt(1)").remove();
+    num_max_carregados = false;
     listar();
     list_filter_client();
 
@@ -13,14 +20,15 @@ function listar(block_number)
 {
     // limpa trs, menos a primeira
     //
-    $('#tbl_listagem').find("tr:gt(1)").remove();
-
 
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>block/list/json/"+block_number, function(response) {
+    $.getJSON("<?= APP_URI ?>block/list/json/"+block_number+'/'+limit_blocks_list, function(response) {
+
+        num_max_carregados = (response &&  response.length < 50 ? true : false);
+
         if (response_validation(response)) {
 
-            $('#tbl_listagem').find("tr:gt(1)").remove();
+            
             var table_body = $('#tbl_listagem > tbody');
 
 
@@ -125,6 +133,27 @@ function add_row(table_body, item)
 
 edt_filter_block.keyup(function(){
     $('#tbl_listagem').find("tr:gt(1)").remove();
-    listar(this.value);
+    block_number_param = (this.value != '' ? this.value : null);
+    if(block_number_param == null){
+        num_max_carregados = false;
+        limit_blocks_list = 0;
+    }
+    listar(block_number_param);
+});
+
+$(window).scroll(function(){
+
+    
+    var scroll = $(document).scrollTop() + $(this).height();
+
+    if(scroll == document.body.scrollHeight){
+
+        if(!num_max_carregados){
+
+            limit_blocks_list = limit_blocks_list + 50;
+            listar(block_number_param);
+        }
+    } 
+
 });
 

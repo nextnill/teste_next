@@ -715,7 +715,7 @@ class Block_Model extends \Sys\Model {
         }
     }
     
-    function get_list($block_number=null)
+    function get_list($block_number=null, $limit=0)
     {
         $sql = "SELECT
                     block.id,
@@ -763,7 +763,8 @@ class Block_Model extends \Sys\Model {
                     block.quarry_id IN ({$this->active_quarries})
                     AND block.excluido = :excluido ";
 
-        if (!is_null($block_number) && $block_number != null && $block_number != '' && $block_number != 'undefined') {
+        if (!is_null($block_number) && $block_number != null && $block_number != '' && $block_number != 'undefined' && $block_number != 'null') {
+            
             $sql .= " AND block.block_number LIKE :block_number ";
             $params[':block_number'] = '%' . $block_number . '%';
         }
@@ -771,7 +772,10 @@ class Block_Model extends \Sys\Model {
         $sql .= "
                 ORDER BY
                     block.block_number ";
-
+        if($limit > -1){
+            $sql .= " LIMIT ". $limit .", 50";
+        }
+        
         $params[':excluido'] = 'N';
 
         $query = DB::query($sql, $params);

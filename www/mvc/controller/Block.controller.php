@@ -24,8 +24,9 @@ class Block_Controller extends \Sys\Controller
     	$block_model = $this->LoadModel('Block', true);
 
         $block_number = isset($params[0]) ? (string)$params[0] : null;
+        $limit = isset($params[1]) ? $params[1] : 0;
 
-    	$list = $block_model->get_list($block_number);
+    	$list = $block_model->get_list($block_number, $limit);
     	
         $this->print_json($list);
     }
@@ -83,6 +84,7 @@ class Block_Controller extends \Sys\Controller
         $defects_json = (string)$this->ReadPost('defects_json');
         $quality_id = (int)$this->ReadPost('quality_id');
         $defects = $this->ReadPost('defects');
+        $block_number_interim = (string)$this->ReadPost('block_number_interim');
 
         $block_model->block_number = $block_number;
         $block_model->tot_c = $tot_c;
@@ -98,7 +100,9 @@ class Block_Controller extends \Sys\Controller
         $block_model->defects_json = $defects_json;
         $block_model->quality_id = $quality_id;
         $block_model->defects = $defects;
+        $block_model->block_number_interim = $block_number_interim;
         $block_model->save();
+
 
         $this->print_json($block_model);
     }

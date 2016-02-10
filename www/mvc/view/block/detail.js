@@ -118,6 +118,8 @@ function permite_alterar(valor)
     $("#item_template").find("[template-ref]select").prop("disabled", !valor);
     $("#item_template").find("[template-ref] [type='checkbox']").prop("disabled", !valor);
 
+    $('[template-ref="edt_block_number_interim"]').prop("disabled", !valor);
+
     var template = $("[template-ref='div_block']");
     //var edt_block = template.find('[template-ref="edt_block"]');
     var edt_tot_vol = template.find('[template-ref="edt_tot_vol"]');
@@ -358,6 +360,7 @@ function envia_detalhes()
         var cbo_quality = template.find('[template-ref="cbo_quality"]');
         var cbg_defects = template.find('[template-ref="cbg_defects"]');
         var cbg_defect_items = template.find("[template-ref='cbg_defect_items'] [type='checkbox']");
+        var edt_block_number_interim = template.find('[template-ref="edt_block_number_interim"]');
 
         var item_defects = [];
 
@@ -382,7 +385,8 @@ function envia_detalhes()
             obs: edt_observations.val(),
             quality_id: cbo_quality.val(),
             defects: item_defects,
-            defects_json: rec_defects_json.val()
+            defects_json: rec_defects_json.val(),
+            block_number_interim: edt_block_number_interim.val()
         };
 
         $.ajax({
