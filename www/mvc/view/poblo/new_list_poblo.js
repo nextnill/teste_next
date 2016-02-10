@@ -214,7 +214,7 @@ function render_inspection(new_template_inspection, item, color){
     var new_row = template_row.clone();
     new_row.removeAttr("template-row");
     new_row.css("display", '');
-
+    new_row.attr('block_id', item.block_id)
     if(color){
         new_row.addClass(color);
     }
@@ -229,7 +229,8 @@ function render_inspection(new_template_inspection, item, color){
 
     field_block_number.unbind('click');
     field_block_number.click(function() {
-        show_dialog(FORMULARIO.VISUALIZAR, item.id);
+
+        show_dialog(FORMULARIO.VISUALIZAR, new_row.attr('block_id'));
     });
 
 
@@ -760,7 +761,20 @@ function render_header_lot(new_template_lot, item){
     // packing list
     var btn_doc_packing_list = new_template_lot.find("[template-button='doc_packing_list']");
     btn_doc_packing_list.click(function() {
-        init_down_packing_list(item.lot_transport_id);
+
+        var call_back = function(download){
+
+            if(download){
+
+                btn_doc_packing_list.removeClass('btn-warning');
+                btn_doc_packing_list.addClass('btn-default');
+                var icone = btn_doc_packing_list.find('span');
+                icone.removeClass('glyphicon-download-alt');
+                icone.addClass('glyphicon-ok');
+            }
+        }
+
+        init_down_packing_list(item.lot_transport_id, call_back);
         showModal('modal_down_packing_list');
     });
 
@@ -800,7 +814,20 @@ function render_header_lot(new_template_lot, item){
     // commercial invoice
     var btn_doc_commercial_invoice = new_template_lot.find("[template-button='doc_commercial_invoice']");
     btn_doc_commercial_invoice.click(function() {
-        init_down_commercial_invoice(item.lot_transport_id);
+
+        var call_back = function(download){
+            
+            if(download){
+
+                btn_doc_commercial_invoice.removeClass('btn-warning');
+                btn_doc_commercial_invoice.addClass('btn-default');
+                var icone = btn_doc_commercial_invoice.find('span');
+                icone.removeClass('glyphicon-download-alt');
+                icone.addClass('glyphicon-ok');
+            }
+        }
+
+        init_down_commercial_invoice(item.lot_transport_id, call_back);
         showModal('modal_down_commercial_invoice');
     });
 

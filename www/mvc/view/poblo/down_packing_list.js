@@ -8,6 +8,7 @@ var edt_pl_packing_list_ref = $('#edt_pl_packing_list_ref');
 var btn_save_packing_list = $('.btn_save_packing_list');
 
 var down_pl_lot_transport_id = 0;
+var call_back_down_packing_list = null;
 
 function clear_packing_list(){
 
@@ -21,7 +22,8 @@ function clear_packing_list(){
     edt_pl_client_notify_address.val('');
 }
 
-function init_down_packing_list(lot_transport_id) {
+function init_down_packing_list(lot_transport_id, call_back) {
+    call_back_down_packing_list = call_back;
 	down_pl_lot_transport_id = lot_transport_id;
 	clear_packing_list();
 	WS.get(
@@ -63,6 +65,11 @@ function save_packing_list(download){
                       '<?= APP_URI ?>travel_plan/packing_list/download/?lot_transport_id=' + down_pl_lot_transport_id,
                       '_blank'
                     );
+
+                    if(typeof call_back_down_packing_list != 'undefined' && call_back_down_packing_list){
+                        call_back_down_packing_list(download);
+                    }
+                    
                 }
                 closeModal('modal_down_packing_list');
             }else{

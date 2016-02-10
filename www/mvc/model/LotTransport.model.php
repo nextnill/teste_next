@@ -75,17 +75,17 @@ class LotTransport_Model extends \Sys\Model {
         return $validation;
     }
     
-    function save($file = null)
+    function save($file = null, $ignore_itens = false)
     {
 
 
         if (!$this->exists())
         {
-            return $this->insert();
+            return $this->insert($ignore_itens);
         }
         else
         {
-            return $this->update($file);
+            return $this->update($file, $ignore_itens);
         }
     }
     
@@ -135,7 +135,7 @@ class LotTransport_Model extends \Sys\Model {
         return false;
     }
     
-    function insert()
+    function insert($ignore_itens = false)
     {
         $validation = $this->validation();
 
@@ -160,7 +160,10 @@ class LotTransport_Model extends \Sys\Model {
 
             $this->id = DB::last_insert_id();
 
-            $this->save_items();
+            if($ignore_itens == false){
+                $this->save_items();
+            }
+            
 
             return $this;
         }
@@ -168,7 +171,7 @@ class LotTransport_Model extends \Sys\Model {
         return array('validation' => $validation);
     }
     
-    function update($file)
+    function update($file, $ignore_itens = false)
     {
         $validation = $this->validation();
         if(!is_null($file)){
@@ -225,8 +228,10 @@ class LotTransport_Model extends \Sys\Model {
 
                 $query = DB::exec($sql, $params);
 
-                $this->save_items();
-                
+                if($ignore_itens == false){
+                    $this->save_items();
+                }
+
                 return $this;
             }
         }
@@ -1028,7 +1033,9 @@ class LotTransport_Model extends \Sys\Model {
                     LEFT JOIN poblo_status ON (poblo_status.id = invoice_item.poblo_status_id)
                 WHERE
                     block.quarry_id IN ({$this->active_quarries})  
-                    AND block.excluido = 'N' ";
+                    AND block.excluido = 'N' 
+                    AND lot_transport.excluido = 'N'
+                    AND lot_transport_item.excluido = 'N' ";
 
                     $params = array();
                     if($client_id > 0){
@@ -1037,21 +1044,38 @@ class LotTransport_Model extends \Sys\Model {
                         $params[':client_id'] = $client_id;
 
                     }else{
-                        $sql .= " AND ((
-                                        block.sold = 1 and block.current_lot_transport_id IS NULL
-                                    )
-                                    OR
-                                    (
+                        $sql .= "   AND (
 
-                                        lot_transport.status != 0 -- não exibo LOTES rascunhos
-                                        AND (lot_transport.status != 3 -- não exibo LOTES entregues
-                                            OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
-                                            OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
-                                        )
-                                        AND lot_transport_item.dismembered != TRUE
-                                        AND lot_transport.excluido = 'N'
-                                        AND lot_transport_item.excluido = 'N'
-                                ))";
+                                            /*AND ((
+                                                block.sold = 1 and block.current_lot_transport_id IS NULL
+                                            )
+                                            OR*/
+
+                                            (
+                                                lot_transport.client_remove = 1
+                                                AND (SELECT COUNT(*) 
+                                                     FROM lot_transport_item 
+                                                     WHERE lot_transport_id = lot_transport.id) != (SELECT COUNT(*) 
+                                                                                                   FROM lot_transport_item 
+                                                                                                   WHERE lot_transport_id = lot_transport.id
+                                                                                                   AND lot_transport_item.status = 2)
+                                            )
+                                    
+                                            OR
+
+                                            (
+                                                lot_transport.client_remove != 1
+                                                AND lot_transport.status != 0 -- não exibo LOTES rascunhos
+                                                AND (
+                                                        lot_transport.status != 3 -- não exibo LOTES entregues
+                                                        OR lot_transport.down_commercial_invoice = FALSE -- ou se possui download do commercial invoice para realizar
+                                                        OR lot_transport.down_packing_list = FALSE -- ou se possui download do packing list para realizar
+                                                    )
+                                                AND lot_transport_item.dismembered != TRUE
+                                                AND lot_transport.excluido = 'N'
+                                                AND lot_transport_item.excluido = 'N'
+                                            )
+                                        ) ";
                     }
 
                     
@@ -1064,7 +1088,7 @@ class LotTransport_Model extends \Sys\Model {
                     block.block_number
                     
                 ";
-      
+   
         $query = DB::query($sql, $params);
         foreach($query as $key => $row){
 

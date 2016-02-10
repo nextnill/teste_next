@@ -38,6 +38,7 @@ class InvoiceItem_Model extends \Sys\Model {
     public $poblo_status_id;
     public $date_nf;
     public $compensation_measure;
+    public $block_number_interim;
     
     function __construct()
     {
@@ -341,10 +342,12 @@ class InvoiceItem_Model extends \Sys\Model {
                     // where
                     $this->id
                 ));
+    
 
                 // atualizo o bloco (venda)
                 if ($this->id > 0) {
                     $block_model = $this->LoadModel('Block', true);
+
                     $block_model->sell(
                         $this->block_id,
                         $this->client_id,

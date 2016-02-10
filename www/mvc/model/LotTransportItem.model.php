@@ -90,15 +90,17 @@ class LotTransportItem_Model extends \Sys\Model {
             $sql = 'INSERT INTO lot_transport_item (
 	                    lot_transport_id,
                         block_id,
-                        invoice_item_id
+                        invoice_item_id,
+                        client_removed 
 	                ) VALUES (
-	                    ?, ?, ?
+	                    ?, ?, ?, ?
 	                ) ';
             $query = DB::exec($sql, array(
                 // values
                 $this->lot_transport_id,
                 $this->block_id,
-                $this->invoice_item_id
+                $this->invoice_item_id,
+                ($this->client_removed == 'true' ? 1 : 0)
             ));
 
             $this->id = DB::last_insert_id();

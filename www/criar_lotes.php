@@ -31,6 +31,7 @@ foreach ($invoices as $invoice_key => $invoice) {
     //echo "Obtendo itens da invoice " . $invoice['id'] . ' - ' . $invoice['code'] . ' - ' . $invoice['name'];
 	$invoice_item_model = $model->LoadModel('InvoiceItem', true);
 	$invoice['itens'] = json_decode(json_encode($invoice_item_model->get_by_invoice($invoice['id'])));
+
 	//print_r($invoice['itens']);exit;
 	$invoice['lot_number'] = 'X-INV/' . str_pad($invoice['id'], 6, "0", STR_PAD_LEFT);
 	foreach ($invoice['itens'] as $item_key => $item) {
@@ -53,17 +54,18 @@ foreach ($invoices as $invoice_key => $invoice) {
     $ret = $lot_transport_model->save();
     $lot_transport_model->release('true');
 
-	echo " - OK<br>";
+	echo " - OK \n ";
 	flush();
-	exit;
+	//exit;
 
     
 	// marco que os blocos foram removidos pelo cliente
 	$lot_transport_model->populate($lot_transport_model->id);
-	//print_r($lot_transport_model);exit;
 
     $travel_plan_item_model = $model->LoadModel('TravelPlanItem', false);
-    foreach ($travel_plan_item_model->items as $key => $item) {
+
+    foreach ($lot_transport_model->items as $key => $item) {
+        
         $travel_plan_item_model = new TravelPlanItem_Model();
         $travel_plan_item_model->client_removed(
             $item['lot_transport_id'],

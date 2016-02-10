@@ -125,21 +125,25 @@ class LotTransport_Controller extends \Sys\Controller
     }
 
     function client_remove_json($params) {
+
         $lot_transport_id = (int)$this->ReadPost('lot_transport_id');
         $client_remove = $this->ReadPost('client_remove');
+        $ignore_itens = $this->ReadPost('ignore_itens');
         $lot_transport_model = $this->LoadModel('LotTransport', true);
         $lot_transport_model->populate($lot_transport_id);
         $lot_transport_model->client_remove = $client_remove;
-        $this->print_json($lot_transport_model->save());
+        $this->print_json($lot_transport_model->save(null, $ignore_itens));
     }
 
     function local_market_json($params) {
+
         $lot_transport_id = (int)$this->ReadPost('lot_transport_id');
         $local_market = $this->ReadPost('local_market');
+        $ignore_itens = $this->ReadPost('ignore_itens');
         $lot_transport_model = $this->LoadModel('LotTransport', true);
         $lot_transport_model->populate($lot_transport_id);
         $lot_transport_model->local_market = $local_market;
-        $this->print_json($lot_transport_model->save());
+        $this->print_json($lot_transport_model->save(null, $ignore_itens));
     }
 
     function delete_json($params)

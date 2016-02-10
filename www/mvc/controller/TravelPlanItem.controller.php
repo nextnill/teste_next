@@ -69,7 +69,11 @@ class TravelPlanItem_Controller extends \Sys\Controller
         $travel_plan_item_model = $this->LoadModel('TravelPlanItem', true);
         $result = [];
         foreach ($blocks as $key => $item) {
-            $travel_plan_item_model->populate($item['current_travel_plan_item_id']);
+
+            if(is_array($item)){
+                $item = (object)$item;
+            }
+            $travel_plan_item_model->populate($item->current_travel_plan_item_id);
             $result[] = $travel_plan_item_model->mark_completed();
         }
 
@@ -81,6 +85,7 @@ class TravelPlanItem_Controller extends \Sys\Controller
         $blocks = json_decode($this->ReadPost('blocks'));
 
         $travel_plan_item_model = $this->LoadModel('TravelPlanItem', false);
+
 
         $result = [];
         foreach ($blocks as $key => $item) {

@@ -42,7 +42,7 @@ function refresh_btn_release() {
                 url: "<?= APP_URI ?>lots/release/",
                 data: {
                     id: lot_transport_id,
-                    release: (lot_transport_status == 0 ? true : false)
+                    release: (lot_transport_status == 0 ? 'true' : 'false')
                 },
                 dataType: 'json',
                 success: function (response) {

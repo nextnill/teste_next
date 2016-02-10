@@ -126,7 +126,7 @@ class TravelPlanItem_Model extends \Sys\Model {
             $params[] = (!empty($this->date_completed) ? $this->date_completed : null);
             $params[] = ($this->client_removed == 'true' ? 1 : 0);
             $params[] = $this->wagon_number;
-
+            
             $query = DB::exec($sql, $params);
 
             $this->id = DB::last_insert_id();
@@ -268,22 +268,26 @@ class TravelPlanItem_Model extends \Sys\Model {
 
     function client_removed($lot_transport_id, $lot_transport_item_id, $block_id, $invoice_item_id, $nf, $price, $wagon_number)
     {
-        print_r($truck_id);exit();
+
         if (!empty($nf)) {
             // update NF e Price na Invoice
             if (isset($invoice_item_id) && ($invoice_item_id > 0)) {
+
                 $invoice_item_model = $this->LoadModel('InvoiceItem', true);
                 $invoice_item_model->populate($invoice_item_id);
+
                 $invoice_item_model->nf = $nf;
                 $invoice_item_model->price = $price;
+
                 $invoice_item_model->save();
+
             }
 
             // update lot_transport_item
             $lot_transport_item_model = $this->LoadModel('LotTransportItem', true);
             $lot_transport_item_model->populate($lot_transport_item_id);
             $lot_transport_item_model->status = self::TRAVEL_PLAN_STATUS_COMPLETED;
-            $lot_transport_item_model->client_removed = true;
+            $lot_transport_item_model->client_removed = 'true';
             $lot_transport_item_model->save();
 
             // pointing
@@ -295,7 +299,7 @@ class TravelPlanItem_Model extends \Sys\Model {
             $dt_now = new DateTime('now');
             $dt_now = $dt_now->format('Y-m-d H:i:s');
             $this->date_completed = $dt_now;
-            $this->client_removed = true;
+            $this->client_removed = 'true';
             
 
             return $this->insert();

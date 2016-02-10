@@ -13,6 +13,7 @@ var tbl_ci_products_body = tbl_ci_products.find('tbody');
 
 var down_ci_lot_transport_id = 0;
 var arr_ci_products;
+var call_back_dow_commercial_invoice = null;
 
 function clear_packing_list(){
 
@@ -26,9 +27,9 @@ function clear_packing_list(){
     edt_ci_shipped_to.val('');
 }
 
-function init_down_commercial_invoice(lot_transport_id) {
+function init_down_commercial_invoice(lot_transport_id, call_back) {
 	down_ci_lot_transport_id = lot_transport_id;
-
+    call_back_dow_commercial_invoice = call_back;
 	clear_packing_list();
 
 	WS.get(
@@ -149,6 +150,10 @@ function save_commercial_invoice(download){
                       '<?= APP_URI ?>travel_plan/commercial_invoice/download/?lot_transport_id=' + down_ci_lot_transport_id,
                       '_blank'
                     );
+                }
+
+                if(typeof call_back_dow_commercial_invoice != 'undefined' && call_back_dow_commercial_invoice){
+                    call_back_dow_commercial_invoice(download);
                 }
 
                 closeModal('modal_down_commercial_invoice');

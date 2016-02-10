@@ -182,7 +182,8 @@ function update_client_remove() {
         type: "POST",
         url: "<?= APP_URI ?>lots/client_remove/",
         data: { lot_transport_id: lot_transport_id,
-                client_remove: chk_client_remove.prop('checked')
+                client_remove: chk_client_remove.prop('checked'),
+                ignore_itens: true
         },
         success: function (response) {
             if (response_validation(response)) {
@@ -201,7 +202,8 @@ function update_local_market() {
         type: "POST",
         url: "<?= APP_URI ?>lots/local_market/",
         data: { lot_transport_id: lot_transport_id,
-                local_market: chk_local_market.prop('checked')
+                local_market: chk_local_market.prop('checked'),
+                ignore_itens: true
         },
         success: function (response) {
             if (response_validation(response)) {
