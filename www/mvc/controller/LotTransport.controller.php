@@ -16,10 +16,17 @@ class LotTransport_Controller extends \Sys\Controller
         if (isset($params[0])) {
             $client_id = (int)$params[0];
         }
+
+        $limit = 0;
+        if (isset($params[1])) {
+            $limit = $params[1];
+        }
+
+       
         $client_id = ($client_id > 0 ? $client_id : null);
 
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-    	$list = $lot_transport_model->get_list(false, $client_id);
+    	$list = $lot_transport_model->get_list(false, $client_id, $limit);
     	
         $this->print_json($list);
     }

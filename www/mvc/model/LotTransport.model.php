@@ -716,7 +716,7 @@ class LotTransport_Model extends \Sys\Model {
         return array('validation' => $validation);
     }
     
-    function get_list($excluido=false, $client_id=null)
+    function get_list($excluido=false, $client_id=null, $limit = -1)
     {
         $sql = 'SELECT
                     lot_transport.id,
@@ -747,6 +747,11 @@ class LotTransport_Model extends \Sys\Model {
         }
 
         $sql .= 'ORDER BY lot_transport.date_record DESC, lot_transport.id DESC ';
+        
+        if($limit > -1){
+          
+            $sql .= " LIMIT ". $limit ." , 50 ";
+        }
 
         $query = DB::query($sql, $params);
         

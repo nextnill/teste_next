@@ -78,6 +78,4 @@ foreach ($invoices as $invoice_key => $invoice) {
         );
     }
 
-
-	exit;
 }

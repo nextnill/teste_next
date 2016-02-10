@@ -1,3 +1,6 @@
+var limit_lots_list = 0;
+var lots_num_max_carregados = false;
+
 function listar_filter_client()
 {
     var cbo_filter_client = $('#cbo_filter_client');
@@ -23,19 +26,26 @@ function listar_filter_client()
     }).fail(ajaxError);
 }
 
+function refresh_listar (){
+    limit_lots_list = 0;
+    lots_num_max_carregados = false;
+    $('#tbl_listagem').find("tr:gt(1)").remove();
+    listar();
+}
+
 function listar()
 {
     var cbo_filter_client = $('#cbo_filter_client');
 
     // limpa trs, menos a primeira
     //
-    $('#tbl_listagem').find("tr:gt(1)").remove();
+    //$('#tbl_listagem').find("tr:gt(1)").remove();
 
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>lots/list/json/" + (cbo_filter_client.val() ? cbo_filter_client.val() : ''), function(response) {
+    $.getJSON("<?= APP_URI ?>lots/list/json/" + (cbo_filter_client.val() ? cbo_filter_client.val() : '') + '/' + limit_lots_list , function(response) {
         if (response_validation(response)) {
             var table_body = $('#tbl_listagem > tbody');
-
+            lots_num_max_carregados = (response && response.length < 50 ? true : false);
             $.each(response, function(i, item) {
                 add_row(table_body, item);
             });
@@ -203,6 +213,25 @@ function btn_lt_new_click() {
 $('.btn_lt_new').click(btn_lt_new_click);
 
 funcs_on_load.push(function() {
+    limit_lots_list = 0;
+    lots_num_max_carregados = false;
+    $('#tbl_listagem').find("tr:gt(1)").remove();
     listar();
     listar_filter_client();
+    
+});
+
+$(window).scroll(function(){
+
+    var scroll = $(document).scrollTop() + $(this).height();
+
+    if(scroll == document.body.scrollHeight){
+
+        if(!lots_num_max_carregados){
+
+            limit_lots_list = limit_lots_list + 50;
+            listar();
+        }
+    } 
+
 });
