@@ -1,4 +1,8 @@
 // FUNCOES
+var tot_vol = 0;
+var tot_block = 0;
+var tot_vol_aproximado = 0;
+
 function listar_filter_quarry(selected)
 {
     var cbo_filter_quarry = $('#cbo_filter_quarry');
@@ -37,6 +41,7 @@ function listar()
     var edt_year = $('#edt_year');
     var cbo_month_filter = $('#cbo_month_filter');
 
+
     // limpa trs, menos a primeira
     $('#tbl_listagem').find("tr:gt(1)").remove();
 
@@ -44,15 +49,40 @@ function listar()
     $.getJSON("<?= APP_URI ?>po/list/json/" + (cbo_filter_quarry.val() ? cbo_filter_quarry.val() : ''), 
         {block_type: cbo_filter_type.val(),ano: edt_year.val(), mes: cbo_month_filter.val()}, function(response) {
         if (response_validation(response)) {
+            
+            // zero os totalizadores
+            tot_vol = 0;
+            tot_block = 0;
+            tot_vol_aproximado = 0;
+
             var table_body = $('#tbl_listagem > tbody');
             $.each(response, function(i, item) {
                 add_row(table_body, item);
+
+                if(item.status == 1){
+                    tot_vol = tot_vol + parseFloat(Math.round(item.block_net_vol * 100)/100);
+                    tot_vol_aproximado = tot_vol.toFixed(3);
+                    tot_block = tot_block + parseInt(item.count_blocks, 10);    
+                }
             });
+            var objeto_total = {
+                id: '', 
+                quarry_name: '',
+                date_production: '',
+                product_name: '',
+                block_type: '',
+                status: '1',
+                block_net_vol: tot_vol_aproximado,
+                count_blocks: tot_block 
+            };
+            add_row(table_body, objeto_total, true);
         }
     }).fail(ajaxError);
 }
 
-function add_row(table_body, item)
+
+
+function add_row(table_body, item, totalizador)
 {
     var template_row = table_body.find("tr:first");
     var new_row = template_row.clone();
@@ -66,7 +96,10 @@ function add_row(table_body, item)
     field_quarry_name.text(item.quarry_name);
 
     var field_date_production = $(new_row.find("[template-field='date_production']"));
-    field_date_production.text(item.date_production.format_date());
+    if(item.date_production != ''){
+        field_date_production.text(item.date_production.format_date());    
+    }
+    
 
     var field_product_name = $(new_row.find("[template-field='product_name']"));
     field_product_name.text(item.product_name);
@@ -91,9 +124,9 @@ function add_row(table_body, item)
         field_count.text(item.count_blocks_po);
     }
 
-    
-    
 
+    var div_botoes = $(new_row.find('.div_botoes'));
+    
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);
 
@@ -116,6 +149,15 @@ function add_row(table_body, item)
         show_dialog(FORMULARIO.EXCLUIR, id);
         
     });
+
+    // se for um totalizador
+    if (typeof totalizador != 'undefined' && totalizador) {
+        if (!div_botoes.hasClass('hidden')) {
+            div_botoes.addClass('hidden');
+        }
+        field_status.addClass('hidden');
+        new_row.addClass('bg-info');
+    }
 
     new_row.appendTo(table_body);
 }
