@@ -1,11 +1,6 @@
-function listar_filter_client()
+function listar_filter_client(selected)
 {
     var cbo_filter_client = $('#cbo_filter_client');
-
-    cbo_filter_client.unbind('change');
-    cbo_filter_client.change(function() {
-        listar();
-    });
 
     cbo_filter_client.find("option").remove();
 
@@ -19,6 +14,17 @@ function listar_filter_client()
             };
 
             cbo_filter_client.select2();
+
+            if(selected != -1){
+                cbo_filter_client.val(selected).trigger('change');
+            }
+
+            cbo_filter_client.unbind('change');
+            cbo_filter_client.change(function() {
+                listar();
+            });
+
+            listar();
         }
     }).fail(ajaxError);
 }
@@ -147,18 +153,26 @@ function add_row(table_body, item)
 
 funcs_on_load.push(function() {
 
-    listar_filter_client();
-    
-    var agora = new Date();
-    var mes = ("0" + (agora.getMonth() + 1)).slice(-2);
-    var ano = agora.getFullYear();
-
-    
+    var parametros = <?php echo json_encode($data); ?>;
     var edt_year = $('#edt_year');
     var cbo_month_filter = $('#cbo_month_filter');
-      
-    edt_year.val(ano);
-    cbo_month_filter.val(mes);
-    
-    listar();
+
+    if(!parametros.ano && !parametros.mes){
+
+        var agora = new Date();
+        var mes = ("0" + (agora.getMonth() + 1)).slice(-2);
+        var ano = agora.getFullYear();
+
+        edt_year.val(ano);
+        cbo_month_filter.val(mes);
+        listar_filter_client();
+        listar();
+
+    }
+    else{
+
+        edt_year.val(parametros.ano);
+        cbo_month_filter.val(parametros.mes);
+        listar_filter_client(parametros.client_id);  
+    }
 });

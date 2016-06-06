@@ -7,8 +7,29 @@ class Invoice_Controller extends \Sys\Controller
 {
 
     function list_action($params)
-    {
-        $this->RenderView('masterpage', array('invoice/list'));
+    {   
+
+        $ano = null;
+        $mes = null;
+        $client_id = null;
+
+        if(isset($_SESSION[SPRE.'ic_ano_filtro'])){  
+            $ano =  $_SESSION[SPRE.'ic_ano_filtro'];
+        }
+        
+        if(isset($_SESSION[SPRE.'ic_mes_filtro'])){ 
+            $mes = $_SESSION[SPRE.'ic_mes_filtro'];
+        }
+        
+        if(isset($_SESSION[SPRE.'ic_client_id'])){
+            $client_id = $_SESSION[SPRE.'ic_client_id'];
+        }
+        
+        $parametro["ano"] = $ano;
+        $parametro["mes"] = $mes;
+        $parametro["client_id"] = $client_id;
+
+        $this->RenderView('masterpage', array('invoice/list'), $parametro);
     }
 
     function list_json($params)
@@ -16,10 +37,17 @@ class Invoice_Controller extends \Sys\Controller
         $client_id = -1;
         if (isset($params[0])) {
             $client_id = (int)$params[0];
+           
         }
-
+      //  print_r($client_id);
         $ano = $this->ReadGet('ano');
         $mes = $this->ReadGet('mes');
+
+
+        $_SESSION[SPRE.'ic_ano_filtro'] = $ano;  
+        $_SESSION[SPRE.'ic_mes_filtro'] = $mes;
+        $_SESSION[SPRE.'ic_client_id'] = $client_id;
+        
 
         $client_id = ($client_id > 0 ? $client_id : null);
         $ano = ($ano > 0 ? $ano : null);
