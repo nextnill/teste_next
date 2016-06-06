@@ -716,7 +716,7 @@ class LotTransport_Model extends \Sys\Model {
         return array('validation' => $validation);
     }
     
-    function get_list($excluido=false, $client_id=null, $limit = -1)
+    function get_list($excluido=false, $client_id=null, $limit = -1, $ano, $mes)
     {
         $sql = 'SELECT
                     lot_transport.id,
@@ -746,12 +746,25 @@ class LotTransport_Model extends \Sys\Model {
             $params[] = $client_id;
         }
 
-        $sql .= 'ORDER BY lot_transport.date_record DESC, lot_transport.id DESC ';
+        if ($ano){
+
+            $sql .= ' AND Year(lot_transport.date_record) = ? ';
+            $params[] = $ano;
+        }
+
+        if ($mes){
+
+            $sql .= ' AND Month(lot_transport.date_record) = ? ';
+            $params[] = $mes;
+        }
+
+        $sql .= ' ORDER BY lot_transport.date_record DESC, lot_transport.id DESC ';
         
         if($limit > -1){
           
             $sql .= " LIMIT ". $limit ." , 50 ";
         }
+      //  print_r($params);exit();
 
         $query = DB::query($sql, $params);
         

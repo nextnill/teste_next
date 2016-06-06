@@ -7,7 +7,27 @@ class LotTransport_Controller extends \Sys\Controller
 
     function list_action($params)
     {
-        $this->RenderView('masterpage', array('lot_transport/list', 'lot_transport/dismember', 'lot_transport/dismember_confirm'));
+        $ano = null;
+        $mes = null;
+        $client_id = null;
+
+        if(isset($_SESSION[SPRE.'lo_ano_filtro'])){  
+            $ano =  $_SESSION[SPRE.'lo_ano_filtro'];
+        }
+        
+        if(isset($_SESSION[SPRE.'lo_mes_filtro'])){ 
+            $mes = $_SESSION[SPRE.'lo_mes_filtro'];
+        }
+        
+        if(isset($_SESSION[SPRE.'lo_client_id'])){
+            $client_id = $_SESSION[SPRE.'lo_client_id'];
+        }
+        
+        $parametro["ano"] = $ano;
+        $parametro["mes"] = $mes;
+        $parametro["client_id"] = $client_id;
+
+        $this->RenderView('masterpage', array('lot_transport/list', 'lot_transport/dismember', 'lot_transport/dismember_confirm'), $parametro);
     }
 
     function list_json($params)
@@ -22,11 +42,23 @@ class LotTransport_Controller extends \Sys\Controller
             $limit = $params[1];
         }
 
-       
+        $ano = 0;
+        if (isset($params[2])) {
+            $ano = $params[2];
+        }
+        $mes = 0;
+        if (isset($params[3])) {
+            $mes = $params[3];
+        }
+        
+        $_SESSION[SPRE.'lo_ano_filtro'] = $ano;  
+        $_SESSION[SPRE.'lo_mes_filtro'] = $mes;
+        $_SESSION[SPRE.'lo_client_id'] = $client_id;
+
         $client_id = ($client_id > 0 ? $client_id : null);
 
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-    	$list = $lot_transport_model->get_list(false, $client_id, $limit);
+    	$list = $lot_transport_model->get_list(false, $client_id, $limit, $ano, $mes);
     	
         $this->print_json($list);
     }

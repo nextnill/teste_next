@@ -1,15 +1,13 @@
+var btn_refresh = $('.btn_refresh');
+var cbo_filter_client = $('#cbo_filter_client');
+var edt_year = $('#edt_year');
+var cbo_month_filter = $('#cbo_month_filter');
+
 var limit_lots_list = 0;
 var lots_num_max_carregados = false;
 
-function listar_filter_client()
+function listar_filter_client(selected)
 {
-    var cbo_filter_client = $('#cbo_filter_client');
-
-    cbo_filter_client.unbind('change');
-    cbo_filter_client.change(function() {
-        listar();
-    });
-
     cbo_filter_client.find("option").remove();
 
     // pesquisa a listagem em json
@@ -22,6 +20,19 @@ function listar_filter_client()
             };
 
             cbo_filter_client.select2();
+
+            if(selected != -1){
+                
+                cbo_filter_client.val(selected).trigger('change');
+            }
+
+            cbo_filter_client.unbind('change');
+            cbo_filter_client.change(function() {
+                refresh_listar();
+            });
+
+            listar();
+
         }
     }).fail(ajaxError);
 }
@@ -35,22 +46,20 @@ function refresh_listar (){
 
 function listar()
 {
-    var cbo_filter_client = $('#cbo_filter_client');
-
-    // limpa trs, menos a primeira
-    //
-    //$('#tbl_listagem').find("tr:gt(1)").remove();
-
-    // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>lots/list/json/" + (cbo_filter_client.val() ? cbo_filter_client.val() : '') + '/' + limit_lots_list , function(response) {
-        if (response_validation(response)) {
-            var table_body = $('#tbl_listagem > tbody');
-            lots_num_max_carregados = (response && response.length < 50 ? true : false);
-            $.each(response, function(i, item) {
-                add_row(table_body, item);
-            });
-        }
-    }).fail(ajaxError);
+    if (edt_year.val() && edt_year.val().length == 4 && cbo_month_filter.val() && cbo_month_filter.val().length == 2) {
+        btn_refresh.attr('disabled', true);
+        // pesquisa a listagem em json
+        $.getJSON("<?= APP_URI ?>lots/list/json/" + (cbo_filter_client.val() ? cbo_filter_client.val() : '-1') + '/' + limit_lots_list + '/' + (edt_year.val() ? edt_year.val() : '') + '/' + (cbo_month_filter.val() ? cbo_month_filter.val() : ''), function(response) {
+            if (response_validation(response)) {
+                var table_body = $('#tbl_listagem > tbody');
+                lots_num_max_carregados = (response && response.length < 50 ? true : false);
+                $.each(response, function(i, item) {
+                    add_row(table_body, item);
+                });
+                btn_refresh.attr('disabled', false);
+            }
+        }).fail(ajaxError);
+    }
 }
 
 function add_row(table_body, item)
@@ -119,7 +128,7 @@ function add_row(table_body, item)
                 success: function (response) {
                     setTimeout(function() { 
                         if (response_validation(response)) {
-                            listar();
+                            refresh_listar();
                         }
                     }, 800);
                 }
@@ -160,13 +169,11 @@ function add_row(table_body, item)
                 success: function (response) {
                     setTimeout(function() {
                         if (response_validation(response)) {
-                            listar();
+                            refresh_listar();
                         }
                     }, 800);
                 }
             });
-
-            listar();
         };
 
         alert_modal('Lot', 'Delete Lot #' + id + '?', 'Delete', delete_action, true);
@@ -213,13 +220,37 @@ function btn_lt_new_click() {
 $('.btn_lt_new').click(btn_lt_new_click);
 
 funcs_on_load.push(function() {
-    limit_lots_list = 0;
-    lots_num_max_carregados = false;
-    $('#tbl_listagem').find("tr:gt(1)").remove();
-    listar();
-    listar_filter_client();
-    
+    var parametros = <?php echo json_encode($data); ?>;
+
+    if(!parametros.ano && !parametros.mes && !parametros.client_id){
+        var agora = new Date();
+        var mes = ("0" + (agora.getMonth() + 1)).slice(-2);
+        var ano = agora.getFullYear();
+
+        edt_year.val(ano);
+        cbo_month_filter.val(mes);
+        listar_filter_client();
+    }
+    else{
+        edt_year.val(parametros.ano);
+        cbo_month_filter.val(parametros.mes);
+        listar_filter_client(parametros.client_id);
+    } 
 });
+
+edt_year.unbind('change');
+edt_year.change(
+    $.debounce(1000, function() {
+        refresh_listar();
+    })
+);
+
+cbo_month_filter.unbind('change');
+cbo_month_filter.change(
+    $.debounce(1000, function() {
+        refresh_listar();
+    })
+);
 
 $(window).scroll(function(){
 

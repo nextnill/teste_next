@@ -7,17 +7,50 @@
 <div>
 
     <nav class="navbar" role="navigation" style="margin: 0px; padding: 0px;">
-        <button type="button" class="btn btn-primary btn_lt_new">
-            <span class="glyphicon glyphicon-plus-sign"></span> New
-        </button>
-        <button type="button" class="btn btn-default" onclick="javascript:refresh_listar()">
-            <span class="glyphicon glyphicon-refresh"></span>
-        </button>
+        <div class="row">
+            <div class="col-md-2" style="padding-top: 25px;">
+                <button type="button" class="btn btn-primary btn_lt_new">
+                    <span class="glyphicon glyphicon-plus-sign"></span> New
+                </button>
+                <button type="button" class="btn_refresh btn btn-default" onclick="javascript:refresh_listar()" disabled="disabled">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+            </div>
+            
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <input type="text" class="form-control" placeholder="Year" maxlength="4" id="edt_year">
+                </div>
+            </div>
 
-        <div class="pull-right">
-            <label for="cbo_filter_client">Filter lots of client</label>
-            <select id="cbo_filter_client" class="form-control select2 select2-input">
-            </select>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="hidden-sm hidden-xs">&nbsp;</label>
+                    <select id="cbo_month_filter" class="form-control select2 select2-input">  
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">Octuber</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="cbo_filter_client">Filter lots of client</label>
+                    <select id="cbo_filter_client" class="form-control select2 select2-input">
+                    </select>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -27,12 +60,12 @@
             <thead>
                 <tr>
                     <!--th>#</th-->
-                    <th>Lot Number</th>
+                    <th width="150px">Lot Number</th>
                     <th>Client</th>
                     <th>Date</th>
                     <th>Status</th>
                     <th>Blocks</th>
-                    <th>&nbsp;</th>
+                    <th width="250px">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
