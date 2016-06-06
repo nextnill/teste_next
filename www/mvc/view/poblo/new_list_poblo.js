@@ -13,15 +13,76 @@ var quarry_name = null;
 var inspection_name = null;
 var poblo_status = null;
 var reserved_client_code = [];
-var colors_sobra_background = new Array();
-var client_color = null;
+var client_color = [];
+
+var colors_sobra_background = [
+    { background: '#FFE082', texto: '#000'},
+    { background: '#EF9A9A', texto: '#000'},
+    { background: '#81D4FA', texto: '#000'},
+    { background: '#FFAB91', texto: '#000'},
+    { background: '#E6EE9C', texto: '#000'},
+    { background: '#BCAAA4', texto: '#000'},
+    
+    { background: '#795548', texto: '#fff'},
+    { background: '#FFB300', texto: '#000'},
+    { background: '#E53935', texto: '#fff'},
+    { background: '#039BE5', texto: '#fff'},
+    { background: '#F4511E', texto: '#fff'},
+    { background: '#C0CA33', texto: '#000'},
+    { background: '#6D4C41', texto: '#fff'},
+
+    { background: '#FFD54F', texto: '#000'},
+    { background: '#E57373', texto: '#000'},
+    { background: '#4FC3F7', texto: '#000'},
+    { background: '#FF8A65', texto: '#000'},
+    { background: '#DCE775', texto: '#000'},
+    { background: '#A1887F', texto: '#fff'},
+    
+    { background: '#FFCA28', texto: '#000'},
+    { background: '#EF5350', texto: '#fff'},
+    { background: '#29B6F6', texto: '#000'},
+    { background: '#FF7043', texto: '#000'},
+    { background: '#D4E157', texto: '#000'},
+    { background: '#8D6E63', texto: '#fff'},
+    
+    { background: '#FFECB3', texto: '#000'},
+    { background: '#FFCDD2', texto: '#000'},
+    { background: '#B3E5FC', texto: '#000'},
+    { background: '#FFCCBC', texto: '#000'},
+    { background: '#F0F4C3', texto: '#000'},
+    { background: '#D7CCC8', texto: '#000'},
+
+    { background: '#FFC107', texto: '#000'},
+    { background: '#F44336', texto: '#fff'},
+    { background: '#03A9F4', texto: '#000'},
+    { background: '#FF5722', texto: '#fff'},
+    { background: '#CDDC39', texto: '#000'},
+    
+    { background: '#FFA000', texto: '#000'},
+    { background: '#D32F2F', texto: '#fff'},
+    { background: '#0288D1', texto: '#fff'},
+    { background: '#E64A19', texto: '#fff'},
+    { background: '#AFB42B', texto: '#000'},
+    { background: '#5D4037', texto: '#fff'},
+    { background: '#FF8F00', texto: '#000'},
+    { background: '#C62828', texto: '#fff'},
+    { background: '#0277BD', texto: '#fff'},
+    { background: '#D84315', texto: '#fff'},
+    { background: '#9E9D24', texto: '#000'},
+    { background: '#4E342E', texto: '#fff'},
+    { background: '#FF6F00', texto: '#000'},
+    { background: '#B71C1C', texto: '#fff'},
+    { background: '#01579B', texto: '#fff'},
+    { background: '#BF360C', texto: '#fff'},
+    { background: '#827717', texto: '#fff'},
+    { background: '#3E2723', texto: '#fff'}
+];
 
 
 // on load window
 funcs_on_load.push(function() {
 
     render_poblo_status();
-    init_list();
     get_data_poblo();
     listar_filter_client();
 
@@ -481,7 +542,6 @@ function render_sobracolumay(new_template_sobracolumay, item, color){
     var table_body_sobracolumay = $(table_sobracolumay).find('tbody');
     var template_row = table_body_sobracolumay.find("tr:first");
     
-    
     var new_row = template_row.clone();
     new_row.removeAttr("template-row");
     new_row.css("display", '');
@@ -570,9 +630,11 @@ function render_sobracolumay(new_template_sobracolumay, item, color){
         btn_edit.addClass('hidden');
     }
 
+    color_sobra(new_row, item);
+
     new_row.appendTo(table_body_sobracolumay);
 
-    color_sobra();
+    //color_sobra();
 
 }
 
@@ -1007,87 +1069,38 @@ function render_cores() {
 }
 
 //load block color according to the selected client
+function color_sobra(row, item) {
+    if (item.reserved_client_id) {
+        
+        // verifico se já existe o item.client_color no client_color
+        var existe = false;
+        var cor = null;
 
-function init_list() {
-
-    colors_sobra_background[0] = {cor: '#FFFF00', texto: '#000000'}
-    colors_sobra_background[1] = {cor: '#00FF00', texto: '#000000'}        
-    colors_sobra_background[2] = {cor: '#00AFFF', texto: '#000000'}          
-    colors_sobra_background[3] = {cor: '#FFA500', texto: '#000000'}          
-    colors_sobra_background[4] = {cor: '#FF0000', texto: '#FFFFFF'}                    
-    colors_sobra_background[5] = {cor: '#FFFFE0', texto: '#000000'}
-    colors_sobra_background[6] = {cor: '#90EE90', texto: '#000000'}
-    colors_sobra_background[7] = {cor: '#00BFFF', texto: '#000000'}
-    colors_sobra_background[8] = {cor: '#FFA07A', texto: '#000000'}
-    colors_sobra_background[9] = {cor: '#01DFD7', texto: '#000000'} 
-    colors_sobra_background[10] = {cor: '#FE9A2E', texto: '#000000'}      
-    colors_sobra_background[11] = {cor: '#0404B4', texto: '#FFFFFF'}
-    colors_sobra_background[12] = {cor: '#A9BCF5', texto: '#000000'}         
-    colors_sobra_background[13] = {cor: '#F5A9A9', texto: '#000000'}          
-    colors_sobra_background[14] = {cor: '#F7BE81', texto: '#000000'}         
-    colors_sobra_background[15] = {cor: '#B18904', texto: '#000000'}         
-    colors_sobra_background[16] = {cor: '#CEF6F5', texto: '#000000'}  
-    colors_sobra_background[17] = {cor: '#0B4C5F', texto: '#FFFFFF'} 
-    colors_sobra_background[18] = {cor: '#CECEF6', texto: '#000000'}      
-    colors_sobra_background[19] = {cor: '#D0F5A9', texto: '#000000'}                  
-    colors_sobra_background[20] = {cor: '#2E2EFE', texto: '#FFFFFF'}
-    colors_sobra_background[21] = {cor: '#FA5882', texto: '#000000'}        
-    colors_sobra_background[22] = {cor: '#F5ECCE', texto: '#000000'}          
-    colors_sobra_background[23] = {cor: '#FF4000', texto: '#FFFFFF'}
-    colors_sobra_background[24] = {cor: '#9ACD32', texto: '#000000'}   
-}
-
-function associate_sobra(){
-
-    Array.prototype.associate = function (keys) {
-          var result = [];
-          var keys2 = [];
-
-          keys.forEach(function (el, i) {
-            if(typeof keys[i] != 'undefined' && keys[i])
-                keys2.push(el);
-          });
-
-          this.forEach(function (el, i) {
-            if(typeof keys2[i] != 'undefined')
-               
-                result.push({client_id:keys2[i], cor:el});
-          });
-
-          return result;
-        };
-  client_color = colors_sobra_background.associate(reserved_client_code); 
-}
-
-function color_sobra(){
-    
-    associate_sobra();
-
-    var linhas = $('.color_client'); 
-    var blocos = new Array();
-
-    linhas.each(function(indice, linha) {
-
-        var client_id = $(linha).attr('client_id');
-        var cor_final = null;
-        var cor_texto = null;
-
-        $(client_color).each(function(indice_cliente, cor_cliente) {
-
-            if(cor_cliente.client_id == client_id){
-                cor_final = cor_cliente.cor.cor;
-                cor_texto = cor_cliente.cor.texto;
+        (function f(){
+            for (var i = 0; i < client_color.length; i++) {
+            if (parseInt(client_color[i].client_id, 10) == parseInt(item.reserved_client_id, 10)) {
+                existe = true;
+                cor = client_color[i];
+                return;
             }
-        });
+        }})();
 
-        if(client_id > 0){
-            $(linha).css('background-color', cor_final);
-            $(linha).css('color', cor_texto);
-        }else{
-            $(linha).css('background-color', '');
-            $(linha).css('color', ''); 
-        } 
+        // se não existe, adiciono nova cor do cliente em client_color
+        if (!existe) {
+            var new_client_color = {
+                client_id: parseInt(item.reserved_client_id, 10),
+                background: colors_sobra_background[client_color.length+1].background,
+                texto: colors_sobra_background[client_color.length+1].texto
+            };
+            client_color.push(new_client_color);
+            cor = new_client_color;
+        }
 
-    });  
-
+        // pinto a cor da linha com a cor atribuida para o cliente
+        row.find("[template-field='block_number']")
+            .css('background-color', cor.background)
+            .css('color', cor.texto)
+            .find('a')
+                .css('color', cor.texto);
+    }
 }
