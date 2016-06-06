@@ -715,7 +715,7 @@ class Block_Model extends \Sys\Model {
         }
     }
     
-    function get_list($block_number=null, $limit=0)
+    function get_list($block_number=null, $limit=0, $client_id = 0)
     {
         $sql = "SELECT
                     block.id,
@@ -769,9 +769,15 @@ class Block_Model extends \Sys\Model {
             $params[':block_number'] = '%' . $block_number . '%';
         }
 
+        if($client_id > 0){
+            $sql .= " AND (reserved_client.id =".$client_id. " OR sold_client.id =" .$client_id.")";
+        }
+
         $sql .= "
                 ORDER BY
                     block.block_number ";
+        
+
         if($limit > -1){
             $sql .= " LIMIT ". $limit .", 50";
         }

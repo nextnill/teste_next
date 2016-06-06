@@ -26,7 +26,12 @@ function listar_blocks(block_number)
     $('#tbl_listagem').find("tr:gt(1)").remove();
 
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>block/list/json/" + block_number + '/'+ '-1', function(response) {
+    $.getJSON("<?= APP_URI ?>block/list/json/",
+        {
+            block_number: block_number,
+            client_id: -1
+        },
+        function(response) {
         if (response_validation(response)) {
             blocks = response;
             render_list();

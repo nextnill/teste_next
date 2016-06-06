@@ -1,59 +1,57 @@
 var cbo_filter_client = $('#cbo_filter_client');
 var edt_filter_block = $('.edt_filter_block');
+var btn_listar = $('.btn_listar');
+var tbl_listagem = $('#tbl_listagem');
+var parametro = <?php echo json_encode($data); ?>;
+
+// controle do scroll infinito
 var limit_blocks_list = 0;
 var num_max_carregados = false;
-var block_number_param = null;
 
 // on load window
 funcs_on_load.push(function() {
     limit_blocks_list = 0;
-    block_number_param = null;
-    $('#tbl_listagem').find("tr:gt(1)").remove();
+    tbl_listagem.find("tr:gt(1)").remove();
     num_max_carregados = false;
-    listar();
-    list_filter_client();
 
+    if (typeof parametro.parametros != 'undefined' && typeof parametro.parametros.block_number != 'undefined') {
+        edt_filter_block.val(parametro.parametros.block_number);
+    }
+
+    list_filter_client();
 });
 
 
-function listar(block_number)
+function listar()
 {
     // limpa trs, menos a primeira
     //
-
+    if (limit_blocks_list == 0) {
+        tbl_listagem.find("tr:gt(1)").remove();
+    }
+    btn_listar.attr('disabled', true);
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>block/list/json/"+block_number+'/'+limit_blocks_list, function(response) {
+    $.getJSON("<?= APP_URI ?>block/list/json/",
+        {
+            block_number: edt_filter_block.val(),
+            limit: limit_blocks_list,
+            client_id: cbo_filter_client.val()
+        },
+        function(response) {
 
-        num_max_carregados = (response &&  response.length < 50 ? true : false);
+            num_max_carregados = (response &&  response.length < 50 ? true : false);
 
-        if (response_validation(response)) {
+            if (response_validation(response)) {
 
-            
-            var table_body = $('#tbl_listagem > tbody');
+                var table_body = $('#tbl_listagem > tbody');
 
-
-            if(edt_filter_block.val() != ''){
-                response = response.filter(function(item, i){
-                    if(item.block_number.indexOf(edt_filter_block.val()) > -1){
-                        return item;
-                    }
+                $.each(response, function(i, item) {
+                    add_row(table_body, item);
                 });
             }
-
-            if(cbo_filter_client.val() > 0){
-                response = response.filter(function(item, i){
-                    if(item.reserved_client_id == cbo_filter_client.val() || item.sold_client_id == cbo_filter_client.val()){
-                        return item;
-                    }
-
-                });
-            }
-
-            $.each(response, function(i, item) {
-                add_row(table_body, item);
-            });
+            btn_listar.attr('disabled', false);
         }
-    }).fail(ajaxError);
+    ).fail(ajaxError);
 }
 
 function list_filter_client()
@@ -61,10 +59,18 @@ function list_filter_client()
 
     cbo_filter_client.unbind('change');
     cbo_filter_client.change(function() {
+        limit_blocks_list = 0;
+        num_max_carregados = false;
         listar();
     });
 
     cbo_filter_client.find("option").remove();
+
+    var selecionado = null;
+
+    if (typeof parametro.parametros != 'undefined' && typeof parametro.parametros.client_id != 'undefined') {
+        selecionado = parseInt(parametro.parametros.client_id, 10);
+    }
 
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>client/list_head_office/json/", function(response) {
@@ -75,7 +81,12 @@ function list_filter_client()
                 add_option(cbo_filter_client, item.id, item.code + ' - ' + item.name);
             };
 
+            if (selecionado) {
+                cbo_filter_client.val(selecionado);
+            }
+
             cbo_filter_client.select2();
+            listar();
         }
     }).fail(ajaxError);
 }
@@ -131,15 +142,14 @@ function add_row(table_body, item)
 }
 
 
-edt_filter_block.keyup(function(){
-    $('#tbl_listagem').find("tr:gt(1)").remove();
-    block_number_param = (this.value != '' ? this.value : null);
-    if(block_number_param == null){
+edt_filter_block.keyup(
+    $.debounce(1000, function() {
         num_max_carregados = false;
         limit_blocks_list = 0;
-    }
-    listar(block_number_param);
-});
+        
+        listar();
+    })
+);
 
 $(window).scroll(function(){
 
@@ -151,7 +161,7 @@ $(window).scroll(function(){
         if(!num_max_carregados){
 
             limit_blocks_list = limit_blocks_list + 50;
-            listar(block_number_param);
+            listar();
         }
     } 
 

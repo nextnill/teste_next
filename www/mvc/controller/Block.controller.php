@@ -10,6 +10,23 @@ class Block_Controller extends \Sys\Controller
         $permissions = $user['permissions'];
         $data['permissions'] = $permissions;
 
+
+        $block_number = null;
+        $client_id = null;
+
+        if(isset($_SESSION[SPRE.'bl_block_number'])){  
+            $block_number =  $_SESSION[SPRE.'bl_block_number'];
+        }
+
+         if(isset($_SESSION[SPRE.'bl_client_id'])){
+            $client_id = $_SESSION[SPRE.'bl_client_id'];
+        }
+
+        $parametros["client_id"] = $client_id;    
+        $parametros["block_number"] = $block_number;
+
+        $data['parametros'] = $parametros;
+
         $this->RenderView('masterpage', array(
             'block/list',
             'block/detail',
@@ -23,10 +40,14 @@ class Block_Controller extends \Sys\Controller
     {
     	$block_model = $this->LoadModel('Block', true);
 
-        $block_number = isset($params[0]) ? (string)$params[0] : null;
-        $limit = isset($params[1]) ? $params[1] : 0;
+        $block_number = isset($_GET['block_number']) ? (string)$_GET['block_number'] : null;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 0;
+        $client_id = isset($_GET['client_id']) ? (int)$_GET['client_id'] : 0;            
 
-    	$list = $block_model->get_list($block_number, $limit);
+        $_SESSION[SPRE.'bl_block_number'] = $block_number;
+        $_SESSION[SPRE.'bl_client_id'] = $client_id;
+        
+    	$list = $block_model->get_list($block_number, $limit, $client_id);
     	
         $this->print_json($list);
     }
