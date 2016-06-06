@@ -30,6 +30,14 @@ class Session
         $_SESSION[SPRE.'po_mes_filtro'] = null;
         $_SESSION[SPRE.'po_block_type'] = null;
         $_SESSION[SPRE.'po_quarry_id'] = null;
+        $_SESSION[SPRE.'ic_ano_filtro'] = null;
+        $_SESSION[SPRE.'ic_mes_filtro'] = null;
+        $_SESSION[SPRE.'ic_client_id'] = null;
+        $_SESSION[SPRE.'bl_block_number'] = null;
+        $_SESSION[SPRE.'bl_client_id'] = null;
+        $_SESSION[SPRE.'lo_ano_filtro'] = null;
+        $_SESSION[SPRE.'lo_mes_filtro'] = null;
+        $_SESSION[SPRE.'lo_client_id'] = null;
     }
 
     function refresh($user)
