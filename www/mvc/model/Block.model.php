@@ -575,7 +575,7 @@ class Block_Model extends \Sys\Model {
                     WHERE id = ? ';
 
             $params[] = $client_block_number;
-            $params[] = ($reserved_client_id > 0);
+            $params[] = (int)($reserved_client_id > 0);
             $params[] = ($reserved_client_id > 0 ? $reserved_client_id : null);
             $params[] = $block_id;
 
