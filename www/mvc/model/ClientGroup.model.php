@@ -174,12 +174,70 @@ class ClientGroup_Model extends \Sys\Model {
         }
     }
     
-    function get_list($excluido=false)
+    function get_list($excluido=false, $just_id =false)
     {
         $excluido = ($excluido === true ? 'S' : 'N');
+
+        $sql = "SELECT
+                    client_group.id,
+                    client_group.excluido,
+                    client_group.name
+                FROM client_group
+                WHERE
+                ";
         
-        $query = DB::query('SELECT id, name, excluido FROM client_group WHERE excluido = ? ORDER BY name', array($excluido));
+       // $query = DB::query('SELECT id, name, excluido FROM client_group WHERE excluido = ? ORDER BY name', array($excluido));
         
+        if ($just_active_quarries === true) {
+            $sql .= "   client_group.id IN ({$this->active_client_groups}) AND ";
+        }
+
+        $sql .="    client_group.excluido = 'N'
+                ORDER BY client_group.name ";
+        
+        $query = DB::query($sql);
+
+        // just_id = true
+        if (isset($just_id) && ($just_id == true)) {
+            $new_query = array();
+            foreach ($query as $key => $row) {
+                $new_query[] = $row['id'];
+            }
+            $query = $new_query;
+        }
+
+        return $query;
+    }
+
+    function get_by_user($user_id, $just_id)
+    {
+        $sql = 'SELECT
+                    user_client_group.user_id,
+                    user_client_group.client_group_id,
+                    client_group.name AS client_group_name
+                FROM
+                    user_client_group
+                INNER JOIN
+                    client_group ON (client_group.id = user_client_group.client_group_id)
+                WHERE
+                    user_client_group.user_id = ?
+                    AND client_group.excluido = "N"
+                ORDER BY
+                    client_group.name
+                ';
+
+        $query = DB::query($sql, array($user_id));
+
+        // just_id = true
+        if (isset($just_id) && ($just_id == true)) {
+            $new_query = array();
+            foreach ($query as $key => $row) {
+                $new_query[] = $row['client_group_id'];
+            }
+            $query = $new_query;
+        }
+        
+
         return $query;
     }
     

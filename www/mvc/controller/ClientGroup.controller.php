@@ -55,4 +55,17 @@ class ClientGroup_Controller extends \Sys\Controller
         $this->print_json($client_group_model);
     }
 
+    function get_by_user($params)
+    {
+        $client_group_model = $this->LoadModel('ClientGroup', true);
+
+        $user = $this->ActiveUser();
+
+        $usuario_id = $user['id'];
+
+        $list = $client_group_model->get_by_user($usuario_id, false);
+        
+        $this->print_json($list);
+    }
+
 }

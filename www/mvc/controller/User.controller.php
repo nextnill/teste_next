@@ -63,12 +63,14 @@ class User_Controller extends \Sys\Controller
         $id = (int)$this->ReadPost('id');
         $quarries = $this->ReadPost('quarries');
         $permissions = $this->ReadPost('permissions');
+        $client_groups = $this->ReadPost('client_group');
 
         $user_model = $this->LoadModel('User', true);
         $ret = $user_model->populate($id);
         if ($id > 0) {
             $user_model->quarries = $quarries;
             $user_model->permissions = $permissions;
+            $user_model->client_groups = $client_groups;
             $ret = $user_model->save();
         }
         

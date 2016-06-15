@@ -19,6 +19,7 @@ class User_Model extends \Sys\Model {
     public $admin;
 
     public $quarries;
+    public $client_groups;
     public $permissions;
     
     function __construct()
@@ -100,6 +101,7 @@ class User_Model extends \Sys\Model {
                 $this->id = DB::last_insert_id();
 
                 $this->save_quarries();
+               // $this->save_client_groups();
                 $this->save_permissions();
                 
                 return $this;
@@ -147,6 +149,7 @@ class User_Model extends \Sys\Model {
                 ));
 
                 $this->save_quarries();
+                $this->save_client_groups();
                 $this->save_permissions();
 
                 return $this;
@@ -227,20 +230,33 @@ class User_Model extends \Sys\Model {
             $this->blocked = (bool)$row_query['blocked'];
             $this->admin = (bool)$row_query['admin'];
 
-            // carrega as pedreiras
             $quarry_model = $this->LoadModel('Quarry', true);
+            $client_group_model = $this->LoadModel('ClientGroup', true);
+
+            // carrego as pedreiras, grupos de clientes e permissões do usuário logado
+            
+            // se for administrador
             if ($this->admin === true) {
+                // carrega todas as pedreiras
                 $this->quarries = $quarry_model->get_list(false, true);
-                $this->permissions = array();
+                // carrega todos os grupos de cliente
+                $this->client_groups = $client_group_model->get_list(false, true);
                 // carrega todas as permissões
+                $this->permissions = array();
                 foreach (\Sys\Permissions::$permissions as $key => $permission) {
                     $this->permissions[] = $key;
                 }
             }
+            // se não for administrador
             else {
+                // carrega as pedreiras do usuário logado
                 $this->quarries = $quarry_model->get_by_user($this->id, true);
+                // carrega os grupos de cliente do usuário logado
+                $this->client_groups = $client_group_model->get_by_user($this->id, true);
+                // carrega as permissões do usuário logado
                 $this->permissions = $this->get_permissions_by_user($this->id);
             }
+
         }
     }
 
@@ -287,6 +303,13 @@ class User_Model extends \Sys\Model {
         $this->insert_quarries();
     }
 
+    // client_groups
+    private function save_client_groups()
+    {
+        $this->delete_client_groups();
+        $this->insert_client_groups();
+    }
+
     private function delete_quarries()
     {
         $sql = 'DELETE FROM user_quarry WHERE user_id = ?';
@@ -302,6 +325,26 @@ class User_Model extends \Sys\Model {
                 $sql = 'INSERT INTO user_quarry (user_id, quarry_id) VALUES (?, ?)';
                 $params[0] = $this->id;
                 $params[1] = is_array($item) ? $item['quarry_id'] : $item;
+                $query = DB::exec($sql, $params);
+            }
+        }
+    }
+
+    private function delete_client_groups()
+    {
+        $sql = 'DELETE FROM user_client_group WHERE user_id = ?';
+        $params[0] = $this->id;
+        $query = DB::exec($sql, $params);
+    }
+
+    private function insert_client_groups()
+    {
+        if (!is_null($this->client_groups) && !empty($this->client_groups))
+        {
+            foreach ($this->client_groups as $key => $item) {
+                $sql = 'INSERT INTO user_client_group (user_id, client_group_id) VALUES (?, ?)';
+                $params[0] = $this->id;
+                $params[1] = is_array($item) ? $item['client_group_id'] : $item;
                 $query = DB::exec($sql, $params);
             }
         }

@@ -70,6 +70,7 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/client_group/detail/json/' => array('ClientGroup', 'detail_json'),
                 '/client_group/save/' => array('ClientGroup', 'save_json', 'client'),
                 '/client_group/delete/' => array('ClientGroup', 'delete_json', 'client'),
+                '/client_group/get_by_user/' => array('ClientGroup', 'get_by_user', 'client'),
 
                 '/terminal/list/' => array('Terminal', 'list_action', 'terminal'),
                 '/terminal/list/json/' => array('Terminal', 'list_json'),
@@ -238,6 +239,9 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/truck_carrier/delete/' => array('Truck_Carrier', 'delete_json', 'truck_carrier'),
                 '/truck_carrier/list_truck/json/' => array('Truck_Carrier', 'list_truck_json', 'truck_carrier'),
                 '/truck_carrier/save_one_truck/' => array('Truck_Carrier', 'save_one_truck', 'truck_carrier'),
+
+                '/price/list/' => array('Price', 'list_action', 'price'),
+                '/price/get_cabecalho/' => array('Price', 'get_cabecalho', 'price'),
             );
         }
     }
