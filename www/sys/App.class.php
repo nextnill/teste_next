@@ -1,7 +1,7 @@
 <?php
 namespace Sys;
 
-define('VERSION', '16.06.09.01'); //yy.mm.dd.[nn] - nn = número da versão do dia inicio
+define('VERSION', '16.06.17.01'); //yy.mm.dd.[nn] - nn = número da versão do dia inicio
 
 class App
 {
