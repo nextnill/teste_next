@@ -241,7 +241,12 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/truck_carrier/save_one_truck/' => array('Truck_Carrier', 'save_one_truck', 'truck_carrier'),
 
                 '/price/list/' => array('Price', 'list_action', 'price'),
-                '/price/get_cabecalho/' => array('Price', 'get_cabecalho', 'price'),
+                '/price/list/json/' => array('Price', 'list_json', 'price'),
+                '/price/history/json/' => array('Price', 'history_json', 'price'),
+                '/price/detail/' => array('Price', 'detail_json', 'price'),
+                '/price/save/' => array('Price', 'save_json', 'price'),
+                '/price/delete/' => array('Price', 'delete_json', 'price'),
+
             );
         }
     }

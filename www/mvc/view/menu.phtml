@@ -224,6 +224,13 @@ if (LOGGED):
     </li>
     <!-- /LOGISTICA -->
 
+     <!-- Price -->
+    <li class="dropdown <?= (!verifica_acesso('price', $permissions) ? 'disabled' : '') ?>">
+        <a href="<?= APP_URI ?>price/list/">
+            Price
+        </a>
+    </li>
+
     <!-- POBLO -->
     <li class="dropdown <?= (!verifica_acesso('poblo', $permissions) ? 'disabled' : '') ?>">
         <a href="<?= APP_URI ?>poblo/new_list_poblo/">

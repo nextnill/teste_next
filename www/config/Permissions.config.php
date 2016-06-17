@@ -28,6 +28,7 @@ class Permissions_Config extends \Sys\Permissions
             'travel_route' => array('name' => 'Travel Route', 'description' => ''),
             'lot' => array('name' => 'Lot Transport', 'description' => ''),
             'travel_plan' => array('name' => 'Travel Plan', 'description' => ''),
+            'price' => array('name' => 'Price', 'description' => ''),
             'pointing_travel' => array('name' => 'Pointing Travel', 'description' => ''),
             'poblo' => array('name' => 'Poblo', 'description' => 'Position of the blocks'),
             'poblo_status' => array('name' => 'Poblo Status', 'description' => ''),

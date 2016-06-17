@@ -369,7 +369,7 @@ function render_inspection(new_template_inspection, item, color){
 
     field_compensation_measure.unbind('click');
     field_compensation_measure.click(function(){
-        console.log(item);
+        //console.log(item);
     });*/
 
     var btn_obs = $(new_row.find("[template-button='obs']"));

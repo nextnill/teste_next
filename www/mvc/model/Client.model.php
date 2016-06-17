@@ -538,6 +538,25 @@ class Client_Model extends \Sys\Model {
         return $query;
     }
 
+    function get_list_by_client_group($client_group_id)
+    {
+        $sql = 'SELECT
+                    client.id,
+                    client.name,
+                    client.code
+                FROM client
+                INNER JOIN client_group_client ON (client_group_client.client_id = client.id AND client_group_id = ?)
+                WHERE client.excluido = ? 
+                ORDER BY client.code ';
+
+        $params[] = (int)$client_group_id;
+        $params[] = 'N';
+
+        $query = DB::query($sql, $params);
+
+        return $query;
+    }
+
     function get_list_head_office()
     {
         $query = DB::query('SELECT id, name, code FROM client WHERE excluido = ? AND head_office_id IS NULL ORDER BY name', array('N'));

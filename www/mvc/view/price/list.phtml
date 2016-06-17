@@ -1,0 +1,43 @@
+<div class="pull-right">
+    <div class="form-group" style="min-width: 200px; margin-top: 3px;">
+        <select id="cbo_client_groups" class="form-control select2 select2-input">
+        </select>
+    </div>
+</div>
+
+<ol class="breadcrumb">
+    <li class="active">Price</li>
+</ol>
+
+<style>
+    .table_client_group_list tbody > tr > td,
+    .table_client_products tbody > tr > td,
+    #table_client_history tbody > tr > td {
+        padding-left: 3px !important;
+        padding-right: 3px !important;
+        padding-top: 1px !important;
+        padding-bottom: 1px !important;
+    }
+</style>
+
+<!-- LISTAGEM -->
+<div id="div_price_list">
+
+    <div id="price_list" class="small">
+    </div>
+
+    <!-- template-painel-client-group -->
+    <div class="panel panel-default small panel_client_group" style="display: none;" template-panel-client-group>
+        <div class="panel-heading" style="padding: 5px" >
+            <h3 class="panel-title" style="font-weight: bold" template-name>{Client Group}</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover table_client_group_list">
+            </table>
+        </div>
+    </div>
+    <!-- /template-painel-client-group -->
+    
+</div>
+
+<!-- /LISTAGEM -->

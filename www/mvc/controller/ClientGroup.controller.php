@@ -57,13 +57,25 @@ class ClientGroup_Controller extends \Sys\Controller
 
     function get_by_user($params)
     {
+        $list = array();
+
         $client_group_model = $this->LoadModel('ClientGroup', true);
-
         $user = $this->ActiveUser();
-
-        $usuario_id = $user['id'];
-
-        $list = $client_group_model->get_by_user($usuario_id, false);
+        
+        if ($user['admin'] === true) {
+            $list = $client_group_model->get_list(false, false);
+        }
+        else {
+            $list = $client_group_model->get_by_user((int)$user['id'], false);
+            // ajusto o nome dos atributos
+            foreach ($list as $list_key => $client_group) {
+                $list[$list_key]['id'] = $list[$list_key]['client_group_id'];
+                $list[$list_key]['name'] = $list[$list_key]['client_group_name'];
+                unset($list[$list_key]['client_group_id']);
+                unset($list[$list_key]['client_group_name']);
+                unset($list[$list_key]['user_id']);
+            }
+        }
         
         $this->print_json($list);
     }
