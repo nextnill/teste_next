@@ -12,7 +12,7 @@ function show_dialog(tipo, id)
 {
     limpa_formulario(tipo);
 
-    edt_cost_tonne.maskMoney({thousands:'.', decimal:',', allowZero:true, suffix: '', precision:2});
+    edt_cost_tonne.maskMoney({thousands:'', decimal:'.', allowZero:true, suffix: '', precision:2});
 
     switch(tipo)
     {
