@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `user_client_group` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci
+COLLATE = utf8_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS `price_list` (
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `price_list` (
   `excluido` CHAR(1) NULL DEFAULT 'N',
   `client_id` INT(11) NULL DEFAULT NULL,
   `date_ref` DATE NULL DEFAULT NULL,
-  `comments` VARCHAR(100) NULL DEFAULT NULL,
+  `comments` VARCHAR(2000) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_price_list_client_idx` (`client_id` ASC),
   CONSTRAINT `fk_price_list_client`
@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `price_list` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS `price_list_quality` (
   `price_list_id` INT(11) NOT NULL,
@@ -58,4 +59,5 @@ CREATE TABLE IF NOT EXISTS `price_list_quality` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;

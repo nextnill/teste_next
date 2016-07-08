@@ -111,19 +111,32 @@ function list_client_groups_tables() {
         th_client.css('vertical-align', 'bottom');
         th_client.appendTo(tr_1);
 
+        var price_arr_qualities_length = price_arr_qualities.length;
+        // ignorar qualidades MI e LD quando o client group não for Brasil
+        // obs: cliente optou por chumbar no fonte esta regra
+        if (client_group.id != 5) { // 5 = BRASIL
+            price_arr_qualities_length = price_arr_qualities.length - 2;
+        }
+
         // percorro os produtos
         $.each(price_arr_products, function(product_index, product) {
             var th_product = $("<th>");
             th_product.text(product.name);
             th_product.data('product_id', product.id);
             th_product.attr('width', '200px');
-            th_product.attr('colspan', price_arr_qualities.length);
+            th_product.attr('colspan', price_arr_qualities_length);
             th_product.addClass('text-center');
             th_product.css('vertical-align', 'bottom');
             th_product.appendTo(tr_1);
 
-            // percorro as qualidades
             $.each(price_arr_qualities, function(quality_index, quality) {
+                // ignorar qualidades MI e LD quando o client group não for Brasil
+                // obs: cliente optou por chumbar no fonte esta regra
+                // percorro as qualidades
+                if (client_group.id != 5 && (quality.id == 4 || quality.id == 5)) { // 5 = BRASIL
+                    return;
+                }
+
                 var th_quality = $("<th>");
                 th_quality.text(quality.name);
                 th_quality.data('product_id', product.id);
@@ -201,6 +214,13 @@ function list_price(panel, table_body) {
                            
                             // percorro as qualidades
                             $.each(price_arr_qualities, function(quality_index, quality) {
+                                // ignorar qualidades MI e LD quando o client group não for Brasil
+                                // obs: cliente optou por chumbar no fonte esta regra
+                                // percorro as qualidades
+                                if (client_group_id != 5 && (quality.id == 4 || quality.id == 5)) { // 5 = BRASIL
+                                    return;
+                                }
+
                                 var td_quality_price = $("<td>");
                                 td_quality_price.data('product_id', product.id);
                                 td_quality_price.data('quality_id', quality.id);
@@ -214,6 +234,11 @@ function list_price(panel, table_body) {
                         var td_comments = $("<td>");
                         td_comments.addClass('text-left');
                         td_comments.css('vertical-align', 'middle');
+
+                        var div_comments = $("<div>");
+                        div_comments.addClass('hideextra');
+                        div_comments.appendTo(td_comments);
+
                         td_comments.appendTo(tr_client_price);
 
                         var td_date_ref = $("<td>");
@@ -249,7 +274,7 @@ function list_price(panel, table_body) {
                         td_buttons.appendTo(tr_client_price);
 
                         // imprime os dados da linha
-                        paint_row_values(client, arr_td_quality_price, td_comments, td_date_ref, btn_new, btn_edit, btn_history);
+                        paint_row_values(client, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history);
 
                         // adiciona a linha na tabela
                         tr_client_price.appendTo(table_body);
@@ -263,7 +288,7 @@ function list_price(panel, table_body) {
 }
 
 // imprime os dados da linha
-function paint_row_values(client, arr_td_quality_price, td_comments, td_date_ref, btn_new, btn_edit, btn_history) {
+function paint_row_values(client, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history) {
     //console.log(client);
     
     // percorro os produtos
@@ -290,10 +315,13 @@ function paint_row_values(client, arr_td_quality_price, td_comments, td_date_ref
     });
 
     td_date_ref.text(typeof client.date_ref != 'undefined' ? client.date_ref.format_date() : '-');
-    td_comments.text(typeof client.comments != 'undefined' ? client.comments : '-');
+    div_comments.text(typeof client.comments != 'undefined' ? client.comments : '-');
+    if (typeof client.comments != 'undefined') {
+        div_comments.tooltip({title: nl2br('<p align="left">' + client.comments + '</p>'), placement: 'left', html: true});
+    }
 
     var onsave = function(client_price_saved) {
-        paint_row_values(client_price_saved, arr_td_quality_price, td_comments, td_date_ref, btn_new, btn_edit, btn_history);
+        paint_row_values(client_price_saved, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history);
     }
 
     btn_new.unbind('click');

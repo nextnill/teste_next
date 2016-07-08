@@ -2,6 +2,13 @@ body {
   padding-top: 60px;
 }
 
+.hideextra {
+  width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #loading, #saved_successfully, #error {
   float: right;
   right: 10px;
