@@ -1,13 +1,15 @@
 var modal_price_history_title = $('#modal_price_history_title');
 var table_client_history = $('#table_client_history');
 var modal_price_history_client = null;
+var modal_price_history_client_group_id = null;
 var modal_price_history_onsave = null;
 
 // abrir modal de histórico de preços
-function show_history_dialog(client, onsave)
+function show_history_dialog(client, client_group_id, onsave)
 {
     modal_price_history_title.text('Price History - ' + client.code + ' - ' + client.name)
     modal_price_history_client = client;
+    modal_price_history_client_group_id = client_group_id;
     modal_price_history_onsave = onsave;
 
     list_client_history();
@@ -25,19 +27,33 @@ function list_client_history()
     var tr_1 = $("<tr>");
     var tr_2 = $("<tr>");
 
+    var price_arr_qualities_length = price_arr_qualities.length;
+    // ignorar qualidades MI e LD quando o client group não for Brasil
+    // obs: cliente optou por chumbar no fonte esta regra
+    if (modal_price_history_client_group_id != 5) { // 5 = BRASIL
+        price_arr_qualities_length = price_arr_qualities.length - 2;
+    }
+
     // percorro os produtos
     $.each(price_arr_products, function(product_index, product) {
         var th_product = $("<th>");
         th_product.text(product.name);
         th_product.data('product_id', product.id);
         th_product.attr('width', '200px');
-        th_product.attr('colspan', price_arr_qualities.length);
+        th_product.attr('colspan', price_arr_qualities_length);
         th_product.addClass('text-center');
         th_product.css('vertical-align', 'bottom');
         th_product.appendTo(tr_1);
 
         // percorro as qualidades
         $.each(price_arr_qualities, function(quality_index, quality) {
+            // ignorar qualidades MI e LD quando o client group não for Brasil
+            // obs: cliente optou por chumbar no fonte esta regra
+            // percorro as qualidades
+            if (modal_price_history_client_group_id != 5 && (quality.id == 4 || quality.id == 5)) { // 5 = BRASIL
+                return;
+            }
+
             var th_quality = $("<th>");
             th_quality.text(quality.name);
             th_quality.data('product_id', product.id);
@@ -88,9 +104,9 @@ function list_client_history()
             var onsave = function() {
                 list_client_history_price(table_body);
                 modal_price_history_onsave(modal_price_history_client);
-                show_history_dialog(modal_price_history_client, modal_price_history_onsave);
+                show_history_dialog(modal_price_history_client, modal_price_history_client_group_id, modal_price_history_onsave);
             }
-            show_dialog(FORMULARIO.NOVO, modal_price_history_client, onsave);
+            show_dialog(FORMULARIO.NOVO, modal_price_history_client, modal_price_history_client_group_id, onsave);
         }
     );
 
@@ -125,6 +141,13 @@ function list_client_history_price(table_body) {
                        
                         // percorro as qualidades
                         $.each(price_arr_qualities, function(quality_index, quality) {
+                            // ignorar qualidades MI e LD quando o client group não for Brasil
+                            // obs: cliente optou por chumbar no fonte esta regra
+                            // percorro as qualidades
+                            if (modal_price_history_client_group_id != 5 && (quality.id == 4 || quality.id == 5)) { // 5 = BRASIL
+                                return;
+                            }
+
                             var price_value = 0;
 
                             // verifico se existe price definido para o produto + qualidade
@@ -151,7 +174,17 @@ function list_client_history_price(table_body) {
                     var td_comments = $("<td>");
                     td_comments.addClass('text-left');
                     td_comments.css('vertical-align', 'middle');
-                    td_comments.text(typeof client.comments != 'undefined' ? client.comments : '-');
+
+                    var div_comments = $("<div>");
+                    div_comments.addClass('hideextra');
+                    div_comments.css('width', '80px');
+                    div_comments.text(typeof client.comments != 'undefined' ? client.comments : '-');
+                    if (typeof client.comments != 'undefined') {
+                        div_comments.tooltip('destroy');
+                        div_comments.tooltip({title: nl2br('<p align="left">' + client.comments + '</p>'), placement: 'bottom', html: true});
+                    }
+
+                    div_comments.appendTo(td_comments);
                     td_comments.appendTo(tr_client_price);
 
                     var td_date_ref = $("<td>");
@@ -175,13 +208,13 @@ function list_client_history_price(table_body) {
                         closeModal('modal_price_history');
                         // ao salvar, abro novamente a listagem de históricos do cliente
                         var onsave = function(client_price_saved) {
-                            show_history_dialog(modal_price_history_client, modal_price_history_onsave);
+                            show_history_dialog(modal_price_history_client, modal_price_history_client_group_id, modal_price_history_onsave);
                             modal_price_history_onsave(client_price_saved);
                         }
                         var oncancel = function() {
-                            show_history_dialog(modal_price_history_client, modal_price_history_onsave);
+                            show_history_dialog(modal_price_history_client, modal_price_history_client_group_id, modal_price_history_onsave);
                         }
-                        show_dialog(FORMULARIO.EXCLUIR, client, onsave, oncancel);
+                        show_dialog(FORMULARIO.EXCLUIR, client, modal_price_history_client_group_id, onsave, oncancel);
                     });
 
                     var btn_edit = $('<button>');
@@ -193,13 +226,13 @@ function list_client_history_price(table_body) {
                         closeModal('modal_price_history');
                         // ao salvar, abro novamente a listagem de históricos do cliente
                         var onsave = function(client_price_saved) {
-                            show_history_dialog(modal_price_history_client, modal_price_history_onsave);
+                            show_history_dialog(modal_price_history_client, modal_price_history_client_group_id, modal_price_history_onsave);
                             modal_price_history_onsave(client_price_saved);
                         }
                         var oncancel = function() {
-                            show_history_dialog(modal_price_history_client, modal_price_history_onsave);
+                            show_history_dialog(modal_price_history_client, modal_price_history_client_group_id, modal_price_history_onsave);
                         }
-                        show_dialog(FORMULARIO.EDITAR, client, onsave, oncancel);
+                        show_dialog(FORMULARIO.EDITAR, client, modal_price_history_client_group_id, onsave, oncancel);
                     });
 
                     btn_group.appendTo(td_buttons);

@@ -237,6 +237,7 @@ function list_price(panel, table_body) {
 
                         var div_comments = $("<div>");
                         div_comments.addClass('hideextra');
+                        div_comments.css('width', '80px');
                         div_comments.appendTo(td_comments);
 
                         td_comments.appendTo(tr_client_price);
@@ -274,7 +275,7 @@ function list_price(panel, table_body) {
                         td_buttons.appendTo(tr_client_price);
 
                         // imprime os dados da linha
-                        paint_row_values(client, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history);
+                        paint_row_values(client, client_group_id, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history);
 
                         // adiciona a linha na tabela
                         tr_client_price.appendTo(table_body);
@@ -288,16 +289,23 @@ function list_price(panel, table_body) {
 }
 
 // imprime os dados da linha
-function paint_row_values(client, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history) {
+function paint_row_values(client, client_group_id, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history) {
     //console.log(client);
     
     // percorro os produtos
     arr_td_quality_price_index = 0;
     $.each(price_arr_products, function(product_index, product) {
-       
+        
         // percorro as qualidades
         $.each(price_arr_qualities, function(quality_index, quality) {
             
+            // ignorar qualidades MI e LD quando o client group não for Brasil
+            // obs: cliente optou por chumbar no fonte esta regra
+            // percorro as qualidades
+            if (client_group_id != 5 && (quality.id == 4 || quality.id == 5)) { // 5 = BRASIL
+                return;
+            }
+
             var price_value = 0;
 
             // verifico se existe price definido para o produto + qualidade
@@ -309,6 +317,7 @@ function paint_row_values(client, arr_td_quality_price, div_comments, td_date_re
                     }
                 });
             }
+
             $(arr_td_quality_price[arr_td_quality_price_index]).text(price_value == 0 ? '-' : price_value);
             arr_td_quality_price_index++;
         });
@@ -317,17 +326,18 @@ function paint_row_values(client, arr_td_quality_price, div_comments, td_date_re
     td_date_ref.text(typeof client.date_ref != 'undefined' ? client.date_ref.format_date() : '-');
     div_comments.text(typeof client.comments != 'undefined' ? client.comments : '-');
     if (typeof client.comments != 'undefined') {
-        div_comments.tooltip({title: nl2br('<p align="left">' + client.comments + '</p>'), placement: 'left', html: true});
+        div_comments.tooltip('destroy');
+        div_comments.tooltip({title: nl2br('<p align="left">' + client.comments + '</p>'), placement: 'bottom', html: true});
     }
 
     var onsave = function(client_price_saved) {
-        paint_row_values(client_price_saved, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history);
+        paint_row_values(client_price_saved, client_group_id, arr_td_quality_price, div_comments, td_date_ref, btn_new, btn_edit, btn_history);
     }
 
     btn_new.unbind('click');
     btn_new.click(
         function () {
-            show_dialog(FORMULARIO.NOVO, client, onsave);
+            show_dialog(FORMULARIO.NOVO, client, client_group_id, onsave);
         }
     );
 
@@ -338,13 +348,13 @@ function paint_row_values(client, arr_td_quality_price, div_comments, td_date_re
         btn_edit.removeAttr('disabled');
         btn_edit.click(
             function () {
-                show_dialog(FORMULARIO.EDITAR, client, onsave);
+                show_dialog(FORMULARIO.EDITAR, client, client_group_id, onsave);
             }
         );
         btn_history.removeAttr('disabled');
         btn_history.click(
             function () {
-                show_history_dialog(client, onsave);
+                show_history_dialog(client, client_group_id, onsave);
             }
         );
     }

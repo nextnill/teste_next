@@ -9,13 +9,15 @@ var btn_cancel = $('#btn_cancel');
 
 var modal_price_tipo = null;
 var modal_price_client = null;
+var modal_price_client_group_id = null;
 var detail_price_list_id = null;
 var price_onsave = null;
 var price_oncancel = null;
 
-function show_dialog(tipo, client, onsave, oncancel)
+function show_dialog(tipo, client, client_group_id, onsave, oncancel)
 {
     modal_price_client = client;
+    modal_price_client_group_id = client_group_id;
     modal_price_tipo = tipo;
 
     detail_price_list_id = null;
@@ -102,7 +104,13 @@ function carrega_produtos(client)
 
         // percorro as qualidades
         $(price_arr_qualities).each(function(quality_index, quality) {
-            
+            // ignorar qualidades MI e LD quando o client group não for Brasil
+            // obs: cliente optou por chumbar no fonte esta regra
+            // percorro as qualidades
+            if (modal_price_client_group_id != 5 && (quality.id == 4 || quality.id == 5)) { // 5 = BRASIL
+                return;
+            }
+
             var tr_quality = $("<tr>");
 
             var td_name = $("<td>");
