@@ -42,16 +42,88 @@ class Poblo_Controller extends \Sys\Controller
 
         // listar os blocos
         $lot_transport_model = $this->LoadModel('LotTransport', true);
-    	
 
-        $list['lot'] = $lot_transport_model->get_lot($client_id);
+        // sobracolumay
         $list['sobracolumay'] = $lot_transport_model->get_sobracolumay($client_id);
-        $list['inspection_certificate'] = $lot_transport_model->get_inspection_certificate($client_id);
+    	
+        // lot
+        $lot_transport_list = $lot_transport_model->get_lot($client_id);
+        $lot_transport_return = array();
+        $ultimo_lot_transport_id = 0;
+        $lot_transport_index = -1;
+        foreach ($lot_transport_list as $lot_transport_key => $lot_transport) {
+            if ($ultimo_lot_transport_id != $lot_transport['lot_transport_id']) {
+                
+                array_push($lot_transport_return, array(
+                    'lot_transport_id'=>$lot_transport['lot_transport_id'],
+                    'lot_number'=>$lot_transport['lot_number'],
+                    'down_packing_list'=>$lot_transport['down_packing_list'],
+                    'down_commercial_invoice'=>$lot_transport['down_commercial_invoice'],
+                    'down_draft'=>$lot_transport['down_draft'],
+                    'draft_file'=>$lot_transport['draft_file'],
+                    'client_id'=>$lot_transport['client_id'],
+                    'client_code'=>$lot_transport['client_code'],
+                    'client_name'=>$lot_transport['client_name'],
+                    'vessel'=>$lot_transport['vessel'],
+                    'packing_list_dated'=>$lot_transport['packing_list_dated'],
+                    'shipped_to'=>$lot_transport['shipped_to'],
+                    'lot_transport_status'=>$lot_transport['lot_transport_status'],
+                    'down_packing_list'=>$lot_transport['down_packing_list'],
+                    'draft_file'=>$lot_transport['draft_file'],
+                    'down_draft'=>$lot_transport['down_draft'],
+                    'down_commercial_invoice'=>$lot_transport['down_commercial_invoice'],
+                    'blocks'=>array()
+                ));
+                
+                $ultimo_lot_transport_id = $lot_transport['lot_transport_id'];
+            }
+            unset($lot_transport['inspection_name']);
+            unset($lot_transport['lot_number']);
+            unset($lot_transport['down_packing_list']);
+            unset($lot_transport['down_commercial_invoice']);
+            unset($lot_transport['down_draft']);
+            unset($lot_transport['draft_file']);
+            unset($lot_transport['sold_client_code']);
+            unset($lot_transport['sold_client_name']);
+            unset($lot_transport['client_id']);
+            unset($lot_transport['client_code']);
+            unset($lot_transport['client_name']);
+            array_push($lot_transport_return[sizeof($lot_transport_return)-1]['blocks'], $lot_transport);
+        }
+        $list['lot'] = $lot_transport_return;
+
+        // inspection_certificate
+        $inspection_certificate_list = $lot_transport_model->get_inspection_certificate($client_id);
+        $inspection_certificate_return = array();
+        $ultimo_invoice_id = 0;
+        $inspection_certificate_index = -1;
+        foreach ($inspection_certificate_list as $inspection_certificate_key => $inspection_certificate) {
+            if ($ultimo_invoice_id != $inspection_certificate['invoice_id']) {
+                
+                array_push($inspection_certificate_return, array(
+                    'invoice_id'=>$inspection_certificate['invoice_id'],
+                    'inspection_name' => $inspection_certificate['inspection_name'],
+                    'sold_client_id' => $inspection_certificate['sold_client_id'],
+                    'sold_client_code' => $inspection_certificate['sold_client_code'],
+                    'sold_client_name' => $inspection_certificate['sold_client_name'],
+                    'blocks'=>array()
+                ));
+                
+                $ultimo_invoice_id = $inspection_certificate['invoice_id'];
+            }
+            unset($inspection_certificate['inspection_name']);
+            unset($inspection_certificate['sold_client_id']);
+            unset($inspection_certificate['sold_client_code']);
+            unset($inspection_certificate['sold_client_name']);
+            //unset($inspection_certificate['invoice_date_record']);
+            array_push($inspection_certificate_return[sizeof($inspection_certificate_return)-1]['blocks'], $inspection_certificate);
+        }
+        $list['inspection_certificate'] = $inspection_certificate_return;
     	
         $this->print_json($list);
     }
 
-       function list_poblo_json($params)
+    function list_poblo_json($params)
     {
         // listar os blocos
         $lot_transport_model = $this->LoadModel('LotTransport', true);

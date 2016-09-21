@@ -6,7 +6,14 @@ var template_sobracolumay = $('[template-sobracolumay]');
 var template_inspection = $('[template-inspection]');
 var divisoria = $('<hr>').css('border-color', '#8b0305').css('border-width', '8px');
 
+var div_load_progress = $('#div_load_progress');
+var load_progress = $('#load_progress');
+var div_load_progress_parado = $('#div_load_progress_parado');
+var btn_parar = $('#btn_parar');
+var btn_recarregar = $('#btn_recarregar');
+
 //vars
+var response_poblo = null;
 var cbo_filter_client = $('#cbo_filter_client');
 var lot_number = null;
 var quarry_name = null;
@@ -14,6 +21,11 @@ var inspection_name = null;
 var poblo_status = null;
 var reserved_client_code = [];
 var client_color = [];
+
+var load_progress_total = 0;
+var load_progress_etapa = 0;
+var load_progress_etapa_percentual = 0;
+var load_parar = false;
 
 var colors_sobra_background = [
     { background: '#FFE082', texto: '#000'},
@@ -89,6 +101,18 @@ funcs_on_load.push(function() {
 
 });
 
+btn_parar.click(function() {
+    load_parar = true;
+    div_load_progress.hide();
+    div_load_progress_parado.show();
+    btn_recarregar.prop('disabled', false);
+});
+
+btn_recarregar.click(function() {
+    btn_recarregar.prop('disabled', true);
+    get_data_poblo();
+});
+
 function listar_filter_client()
 {
 
@@ -114,296 +138,25 @@ function listar_filter_client()
 }
 
 
-function get_data_poblo (){
+function get_data_poblo() {
+    $.getJSON("<?= APP_URI ?>poblo/json/"  + (cbo_filter_client.val() ? cbo_filter_client.val() : '') , function(response) {
+        response_poblo = response;
+        load_parar = false;
+        load_progress_total = response_poblo.sobracolumay.length + response_poblo.inspection_certificate.length + response_poblo.lot.length;
+        load_progress_etapa = 0;
+        load_progress_etapa_percentual = 0;
+        load_progress.width('0%').text('0%');
 
-    $.getJSON("<?= APP_URI ?>poblo/json/"  + (cbo_filter_client.val() ? cbo_filter_client.val() : '') , function(response_poblo) {
+        div_load_progress_parado.hide();
+        div_load_progress.show();
 
         div_list.html('');
         
-        divisoria.clone().appendTo(div_list);
         load_sobracolumay(response_poblo.sobracolumay);
-        divisoria.clone().appendTo(div_list);
-        load_inspection_certificate(response_poblo.inspection_certificate);
-        divisoria.clone().appendTo(div_list);
-        load_lot(response_poblo.lot);
-       
-
     });
 }
 
-function load_inspection_certificate (inspection)
-{
-    var new_template_inspection = '';
-    var quality_name = '';
-
-    var count_blocks_final = 0;
-    var count_quality_blocks_final = 0;
-    var sum_volume_final = 0;
-    var sum_weight_final = 0;
-
-    var count_blocks = 0;
-    var count_quality_blocks = 0;
-    var sum_volume = 0;
-    var sum_weight = 0;
-
-    $(inspection).each(function(i , item){
-
-        if(i == 0){
-
-            new_template_inspection = template_inspection.clone();
-            render_header_inspection(new_template_inspection, item);
-            inspection_name = item.inspection_name;
-            quality_name = item.quality_name;
-
-        }
-
-        if(item.inspection_name != inspection_name){
-
-            var block_count = {
-                invoice_sale_net_vol: sum_volume,
-                tot_weight: sum_weight,
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
-            }
-
-            render_inspection(new_template_inspection, block_count, 'bg-warning');
-
-            var block_count_final = {
-                invoice_sale_net_vol: sum_volume_final,
-                tot_weight: sum_weight_final,
-                block_number: count_blocks_final,
-                quality_name: count_quality_blocks_final,
-            }
-
-            render_inspection(new_template_inspection, block_count_final, 'bg-info');
-
-            count_blocks_final = 0;
-            count_quality_blocks_final = 0;
-            sum_volume_final = 0;
-            sum_weight_final = 0;
-
-            count_blocks = 0;
-            count_quality_blocks = 0;
-            sum_volume = 0;
-            sum_weight = 0;
-
-            new_template_inspection = template_inspection.clone();
-            render_header_inspection(new_template_inspection, item);
-            inspection_name = item.inspection_name;
-            quality_name = item.quality_name;
-        }
-
-        if(quality_name != item.quality_name){
-
-            var block_count = {
-                invoice_sale_net_vol: sum_volume,
-                tot_weight: sum_weight,
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
-            }
-
-            render_inspection(new_template_inspection, block_count, 'bg-warning');
-
-            quality_name = item.quality_name;
-            count_blocks = 0;
-            count_quality_blocks = 0;
-            sum_volume = 0;
-            sum_weight = 0;
-
-        } 
-           
-        
-
-        count_blocks_final++;
-        count_quality_blocks_final++;
-        sum_volume_final += parseFloat(item.invoice_sale_net_vol) || 0;
-        sum_weight_final += parseFloat(item.tot_weight) || 0;
-
-        count_blocks++;
-        count_quality_blocks++;
-        sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
-        sum_weight += parseFloat(item.tot_weight) || 0;
-
-        render_inspection(new_template_inspection, item);
-
-        if(i >= inspection.length -1){
-
-            var block_count = {
-                invoice_sale_net_vol: sum_volume,
-                tot_weight: sum_weight,
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
-            }
-
-            render_inspection(new_template_inspection, block_count, 'bg-warning');
-
-
-            var block_count_final = {
-                invoice_sale_net_vol: sum_volume_final,
-                tot_weight: sum_weight_final,
-                block_number: count_blocks_final,
-                quality_name: count_quality_blocks_final,
-            }
-
-            render_inspection(new_template_inspection, block_count_final, 'bg-info');
-
-        }
-
-        new_template_inspection.appendTo(div_list);
-
-    });
-}
-
-function render_header_inspection(new_template_inspection, item){
-
-    // limpa trs, menos a primeira
-    new_template_inspection.find('tbody').find("tr:gt(1)").remove();
-    new_template_inspection.removeAttr("template-inspection");
-    new_template_inspection.css("display", '');
-
-    var field_inspection = new_template_inspection.find('[template-field="inspection"]');
-    field_inspection.text(item.inspection_name);
-    
-}
-
-function render_inspection(new_template_inspection, item, color){
-    var table_inspection = $(new_template_inspection.find('.table_block_list'));
-    var table_body_inspection = $(table_inspection).find('tbody');
-    var template_row = table_body_inspection.find("tr:first");
-    
-    
-    var new_row = template_row.clone();
-    new_row.removeAttr("template-row");
-    new_row.css("display", '');
-    new_row.attr('block_id', item.block_id)
-    if(color){
-        new_row.addClass(color);
-    }
-
-    var field_date = new_row.find('[template-field="date"]');
-    field_date.text(item.invoice_date_record ? item.invoice_date_record.format_date() : '');
-
-    var field_block_number = $(new_row.find("[template-field='block_number']"));
-    field_block_number.text(item.block_number);
-    field_block_number.addClass('color_client');
-    field_block_number.attr('client_id', item.reserved_client_id);
-
-    field_block_number.unbind('click');
-    field_block_number.click(function() {
-
-        show_dialog(FORMULARIO.VISUALIZAR, new_row.attr('block_id'));
-    });
-
-
-    var field_block_number_row = $(new_row.find("[template-row='block_number']"));
-    field_block_number_row.css('background-color', item.cor_poblo_status);
-    field_block_number_row.css('color', item.cor_poblo_status_texto);
-
-    var block_number_selected = item.invoice_item_id;
-    var ul_listagem = $(new_row.find('.ul_listagem'));
-    var li = ul_listagem.find('[template-row]');
-    var add_li = function(poblo_status_item){
-
-        var new_li = li.clone();
-        new_li.removeAttr('template-row');
-        new_li.css("display", '');
-
-        var field_poblo_status_option = $(new_li.find("[template-field='poblo_status_option']"));
-        field_poblo_status_option.text(poblo_status_item.status);
-
-        new_li.unbind('click');
-        new_li.click(function(){
-       
-            field_block_number_row.css('background-color', poblo_status_item.cor);
-
-            $.ajax({
-                error: ajaxError,
-                type: "POST",
-                url: "<?= APP_URI ?>poblo_status/save_color/",
-                data: {
-                    invoice_item_id: block_number_selected,
-                    poblo_status_id: poblo_status_item.poblo_status_id
-                }
-            });
-        });
-
-        new_li.appendTo(ul_listagem);
-    }
-
-    $(poblo_status).each(function(j, poblo_status_item){
-        add_li(poblo_status_item);
-    });
-
-    var div_status = $(new_row.find(".div_status"));
-    if(color){
-
-        div_status.addClass('hidden');
-    }
-
-
-    var field_quality_name = $(new_row.find("[template-field='quality_name']"));
-    field_quality_name.text(item.quality_name || '');
-
-    var field_sale_net_c = $(new_row.find("[template-field='sale_net_c']"));
-    field_sale_net_c.text(item.net_c ? item.invoice_sale_net_c.format_number(2) : '');
-    
-    var field_sale_net_a = $(new_row.find("[template-field='sale_net_a']"));
-    field_sale_net_a.text(item.net_a ? item.invoice_sale_net_a.format_number(2) : '');
-
-    var field_sale_net_l = $(new_row.find("[template-field='sale_net_l']"));
-    field_sale_net_l.text(item.net_l ? item.invoice_sale_net_l.format_number(2) : '');
-
-    var field_sale_net_vol = $(new_row.find("[template-field='sale_net_vol']"));
-    field_sale_net_vol.text(item.invoice_sale_net_vol ? item.invoice_sale_net_vol.format_number(3) : '');
-
-    var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
-    field_tot_weight.text(item.tot_weight ? item.tot_weight.format_number(3) : '');
-
-    var field_client = $(new_row.find("[template-field='client']"));
-    field_client.text(item.sold_client_code ? item.sold_client_code : '');
-
-    var field_obs = $(new_row.find("[template-field='obs']"));
-    field_obs.text(item.obs_poblo ? item.obs_poblo : '');
-
-    /*var field_compensation_measure = $(new_row.find('[template-field="compensation_measure"]'));
-
-    field_compensation_measure.unbind('click');
-    field_compensation_measure.click(function(){
-        //console.log(item);
-    });*/
-
-    var btn_obs = $(new_row.find("[template-button='obs']"));
-    btn_obs.unbind('click');
-    btn_obs.click(function() {
-
-        var callback = function(obs){
-            field_obs.text(obs);
-        }
-
-        show_poblo_obs(item.block_id, item.block_number, callback);
-
-    });
-
-    var btn_edit = $(new_row.find("[template-button='btn_edit']"));
-    btn_edit.unbind('click');
-    btn_edit.click(function() {
-
-        
-        show_poblo_edit(item.block_id, item.invoice_item_id, null, item.invoice_item_nf, item.invoice_item_date_nf, item.invoice_item_price, null, 'insp');
-    });
-    
-    if(color){
-        btn_edit.addClass('hidden');
-        btn_obs.addClass('hidden');
-        //field_compensation_measure.addClass('hidden');
-    }
-
-    new_row.appendTo(table_body_inspection);
-
-}
-
-
-function load_sobracolumay (sobracolumay)
+function load_sobracolumay(sobracolumay)
 {
     var new_template_sobracolumay = '';
     var quality_name = '';
@@ -418,113 +171,132 @@ function load_sobracolumay (sobracolumay)
     var sum_volume = 0;
     var sum_weight = 0;
 
+    if (sobracolumay.length > 0) {
+        setTimeout(function() {
+            divisoria.clone().appendTo(div_list);
+        }, 2000);
+    }
+    else {
+        load_inspection_certificate();
+    }
+
     $(sobracolumay).each(function(i , item){
 
-        if(i == 0){
+        setTimeout(function() {
+            if (load_parar) return; // se o carregamento foi interrompido
 
-            new_template_sobracolumay = template_sobracolumay.clone();
-            render_header_sobracolumay(new_template_sobracolumay, item);
-            quarry_name = item.quarry_name;
-            quality_name = item.quality_name;
-        }
+            if(i == 0){
 
-        if(item.quarry_name != quarry_name){
-
-            var block_count_final = {
-                net_vol: sum_volume_final,
-                tot_weight: sum_weight_final,
-                block_number: count_blocks_final,
-                quality_name: count_quality_blocks_final,
+                new_template_sobracolumay = template_sobracolumay.clone();
+                render_header_sobracolumay(new_template_sobracolumay, item);
+                quarry_name = item.quarry_name;
+                quality_name = item.quality_name;
             }
 
-            var block_count = {
-                net_vol: sum_volume,
-                tot_weight: sum_weight,
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
+            if(item.quarry_name != quarry_name){
+
+                var block_count_final = {
+                    net_vol: sum_volume_final,
+                    tot_weight: sum_weight_final,
+                    block_number: count_blocks_final,
+                    quality_name: count_quality_blocks_final,
+                }
+
+                var block_count = {
+                    net_vol: sum_volume,
+                    tot_weight: sum_weight,
+                    block_number: count_blocks,
+                    quality_name: count_quality_blocks,
+                }
+
+                render_sobracolumay(new_template_sobracolumay, block_count, 'bg-warning');
+                render_sobracolumay(new_template_sobracolumay, block_count_final, 'bg-info');
+
+                count_blocks_final = 0;
+                count_quality_blocks_final = 0;
+                sum_volume_final = 0;
+                sum_weight_final = 0;
+
+                quality_name = item.quality_name;
+                count_blocks = 0;
+                count_quality_blocks = 0;
+                sum_volume = 0;
+                sum_weight = 0;
+
+
+                new_template_sobracolumay = template_sobracolumay.clone();
+                render_header_sobracolumay(new_template_sobracolumay, item);
+                quarry_name = item.quarry_name;
+                quality_name = item.quality_name;
             }
 
-            render_sobracolumay(new_template_sobracolumay, block_count, 'bg-warning');
-            render_sobracolumay(new_template_sobracolumay, block_count_final, 'bg-info');
+            if(quality_name != item.quality_name){
 
-            count_blocks_final = 0;
-            count_quality_blocks_final = 0;
-            sum_volume_final = 0;
-            sum_weight_final = 0;
+                var block_count = {
+                    net_vol: sum_volume,
+                    tot_weight: sum_weight,
+                    block_number: count_blocks,
+                    quality_name: count_quality_blocks,
+                }
 
-            quality_name = item.quality_name;
-            count_blocks = 0;
-            count_quality_blocks = 0;
-            sum_volume = 0;
-            sum_weight = 0;
+                render_sobracolumay(new_template_sobracolumay, block_count, 'bg-warning');
 
+                quality_name = item.quality_name;
+                count_blocks = 0;
+                count_quality_blocks = 0;
+                sum_volume = 0;
+                sum_weight = 0;
 
-            new_template_sobracolumay = template_sobracolumay.clone();
-            render_header_sobracolumay(new_template_sobracolumay, item);
-            quarry_name = item.quarry_name;
-            quality_name = item.quality_name;
-        }
-
-        if(quality_name != item.quality_name){
-
-            var block_count = {
-                net_vol: sum_volume,
-                tot_weight: sum_weight,
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
             }
 
-            render_sobracolumay(new_template_sobracolumay, block_count, 'bg-warning');
+            count_blocks_final++;
+            count_quality_blocks_final++;
+            sum_volume_final += parseFloat(item.net_vol) || 0;
+            sum_weight_final += parseFloat(item.tot_weight) || 0;
 
-            quality_name = item.quality_name;
-            count_blocks = 0;
-            count_quality_blocks = 0;
-            sum_volume = 0;
-            sum_weight = 0;
+            count_blocks++;
+            count_quality_blocks++;
+            sum_volume += parseFloat(item.net_vol) || 0;
+            sum_weight += parseFloat(item.tot_weight) || 0;
 
-        }
+            render_sobracolumay(new_template_sobracolumay, item);
 
-        count_blocks_final++;
-        count_quality_blocks_final++;
-        sum_volume_final += parseFloat(item.net_vol) || 0;
-        sum_weight_final += parseFloat(item.tot_weight) || 0;
+            if(i >= sobracolumay.length -1){
 
-        count_blocks++;
-        count_quality_blocks++;
-        sum_volume += parseFloat(item.net_vol) || 0;
-        sum_weight += parseFloat(item.tot_weight) || 0;
+                var block_count = {
+                    net_vol: sum_volume,
+                    tot_weight: sum_weight,
+                    block_number: count_blocks,
+                    quality_name: count_quality_blocks,
+                }
 
-        render_sobracolumay(new_template_sobracolumay, item);
+                render_sobracolumay(new_template_sobracolumay, block_count, 'bg-warning');
 
-        if(i >= sobracolumay.length -1){
 
-            var block_count = {
-                net_vol: sum_volume,
-                tot_weight: sum_weight,
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
+                var block_count_final = {
+                    net_vol: sum_volume_final,
+                    tot_weight: sum_weight_final,
+                    block_number: count_blocks_final,
+                    quality_name: count_quality_blocks_final,
+                }
+
+                render_sobracolumay(new_template_sobracolumay, block_count_final, 'bg-info');
+
             }
+            
+            div_list.append(new_template_sobracolumay);
+            //.appendTo(div_list);
 
-            render_sobracolumay(new_template_sobracolumay, block_count, 'bg-warning');
+            altera_load_progress();
 
-
-            var block_count_final = {
-                net_vol: sum_volume_final,
-                tot_weight: sum_weight_final,
-                block_number: count_blocks_final,
-                quality_name: count_quality_blocks_final,
+            if (i+1 == sobracolumay.length) {
+                load_inspection_certificate();
             }
-
-            render_sobracolumay(new_template_sobracolumay, block_count_final, 'bg-info');
-
-        }
-
-        new_template_sobracolumay.appendTo(div_list);
-
+        }, 0);
     });
 }
 
-function render_header_sobracolumay(new_template_sobracolumay, item){
+function render_header_sobracolumay(new_template_sobracolumay, item) {
 
     // limpa trs, menos a primeira
     new_template_sobracolumay.find('tbody').find("tr:gt(1)").remove();
@@ -536,7 +308,7 @@ function render_header_sobracolumay(new_template_sobracolumay, item){
     
 }
 
-function render_sobracolumay(new_template_sobracolumay, item, color){
+function render_sobracolumay(new_template_sobracolumay, item, color) {
 
     var table_sobracolumay = $(new_template_sobracolumay.find('.table_block_list'));
     var table_body_sobracolumay = $(table_sobracolumay).find('tbody');
@@ -638,137 +410,391 @@ function render_sobracolumay(new_template_sobracolumay, item, color){
 
 }
 
-function load_lot (lot){
+var load_inspection_certificate = function()
+{
+    var inspection = response_poblo.inspection_certificate;
 
-    var new_template_lot = '';
-    var quality_name = '';
+    if (inspection.length > 0) {
+        divisoria.clone().appendTo(div_list);
+    }
+    else {
+        load_lot();
+    }
 
-    var count_blocks = 0;
-    var sum_price = 0;
-    var sum_volume = 0;
-    var sum_weight = 0;
-    var count_quality_blocks = 0
-
-    var count_blocks_final = 0;
-    var sum_price_final = 0;
-    var sum_volume_final = 0;
-    var sum_weight_final = 0;
-    var count_quality_blocks_final = 0;
-
-    $(lot).each(function(i , item){
-
-        if(i == 0){
-
-            new_template_lot = template_lot.clone();
-            render_header_lot(new_template_lot, item);
-            lot_number = item.lot_number;
-            quality_name = item.quality_name;
-
-        }
-
-        if(item.lot_number != lot_number){
-
-            var block_count = {
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
-                invoice_sale_net_vol: sum_volume,
-                tot_weight: sum_weight,
-                invoice_item_price: sum_price,
-            }
-
-            var block_count_final = {
-                block_number: count_blocks_final,
-                quality_name: count_quality_blocks_final,
-                invoice_sale_net_vol: sum_volume_final,
-                tot_weight: sum_weight_final,
-                invoice_item_price: sum_price_final,
-            }
-
-            render_lot(new_template_lot, block_count, 'bg-warning');
-            render_lot(new_template_lot, block_count_final, 'bg-info');
+    this.load_thread_inspection_certificate = function(inspection_index)
+    {
+        setTimeout(function() {
+            if (load_parar) return; // se o carregamento foi interrompido
             
-            count_blocks = 0;
-            sum_price = 0;
-            sum_volume = 0;
-            sum_weight = 0;
-            count_quality_blocks = 0;
+            var inspection = response_poblo.inspection_certificate;
 
-            count_blocks_final = 0;
-            sum_price_final = 0;
-            sum_volume_final = 0;
-            sum_weight_final = 0;
-            count_quality_blocks_final = 0;
+            var new_template_inspection = '';
+            var quality_name = '';
 
-            new_template_lot = template_lot.clone();
-            render_header_lot(new_template_lot, item);
-            lot_number = item.lot_number;
-            quality_name = item.quality_name;
-        }
+            var count_blocks_final = 0;
+            var count_quality_blocks_final = 0;
+            var sum_volume_final = 0;
+            var sum_weight_final = 0;
 
-        if(item.quality_name != quality_name){
+            var count_blocks = 0;
+            var count_quality_blocks = 0;
+            var sum_volume = 0;
+            var sum_weight = 0;
+
+            new_template_inspection = template_inspection.clone();
+
+            render_header_inspection(new_template_inspection, inspection[inspection_index].inspection_name);
             
-            var block_count = {
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
-                invoice_sale_net_vol: sum_volume,
-                tot_weight: sum_weight,
-                invoice_item_price: sum_price,
+            quality_name = '';                
+
+            $(inspection[inspection_index].blocks).each(function(i , item){
+                if(i == 0){
+                    quality_name = item.quality_name;
+                }
+
+                if(quality_name != item.quality_name){
+
+                    var block_count = {
+                        invoice_sale_net_vol: sum_volume,
+                        tot_weight: sum_weight,
+                        block_number: count_blocks,
+                        quality_name: count_quality_blocks,
+                    }
+
+                    render_inspection(new_template_inspection, block_count, 'bg-warning');
+
+                    quality_name = item.quality_name;
+                    count_blocks = 0;
+                    count_quality_blocks = 0;
+                    sum_volume = 0;
+                    sum_weight = 0;
+
+                }                
+                
+
+                count_blocks_final++;
+                count_quality_blocks_final++;
+                sum_volume_final += parseFloat(item.invoice_sale_net_vol) || 0;
+                sum_weight_final += parseFloat(item.tot_weight) || 0;
+
+                count_blocks++;
+                count_quality_blocks++;
+                sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
+                sum_weight += parseFloat(item.tot_weight) || 0;
+
+                render_inspection(new_template_inspection, item);
+
+                if (i+1 == inspection[inspection_index].blocks.length) {
+
+                    var block_count = {
+                        invoice_sale_net_vol: sum_volume,
+                        tot_weight: sum_weight,
+                        block_number: count_blocks,
+                        quality_name: count_quality_blocks,
+                    }
+
+                    render_inspection(new_template_inspection, block_count, 'bg-warning');
+
+
+                    var block_count_final = {
+                        invoice_sale_net_vol: sum_volume_final,
+                        tot_weight: sum_weight_final,
+                        block_number: count_blocks_final,
+                        quality_name: count_quality_blocks_final,
+                    }
+
+                    render_inspection(new_template_inspection, block_count_final, 'bg-info');
+
+                }
+
+                new_template_inspection.appendTo(div_list);
+            });
+        
+            altera_load_progress();
+            if (inspection_index+1 < inspection.length) {
+                this.load_thread_inspection_certificate(++inspection_index);
             }
-
-            render_lot(new_template_lot, block_count, 'bg-warning');
-
-            count_blocks = 0;
-            sum_price = 0;
-            sum_volume = 0;
-            sum_weight = 0;
-            count_quality_blocks = 0;
-
-            quality_name = item.quality_name;
-        }
-
-        count_blocks++;
-        sum_price += parseFloat(item.invoice_item_price) || 0;
-        sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
-        sum_weight += parseFloat(item.tot_weight) || 0;
-        count_quality_blocks++;
-
-        count_blocks_final++;
-        count_quality_blocks_final++;
-        sum_price_final += parseFloat(item.invoice_item_price) || 0;
-        sum_volume_final += parseFloat(item.invoice_sale_net_vol) || 0;
-        sum_weight_final += parseFloat(item.tot_weight) || 0;
-
-        render_lot(new_template_lot, item);
-
-        if(i >= lot.length -1){
-
-            var block_count = {
-                block_number: count_blocks,
-                quality_name: count_quality_blocks,
-                invoice_sale_net_vol: sum_volume,
-                tot_weight: sum_weight,
-                invoice_item_price: sum_price,
+            else if (inspection_index+1 == inspection.length) {
+                load_lot();
             }
+        }, 0);
+    }
 
-            render_lot(new_template_lot, block_count, 'bg-warning');
+    this.load_thread_inspection_certificate(0);
+}
 
-            var block_count_final = {
-                block_number: count_blocks_final,
-                quality_name: count_quality_blocks_final,
-                invoice_sale_net_vol: sum_volume_final,
-                tot_weight: sum_weight_final,
-                invoice_item_price: sum_price_final,
-            }
+function render_header_inspection(new_template_inspection, name) {
 
-            render_lot(new_template_lot, block_count_final, 'bg-info');
-        }
+    // limpa trs, menos a primeira
+    new_template_inspection.find('tbody').find("tr:gt(1)").remove();
+    new_template_inspection.removeAttr("template-inspection");
+    new_template_inspection.css("display", '');
 
-        new_template_lot.appendTo(div_list);    
+    var field_inspection = new_template_inspection.find('[template-field="inspection"]');
+    field_inspection.text(name);
+}
+
+function render_inspection(new_template_inspection, item, color) {
+    var table_inspection = $(new_template_inspection.find('.table_block_list'));
+    var table_body_inspection = $(table_inspection).find('tbody');
+    var template_row = table_body_inspection.find("tr:first");
+    
+    
+    var new_row = template_row.clone();
+    new_row.removeAttr("template-row");
+    new_row.css("display", '');
+    new_row.attr('block_id', item.block_id)
+    if(color){
+        new_row.addClass(color);
+    }
+
+    //var field_date = new_row.find('[template-field="date"]');
+    //field_date.text(item.invoice_date_record ? item.invoice_date_record.format_date() : '');
+
+    var field_block_number = $(new_row.find("[template-field='block_number']"));
+    field_block_number.text(item.block_number);
+    field_block_number.addClass('color_client');
+    field_block_number.attr('client_id', item.reserved_client_id);
+
+    field_block_number.unbind('click');
+    field_block_number.click(function() {
+
+        show_dialog(FORMULARIO.VISUALIZAR, new_row.attr('block_id'));
     });
+
+
+    var field_block_number_row = $(new_row.find("[template-row='block_number']"));
+    field_block_number_row.css('background-color', item.cor_poblo_status);
+    field_block_number_row.css('color', item.cor_poblo_status_texto);
+
+    var block_number_selected = item.invoice_item_id;
+    var ul_listagem = $(new_row.find('.ul_listagem'));
+    var li = ul_listagem.find('[template-row]');
+    var add_li = function(poblo_status_item){
+
+        var new_li = li.clone();
+        new_li.removeAttr('template-row');
+        new_li.css("display", '');
+
+        var field_poblo_status_option = $(new_li.find("[template-field='poblo_status_option']"));
+        field_poblo_status_option.text(poblo_status_item.status);
+
+        new_li.unbind('click');
+        new_li.click(function(){
+       
+            field_block_number_row.css('background-color', poblo_status_item.cor);
+
+            $.ajax({
+                error: ajaxError,
+                type: "POST",
+                url: "<?= APP_URI ?>poblo_status/save_color/",
+                data: {
+                    invoice_item_id: block_number_selected,
+                    poblo_status_id: poblo_status_item.poblo_status_id
+                }
+            });
+        });
+
+        new_li.appendTo(ul_listagem);
+    }
+
+    $(poblo_status).each(function(j, poblo_status_item){
+        add_li(poblo_status_item);
+    });
+
+    var div_status = $(new_row.find(".div_status"));
+    if(color){
+
+        div_status.addClass('hidden');
+    }
+
+
+    var field_quality_name = $(new_row.find("[template-field='quality_name']"));
+    field_quality_name.text(item.quality_name || '');
+
+    var field_sale_net_c = $(new_row.find("[template-field='sale_net_c']"));
+    field_sale_net_c.text(item.net_c ? item.invoice_sale_net_c.format_number(2) : '');
+    
+    var field_sale_net_a = $(new_row.find("[template-field='sale_net_a']"));
+    field_sale_net_a.text(item.net_a ? item.invoice_sale_net_a.format_number(2) : '');
+
+    var field_sale_net_l = $(new_row.find("[template-field='sale_net_l']"));
+    field_sale_net_l.text(item.net_l ? item.invoice_sale_net_l.format_number(2) : '');
+
+    var field_sale_net_vol = $(new_row.find("[template-field='sale_net_vol']"));
+    field_sale_net_vol.text(item.invoice_sale_net_vol ? item.invoice_sale_net_vol.format_number(3) : '');
+
+    var field_tot_weight = $(new_row.find("[template-field='tot_weight']"));
+    field_tot_weight.text(item.tot_weight ? item.tot_weight.format_number(3) : '');
+
+    //var field_client = $(new_row.find("[template-field='client']"));
+    //field_client.text(item.sold_client_code ? item.sold_client_code : '');
+
+    var field_obs = $(new_row.find("[template-field='obs']"));
+    field_obs.text(item.obs_poblo ? item.obs_poblo : '');
+
+    /*var field_compensation_measure = $(new_row.find('[template-field="compensation_measure"]'));
+
+    field_compensation_measure.unbind('click');
+    field_compensation_measure.click(function(){
+        //console.log(item);
+    });*/
+
+    var btn_obs = $(new_row.find("[template-button='obs']"));
+    btn_obs.unbind('click');
+    btn_obs.click(function() {
+
+        var callback = function(obs){
+            field_obs.text(obs);
+        }
+
+        show_poblo_obs(item.block_id, item.block_number, callback);
+
+    });
+
+    var btn_edit = $(new_row.find("[template-button='btn_edit']"));
+    btn_edit.unbind('click');
+    btn_edit.click(function() {
+
+        
+        show_poblo_edit(item.block_id, item.invoice_item_id, null, item.invoice_item_nf, item.invoice_item_date_nf, item.invoice_item_price, null, 'insp');
+    });
+    
+    if(color){
+        btn_edit.addClass('hidden');
+        btn_obs.addClass('hidden');
+        //field_compensation_measure.addClass('hidden');
+    }
+
+    new_row.appendTo(table_body_inspection);
+
+}
+
+var load_lot = function() {
+
+    var lot = response_poblo.lot;
+
+    if (lot.length > 0) {
+        divisoria.clone().appendTo(div_list);
+    }
+    else {
+        load_lot(response_poblo.lot);
+    }
+
+    this.load_thread_lot = function(lot_index)
+    {
+        setTimeout(function() {
+            if (load_parar) return; // se o carregamento foi interrompido
+
+            var lot = response_poblo.lot;
+
+            var new_template_lot = '';
+            var quality_name = '';
+
+            var count_blocks = 0;
+            var sum_price = 0;
+            var sum_volume = 0;
+            var sum_weight = 0;
+            var count_quality_blocks = 0
+
+            var count_blocks_final = 0;
+            var sum_price_final = 0;
+            var sum_volume_final = 0;
+            var sum_weight_final = 0;
+            var count_quality_blocks_final = 0;
+
+            new_template_lot = template_lot.clone();
+            
+            render_header_lot(new_template_lot, lot[lot_index]);
+
+            $(lot[lot_index].blocks).each(function(i , item){
+
+                if(i == 0){
+                    quality_name = item.quality_name;
+                }
+
+                if(item.quality_name != quality_name){
+                    
+                    var block_count = {
+                        block_number: count_blocks,
+                        quality_name: count_quality_blocks,
+                        invoice_sale_net_vol: sum_volume,
+                        tot_weight: sum_weight,
+                        invoice_item_price: sum_price,
+                    }
+
+                    render_lot(new_template_lot, block_count, 'bg-warning');
+
+                    count_blocks = 0;
+                    sum_price = 0;
+                    sum_volume = 0;
+                    sum_weight = 0;
+                    count_quality_blocks = 0;
+
+                    quality_name = item.quality_name;
+                }
+
+                count_blocks++;
+                sum_price += parseFloat(item.invoice_item_price) || 0;
+                sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
+                sum_weight += parseFloat(item.tot_weight) || 0;
+                count_quality_blocks++;
+
+                count_blocks_final++;
+                count_quality_blocks_final++;
+                sum_price_final += parseFloat(item.invoice_item_price) || 0;
+                sum_volume_final += parseFloat(item.invoice_sale_net_vol) || 0;
+                sum_weight_final += parseFloat(item.tot_weight) || 0;
+
+                render_lot(new_template_lot, item);
+
+                if (i+1 == lot[lot_index].blocks.length) {
+
+                    var block_count = {
+                        block_number: count_blocks,
+                        quality_name: count_quality_blocks,
+                        invoice_sale_net_vol: sum_volume,
+                        tot_weight: sum_weight,
+                        invoice_item_price: sum_price,
+                    }
+
+                    render_lot(new_template_lot, block_count, 'bg-warning');
+
+                    var block_count_final = {
+                        block_number: count_blocks_final,
+                        quality_name: count_quality_blocks_final,
+                        invoice_sale_net_vol: sum_volume_final,
+                        tot_weight: sum_weight_final,
+                        invoice_item_price: sum_price_final,
+                    }
+
+                    render_lot(new_template_lot, block_count_final, 'bg-info');
+                }
+
+                new_template_lot.appendTo(div_list);
+
+            });
+
+            altera_load_progress();
+            if (lot_index+1 < lot.length) {
+                this.load_thread_lot(++lot_index);
+            }
+
+        }, 0);
+    }
+
+    this.load_thread_lot(0);
+
+    if (lot.length > 0) {
+        setTimeout(function() {
+            divisoria.clone().appendTo(div_list);
+        }, 2000);
+    }
+
 }
 
 
-function render_poblo_status(){
+function render_poblo_status() {
 
    $.getJSON("<?= APP_URI ?>poblo_status/list/json/", function(response) {
         if (response_validation(response)) {
@@ -778,7 +804,7 @@ function render_poblo_status(){
 }
 
 
-function render_header_lot(new_template_lot, item){
+function render_header_lot(new_template_lot, item) {
 
     // limpa trs, menos a primeira
     new_template_lot.find('tbody').find("tr:gt(1)").remove();
@@ -904,7 +930,7 @@ function render_header_lot(new_template_lot, item){
 
 
 //listagem somente do lot
-function render_lot (new_template_lot, item, color){
+function render_lot (new_template_lot, item, color) {
 
     var table_lot = $(new_template_lot.find('.table_block_list'));
     var table_body_lot = $(table_lot).find('tbody');
@@ -1054,8 +1080,6 @@ function render_lot (new_template_lot, item, color){
 }
 
 
-
-
 function render_cores() {
 
     var template_cores = $('#template_cores');
@@ -1102,5 +1126,27 @@ function color_sobra(row, item) {
             .css('color', cor.texto)
             .find('a')
                 .css('color', cor.texto);
+    }
+}
+
+function altera_load_progress() {
+    load_progress_etapa++;
+
+    percentual_etapa = parseInt((load_progress_etapa / load_progress_total) * 100, 10);
+
+    if (percentual_etapa > 100)
+        percentual_etapa = 100;
+
+    if (load_progress_etapa_percentual != percentual_etapa) {
+        load_progress_etapa_percentual = percentual_etapa;
+
+        // altero o progress se o percentual for multiplo de 5 pra economizar refresh na tela
+        if (percentual_etapa % 5 == 0) {
+            load_progress.text(percentual_etapa + '%').width(percentual_etapa + '%');
+        }
+    }
+
+    if (load_progress_total == load_progress_etapa) {
+        div_load_progress.hide();
     }
 }

@@ -166,7 +166,6 @@ funcs_on_load.push(function() {
         edt_year.val(ano);
         cbo_month_filter.val(mes);
         listar_filter_client();
-        listar();
 
     }
     else{
