@@ -134,10 +134,14 @@ class Invoice_Controller extends \Sys\Controller
     //$parameters_model = $this->LoadModel('Parameters', true);
     //$destinatario = $parameters_model->get('inspection_notification');
     
-
+    $today = date("Y/m/d");
     $html = '<table border="0" cellpadding="12" cellspacing="0">
                         <tr>
-                            <td align="center"><b><span class="titulo">INSPECTION CERTIFICATE OF '. $client_model->name .'</span></b></td>
+                            <td align="center">
+                                <b><span class="titulo">INSPECTION CERTIFICATE OF '. $client_model->name .'</span></b>
+                                <br>
+                                DATE ' . $today . '
+                            </td>
                         </tr>
                         
             </table>';
