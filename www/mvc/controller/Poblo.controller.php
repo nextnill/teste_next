@@ -26,8 +26,7 @@ class Poblo_Controller extends \Sys\Controller
                     'poblo/poblo_edit'
                     ));
         }
-        else{
-
+        else {
             $this->RenderView(array('masterpage'), array('home'));
         }
     }
@@ -158,7 +157,7 @@ class Poblo_Controller extends \Sys\Controller
     }
 
     function save_edit($params){
-
+        
         $invoice_item_id = (int)$this->ReadPost('invoice_item_id');
 
         $invoice_item_model = $this->LoadModel('InvoiceItem', true);
@@ -187,13 +186,13 @@ class Poblo_Controller extends \Sys\Controller
 
 
         $block_id = (int)$this->ReadPost('block_id');
-        $wagon_number = (int)$this->ReadPost('wagon_number');
+        $wagon_number = $this->ReadPost('wagon_number');
 
-        if($wagon_number > 0){
-            $travel_plan_item_model = $this->LoadModel('TravelPlanItem', true);
-            $travel_plan_item_model->update_wagon_number($block_id, $wagon_number);
-        }
-       
+        
+        if($wagon_number <> ''){
+            $block_model = $this->LoadModel('Block', true);
+            $block_model->update_wagon_number($block_id, $wagon_number);
+        }       
 
         $this->print_json(array('block_id' => $block_id));
     }

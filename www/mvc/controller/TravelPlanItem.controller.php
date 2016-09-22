@@ -53,7 +53,7 @@ class TravelPlanItem_Controller extends \Sys\Controller
                 $item['invoice_item_nf'], 
                 $item['invoice_item_price'],
                 $item['next_travel_route_id'],
-                $item['invoice_item_wagon_number'],
+                $item['block_wagon_number'],
                 $item['invoice_date_nf'],
                 $item['truck_id']
             );

@@ -1021,15 +1021,8 @@ class LotTransport_Model extends \Sys\Model {
                     lot_transport.client_id AS client_id,
                     client.code AS client_code,
                     client.name AS client_name,
+                    block.wagon_number As block_wagon_number,
                     (
-                        SELECT current_tpi.wagon_number FROM travel_plan_item AS current_tpi
-                        WHERE current_tpi.lot_transport_item_id = lot_transport_item.id
-                        AND (current_tpi.status = 0 OR current_tpi.status = 1)
-                        AND current_tpi.excluido = 'N'
-                        ORDER BY current_tpi.id ASC
-                        LIMIT 0, 1
-                    ) AS current_travel_plan_item_wagon_number,
-                          (
                         SELECT MIN(invoice.date_record)
                         from lot_transport_item
                         INNER JOIN invoice_item on invoice_item.id = lot_transport_item.invoice_item_id

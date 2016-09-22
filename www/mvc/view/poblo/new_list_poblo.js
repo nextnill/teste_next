@@ -566,6 +566,9 @@ function render_inspection(new_template_inspection, item, color) {
     var field_block_number_row = $(new_row.find("[template-row='block_number']"));
     field_block_number_row.css('background-color', item.cor_poblo_status);
     field_block_number_row.css('color', item.cor_poblo_status_texto);
+    field_block_number_row.attr('nf', item.invoice_item_nf);
+    field_block_number_row.attr('date_nf', item.invoice_item_date_nf);    
+    field_block_number_row.attr('price', item.invoice_item_price);        
 
     var block_number_selected = item.invoice_item_id;
     var ul_listagem = $(new_row.find('.ul_listagem'));
@@ -652,12 +655,26 @@ function render_inspection(new_template_inspection, item, color) {
 
     });
 
+        var callback = function(nf, price, wagon_number, data_nf){
+            if(nf != ''){
+                field_block_number_row.attr('nf', nf);
+            }
+            
+            if(price != ''){
+                field_block_number_row.attr('price', price);
+            }
+
+            if(data_nf != ''){
+                field_block_number_row.attr('date_nf', data_nf);
+            }
+        }    
+
     var btn_edit = $(new_row.find("[template-button='btn_edit']"));
     btn_edit.unbind('click');
     btn_edit.click(function() {
 
         
-        show_poblo_edit(item.block_id, item.invoice_item_id, null, item.invoice_item_nf, item.invoice_item_date_nf, item.invoice_item_price, null, 'insp');
+        show_poblo_edit(item.block_id, item.invoice_item_id, callback, field_block_number_row.attr('nf'), field_block_number_row.attr('date_nf'), field_block_number_row.attr('price'), null, 'insp');
     });
     
     if(color){
@@ -1008,6 +1025,7 @@ function render_lot (new_template_lot, item, color) {
 
     var field_nf = $(new_row.find("[template-field='nf']"));
     field_nf.text(item.invoice_item_nf ? item.invoice_item_nf : '');
+    field_nf.attr('nf-data', item.invoice_date_nf);
 
     var field_data = $(new_row.find("[template-field='data']"));
     field_data.text(item.invoice_date_record ? item.invoice_date_record.format_date() : '');
@@ -1031,7 +1049,7 @@ function render_lot (new_template_lot, item, color) {
     field_tot_weight.text(item.tot_weight ? item.tot_weight.format_number(3) : '');
 
     var field_wagon_number = $(new_row.find("[template-field='wagon_number']"));
-    field_wagon_number.text(item.current_travel_plan_item_wagon_number ? item.current_travel_plan_item_wagon_number : '');
+    field_wagon_number.text(item.block_wagon_number ? item.block_wagon_number : '');
 
     var field_obs = $(new_row.find("[template-field='obs']"));
     field_obs.text(item.obs_poblo ? item.obs_poblo : '');
@@ -1052,7 +1070,7 @@ function render_lot (new_template_lot, item, color) {
     btn_edit.click(function() {
 
 
-        var callback = function(nf, price, wagon_number){
+        var callback = function(nf, price, wagon_number, data_nf){
             if(nf != ''){
                 field_nf.text(nf);
             }
@@ -1064,9 +1082,13 @@ function render_lot (new_template_lot, item, color) {
             if(wagon_number != ''){
                 field_wagon_number.text(wagon_number);
             }
+
+            if(data_nf != ''){
+                field_nf.attr('nf-data', data_nf);                
+            }
         }
 
-        show_poblo_edit(item.block_id, item.invoice_item_id, callback, item.invoice_item_nf, item.invoice_date_nf, (item.invoice_item_price != null ? item.invoice_item_price.format_number(2) : null) , item.current_travel_plan_item_wagon_number);
+        show_poblo_edit(item.block_id, item.invoice_item_id, callback, field_nf.text(), field_nf.attr('nf-data'), (field_price.text() != null ? field_price.text().format_number(2) : null) , field_wagon_number.text());
     });
 
     if(color){

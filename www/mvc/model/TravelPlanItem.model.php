@@ -158,48 +158,49 @@ class TravelPlanItem_Model extends \Sys\Model {
 
     function start_shipping($travel_plan_id, $lot_transport_id, $lot_transport_item_id, $block_id, $invoice_item_id, $nf, $price, $travel_route_id=null, $wagon_number=null, $date_nf=null, $truck_id)
     {
-        if (!empty($nf)) {
-
-            // update NF e Price na Invoice
-            if (isset($invoice_item_id) && ($invoice_item_id > 0)) {
-                $invoice_item_model = $this->LoadModel('InvoiceItem', true);
-                $invoice_item_model->populate($invoice_item_id);
+        // update NF e Price na Invoice
+        if (isset($invoice_item_id) && ($invoice_item_id > 0)) {
+            $invoice_item_model = $this->LoadModel('InvoiceItem', true);
+            $invoice_item_model->populate($invoice_item_id);
+            
+            if (!empty($nf))
                 $invoice_item_model->nf = $nf;
+            
+            if (!empty($price))
                 $invoice_item_model->price = $price;
+            
+            if (!empty($date_nf))
                 $invoice_item_model->date_nf = $date_nf;
 
-                $invoice_item_model->save();
-
-
-            }
-
-
-
-            // update lot_transport_item
-            $lot_transport_item_model = $this->LoadModel('LotTransportItem', true);
-            $lot_transport_item_model->populate($lot_transport_item_id);
-            $lot_transport_item_model->status = self::TRAVEL_PLAN_STATUS_STARTED;
-            $lot_transport_item_model->last_travel_route_id = $travel_route_id;
-
-           
-            $lot_transport_item_model->save();
-
-            // start shipping
-            $this->travel_plan_id = $travel_plan_id;
-            $this->lot_transport_id = $lot_transport_id;
-            $this->lot_transport_item_id = $lot_transport_item_id;
-            $this->block_id = $block_id;
-            $this->wagon_number = $wagon_number;
-            $this->status = self::TRAVEL_PLAN_STATUS_STARTED;
-
-            //block
-            $block_model = $this->LoadModel('Block', true);
-            $block_model->populate($block_id);
-            $block_model->truck_id = $truck_id;
-            $block_model->save();
-             
-            return $this->insert();
+            $invoice_item_model->save();
         }
+
+
+        // update lot_transport_item
+        $lot_transport_item_model = $this->LoadModel('LotTransportItem', true);
+        $lot_transport_item_model->populate($lot_transport_item_id);
+        $lot_transport_item_model->status = self::TRAVEL_PLAN_STATUS_STARTED;
+        $lot_transport_item_model->last_travel_route_id = $travel_route_id;
+
+       
+        $lot_transport_item_model->save();
+
+        // start shipping
+        $this->travel_plan_id = $travel_plan_id;
+        $this->lot_transport_id = $lot_transport_id;
+        $this->lot_transport_item_id = $lot_transport_item_id;
+        $this->block_id = $block_id;
+        $this->status = self::TRAVEL_PLAN_STATUS_STARTED;
+
+        //block
+        $block_model = $this->LoadModel('Block', true);
+        $block_model->populate($block_id);
+        $block_model->truck_id = $truck_id;
+        $block_model->wagon_number = $wagon_number;
+        $block_model->save();
+         
+        return $this->insert();
+        
     }
     
     function update()
@@ -228,6 +229,7 @@ class TravelPlanItem_Model extends \Sys\Model {
                             wagon_number = ?
                         WHERE
                             id = ? ';
+
                 // set
                 $params[] = ((int)$this->travel_plan_id > 0 ? (int)$this->travel_plan_id : null);
                 $params[] = (int)$this->lot_transport_id;
@@ -235,7 +237,7 @@ class TravelPlanItem_Model extends \Sys\Model {
                 $params[] = (int)$this->block_id;
                 $params[] = (int)$this->status;
                 $params[] = (!empty($this->date_completed) ? $this->date_completed : null);
-                $params[] = ($this->client_removed == 'true' ? true : false);
+                $params[] = ($this->client_removed == 'true' ? 1 : 0);
                 $params[] = $this->wagon_number;
 
                 // where
@@ -262,8 +264,8 @@ class TravelPlanItem_Model extends \Sys\Model {
         $dt_now = new DateTime('now');
         $dt_now = $dt_now->format('Y-m-d H:i:s');
         $this->date_completed = $dt_now;
-
         return $this->update();
+
     }
 
     function client_removed($lot_transport_id, $lot_transport_item_id, $block_id, $invoice_item_id, $nf, $price, $wagon_number)
@@ -400,7 +402,6 @@ class TravelPlanItem_Model extends \Sys\Model {
                     previous_quarry.name AS previous_quarry_name,
                     previous_travel_route.end_terminal_id AS previous_terminal_id,
                     previous_terminal.name AS previous_terminal_name,
-                    previous_terminal.wagon_number AS previous_terminal_wagon_number,
                     
                     -- destino atual
                     current_travel_route.id AS current_travel_route_id,
@@ -409,7 +410,6 @@ class TravelPlanItem_Model extends \Sys\Model {
                     current_quarry.name AS current_quarry_name,
                     current_travel_route.end_terminal_id AS current_terminal_id,
                     current_terminal.name AS current_terminal_name,
-                    current_terminal.wagon_number AS current_terminal_wagon_number,
                     
                     -- proximo destino
                     next_travel_route.id AS next_travel_route_id,
@@ -418,9 +418,9 @@ class TravelPlanItem_Model extends \Sys\Model {
                     next_quarry.name AS next_quarry_name,
                     next_travel_route.end_terminal_id AS next_terminal_id,
                     next_terminal.name AS next_terminal_name,
-                    next_terminal.wagon_number AS next_terminal_wagon_number,
                     client_id, 
-                    client_name
+                    client_name,
+                    block_wagon_number
 
                 FROM (
                     SELECT
@@ -462,7 +462,7 @@ class TravelPlanItem_Model extends \Sys\Model {
                         invoice_item.date_nf AS invoice_date_nf,
                         invoice_item.price AS invoice_item_price,
                         invoice.date_record AS invoice_date_record,
-                    
+                        block.wagon_number AS block_wagon_number,                    
                         
                         -- viagem anterior do bloco
                         (
@@ -491,14 +491,6 @@ class TravelPlanItem_Model extends \Sys\Model {
                             ORDER BY current_tpi.id ASC
                             LIMIT 0, 1
                         ) AS current_travel_plan_item_id,
-                            (
-                            SELECT current_tpi.wagon_number FROM travel_plan_item AS current_tpi
-                            WHERE current_tpi.lot_transport_item_id = lot_transport_item.id
-                            AND (current_tpi.status = 0 OR current_tpi.status = 1)
-                            AND current_tpi.excluido = 'N'
-                            ORDER BY current_tpi.id ASC
-                            LIMIT 0, 1
-                        ) AS current_travel_plan_item_wagon_number,
                         COALESCE((
 
                             SELECT current_tpi.status FROM travel_plan_item AS current_tpi

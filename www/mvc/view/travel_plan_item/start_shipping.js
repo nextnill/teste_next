@@ -214,22 +214,24 @@ function add_row_shipping_list(table_body, item, type, div_trucks, table)
         field_price.text(item.invoice_item_price);
     }
 
-    var terminal_wagon = item.next_terminal_wagon_number;
+    // Antigo tratamento para verificar é para exibir o numero do vagão
+    // var terminal_wagon = item.next_terminal_wagon_number;
 
-    if(terminal_wagon == "N" || type == DLG_POINTING_TRAVEL.CLIENT_REMOVED){
+    // if(terminal_wagon == "N" || type == DLG_POINTING_TRAVEL.CLIENT_REMOVED){
 
-        $(table.find(".colun_wagon")).addClass('hidden');
-    }else{
-        $(table.find(".colun_wagon")).removeClass('hidden');
-    }
+    //     $(table.find(".colun_wagon")).addClass('hidden');
+    // }else{
+    //     $(table.find(".colun_wagon")).removeClass('hidden');
+    // }
+        
     
-        var field_wagon_number = $(new_row.find("[template-field='wagon_number']"));
-        var field_wagon_number_edit = $(new_row.find("[template-field='wagon_number_edit']"));
-        field_wagon_number_edit.val(item.current_travel_plan_item_wagon_number ? item.current_travel_plan_item_wagon_number : '');
-        // bloqueio edição se já existir número do vagao
-        if (item.current_travel_plan_item_wagon_number) {
-            field_wagon_number.text(item.current_travel_plan_item_wagon_number);
-        }
+    var field_wagon_number = $(new_row.find("[template-field='wagon_number']"));
+    var field_wagon_number_edit = $(new_row.find("[template-field='wagon_number_edit']"));
+    field_wagon_number_edit.val(item.block_wagon_number);
+    // bloqueio edição se já existir número do vagao
+    if (item.block_wagon_number) {
+        field_wagon_number.text(item.block_wagon_number);
+    }
         
 
     var field_destination = $(new_row.find("[template-field='destination']"));
@@ -348,62 +350,26 @@ function btn_start_shipping_click(type)
 
         var wagon_number_edit = row.find('[template-field="wagon_number_edit"]');
         if (wagon_number_edit.val() != null && wagon_number_edit.val().length > 0) {
-            arr_pending_blocks_selected[i].invoice_item_wagon_number = wagon_number_edit.val();
+            arr_pending_blocks_selected[i].block_wagon_number = wagon_number_edit.val();
         }
     }
 
-    // verifico se existe algum bloco sem NF ou preço
-    for (var i = 0; i < arr_pending_blocks_selected.length; i++) {
-        var without_nf = false;
-        var without_price = false;
-        var without_wagon_number = false;
-
-        if (!arr_pending_blocks_selected[i].invoice_item_nf) {
-            without_nf = true;
-        }
-        if (!arr_pending_blocks_selected[i].invoice_item_price) {
-            without_price = true;
-        }
-
-        var terminal_wagon = arr_pending_blocks_selected[i].next_terminal_wagon_number;
-        if (terminal_wagon == "S" && !arr_pending_blocks_selected[i].invoice_item_wagon_number) {
-            without_wagon_number = true;
-        }    	
-    }
-
-    // validação
-    var vld = new Validation();
-    if (without_nf) {
-        vld.add(new ValidationMessage(Validation.CODES.ERR_FIELD, 'There are blocks without NF'));
-    }
-    if (without_price) {
-        vld.add(new ValidationMessage(Validation.CODES.ERR_FIELD, 'There are blocks without Price'));
-    }
-    if (without_wagon_number) {
-        vld.add(new ValidationMessage(Validation.CODES.ERR_FIELD, 'There are blocks without Wagon Number'));
-    }
-    
-    if (without_nf || without_price || without_wagon_number) {
-        alert_modal('Validation', vld);
-    }
-    else {
-        var url = (type == DLG_POINTING_TRAVEL.START_SHIPPING ? 'start_shipping' : 'client_removed');
-        // post
-        if (arr_pending_blocks_selected.length > 0) {
-            $.ajax({
-                error: ajaxError,
-                type: "POST",
-                url: "<?= APP_URI ?>travel_plan/pending/" + url + "/",
-                data: { blocks: JSON.stringify(arr_pending_blocks_selected) },
-                success: function (response) {
-                    if (response_validation(response)) {
-                        closeModal('modal_start_shipping');
-                        listar_blocks();
-                    }
-                    
+    var url = (type == DLG_POINTING_TRAVEL.START_SHIPPING ? 'start_shipping' : 'client_removed');
+    // post
+    if (arr_pending_blocks_selected.length > 0) {
+        $.ajax({
+            error: ajaxError,
+            type: "POST",
+            url: "<?= APP_URI ?>travel_plan/pending/" + url + "/",
+            data: { blocks: JSON.stringify(arr_pending_blocks_selected) },
+            success: function (response) {
+                if (response_validation(response)) {
+                    closeModal('modal_start_shipping');
+                    listar_blocks();
                 }
-            });
-        }
+                
+            }
+        });
     }
 }
 

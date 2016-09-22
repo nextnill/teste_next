@@ -26,6 +26,7 @@ function show_poblo_edit(block_id_param, invoice_item_id_param, callback, nf, da
     
     set_datepicker(edt_date_nf);
 
+
     setTimeout(function(){
         if(date_nf){
             set_datepicker(edt_date_nf, date_nf);
@@ -68,7 +69,8 @@ btn_poblo_edit_cancel.click(function() {
 
 btn_poblo_edit_save.unbind('click');
 btn_poblo_edit_save.click(function() {
-	
+
+
 	WS.post(
         "poblo/save_edit/",
         {
@@ -82,7 +84,7 @@ btn_poblo_edit_save.click(function() {
         function (response) {
 
             if(var_callback){
-                var_callback(edt_nf.val(), edt_price.val(), edt_wagon_number.val());
+                var_callback(edt_nf.val(), edt_price.val(), edt_wagon_number.val(), get_datepicker(edt_date_nf));
             }
 			closeModal('modal_poblo_edit');
         }
