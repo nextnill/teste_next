@@ -961,6 +961,7 @@ class LotTransport_Model extends \Sys\Model {
 
     }
 
+
     function get_lot($client_id = -1) {
 
         $sql = "SELECT
@@ -1030,7 +1031,16 @@ class LotTransport_Model extends \Sys\Model {
                         INNER JOIN invoice on invoice.id = invoice_item.invoice_id
                         WHERE lot_transport_id = lot_transport.id
                         AND lot_transport_item.excluido = 'N'
-                    ) AS menor_date_record
+                    ) AS menor_date_record,
+                    (SELECT 
+                         CONCAT('Inspection Certificate ' ,GROUP_CONCAT(DISTINCT CONCAT('#', i2.id, ' - ', DATE_FORMAT(i2.date_record, '%Y/%m/%d')) SEPARATOR ', '))
+                    FROM block b2 
+                        INNER JOIN lot_transport_item lti2 ON (lti2.block_id = b2.id)
+                        INNER JOIN lot_transport lt2 ON (lt2.id = lti2.lot_transport_id)
+                        LEFT JOIN invoice_item ii2 ON (ii2.block_id = b2.id AND ii2.excluido = 'N')
+                        LEFT JOIN invoice i2 ON (i2.id = ii2.invoice_id)
+                        WHERE lt2.id = lot_transport.id                       
+                    )  AS inspection_name                                        
                     FROM block
                     LEFT JOIN client AS sold_client ON (sold_client.id = block.sold_client_id)
                     INNER JOIN lot_transport_item ON (lot_transport_item.block_id = block.id)

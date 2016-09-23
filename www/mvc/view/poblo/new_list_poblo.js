@@ -768,7 +768,7 @@ var load_lot = function() {
 
             new_template_lot = template_lot.clone();
             
-            render_header_lot(new_template_lot, lot[lot_index]);
+            render_header_lot(new_template_lot, lot[lot_index], lot[lot_index].inspection_name);
 
             $(lot[lot_index].blocks).each(function(i , item){
 
@@ -905,7 +905,7 @@ function render_poblo_status() {
 }
 
 
-function render_header_lot(new_template_lot, item) {
+function render_header_lot(new_template_lot, item, inspection) {
 
     // limpa trs, menos a primeira
     new_template_lot.find('tbody').find("tr:gt(1)").remove();
@@ -929,6 +929,9 @@ function render_header_lot(new_template_lot, item) {
 
     var field_status = new_template_lot.find("[template-field='status']");
     field_status.text(str_lot_transport_status(item.lot_transport_status) || '');
+
+    var field_inspection = new_template_lot.find('[template-field="inspection"]');
+    field_inspection.text(inspection);    
 
     switch (parseInt(item.lot_transport_status, 10))
     {

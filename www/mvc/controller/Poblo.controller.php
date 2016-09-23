@@ -71,6 +71,7 @@ class Poblo_Controller extends \Sys\Controller
                     'draft_file'=>$lot_transport['draft_file'],
                     'down_draft'=>$lot_transport['down_draft'],
                     'down_commercial_invoice'=>$lot_transport['down_commercial_invoice'],
+                    'inspection_name'=>$lot_transport['inspection_name'],                    
                     'blocks'=>array()
                 ));
                 
