@@ -430,6 +430,7 @@ var load_inspection_certificate = function()
 
             var new_template_inspection = '';
             var quality_name = '';
+            var quarry_id = '';
 
             var count_blocks_final = 0;
             var count_quality_blocks_final = 0;
@@ -441,6 +442,11 @@ var load_inspection_certificate = function()
             var sum_volume = 0;
             var sum_weight = 0;
 
+            var count_blocks_quarry = 0;
+            var count_quality_blocks_quarry = 0;
+            var sum_volume_quarry = 0;
+            var sum_weight_quarry = 0;            
+
             new_template_inspection = template_inspection.clone();
 
             render_header_inspection(new_template_inspection, inspection[inspection_index].inspection_name);
@@ -450,9 +456,10 @@ var load_inspection_certificate = function()
             $(inspection[inspection_index].blocks).each(function(i , item){
                 if(i == 0){
                     quality_name = item.quality_name;
+                    quarry_id = item.quarry_id;
                 }
 
-                if(quality_name != item.quality_name){
+                if(quality_name != item.quality_name || quarry_id != item.quarry_id){
 
                     var block_count = {
                         invoice_sale_net_vol: sum_volume,
@@ -471,11 +478,34 @@ var load_inspection_certificate = function()
 
                 }                
                 
+                if(quarry_id != item.quarry_id){
+
+                    var block_count = {
+                        invoice_sale_net_vol: sum_volume_quarry,
+                        tot_weight: sum_weight_quarry,
+                        block_number: count_blocks_quarry,
+                        quality_name: count_quality_blocks_quarry,
+                    }
+
+                    render_inspection(new_template_inspection, block_count, 'bg-success');
+
+                    quarry_id = item.quarry_id;
+                    count_blocks_quarry = 0;
+                    count_quality_blocks_quarry = 0;
+                    sum_volume_quarry = 0;
+                    sum_weight_quarry = 0;
+
+                }                
 
                 count_blocks_final++;
                 count_quality_blocks_final++;
                 sum_volume_final += parseFloat(item.invoice_sale_net_vol) || 0;
                 sum_weight_final += parseFloat(item.tot_weight) || 0;
+
+                count_blocks_quarry++;
+                count_quality_blocks_quarry++;
+                sum_volume_quarry += parseFloat(item.invoice_sale_net_vol) || 0;
+                sum_weight_quarry += parseFloat(item.tot_weight) || 0;
 
                 count_blocks++;
                 count_quality_blocks++;
@@ -494,6 +524,15 @@ var load_inspection_certificate = function()
                     }
 
                     render_inspection(new_template_inspection, block_count, 'bg-warning');
+
+                    var block_count_quarry = {
+                        invoice_sale_net_vol: sum_volume_quarry,
+                        tot_weight: sum_weight_quarry,
+                        block_number: count_blocks_quarry,
+                        quality_name: count_quality_blocks_quarry,
+                    }
+
+                    render_inspection(new_template_inspection, block_count_quarry, 'bg-success');                    
 
 
                     var block_count_final = {
@@ -714,6 +753,13 @@ var load_lot = function() {
             var sum_weight = 0;
             var count_quality_blocks = 0
 
+            var count_blocks_quarry = 0;
+            var sum_price_quarry = 0;
+            var sum_volume_quarry = 0;
+            var sum_weight_quarry = 0;
+            var count_quality_blocks_quarry = 0
+            var quarry_id = '';
+
             var count_blocks_final = 0;
             var sum_price_final = 0;
             var sum_volume_final = 0;
@@ -728,9 +774,10 @@ var load_lot = function() {
 
                 if(i == 0){
                     quality_name = item.quality_name;
+                    quarry_id = item.quarry_id;
                 }
 
-                if(item.quality_name != quality_name){
+                if(item.quality_name != quality_name || item.quarry_id != quarry_id){
                     
                     var block_count = {
                         block_number: count_blocks,
@@ -751,11 +798,38 @@ var load_lot = function() {
                     quality_name = item.quality_name;
                 }
 
+                if(item.quarry_id != quarry_id){
+                    
+                    var block_count = {
+                        block_number: count_blocks_quarry,
+                        quality_name: count_quality_blocks_quarry,
+                        invoice_sale_net_vol: sum_volume_quarry,
+                        tot_weight: sum_weight_quarry,
+                        invoice_item_price: sum_price_quarry,
+                    }
+
+                    render_lot(new_template_lot, block_count, 'bg-success');
+
+                    count_blocks_quarry = 0;
+                    sum_price_quarry = 0;
+                    sum_volume_quarry = 0;
+                    sum_weight_quarry = 0;
+                    count_quality_blocks_quarry = 0;
+
+                    quarry_id = item.quarry_id;
+                }                
+
                 count_blocks++;
                 sum_price += parseFloat(item.invoice_item_price) || 0;
                 sum_volume += parseFloat(item.invoice_sale_net_vol) || 0;
                 sum_weight += parseFloat(item.tot_weight) || 0;
                 count_quality_blocks++;
+
+                count_blocks_quarry++;
+                sum_price_quarry += parseFloat(item.invoice_item_price) || 0;
+                sum_volume_quarry += parseFloat(item.invoice_sale_net_vol) || 0;
+                sum_weight_quarry += parseFloat(item.tot_weight) || 0;
+                count_quality_blocks_quarry++;                
 
                 count_blocks_final++;
                 count_quality_blocks_final++;
@@ -776,6 +850,16 @@ var load_lot = function() {
                     }
 
                     render_lot(new_template_lot, block_count, 'bg-warning');
+
+                    var block_count_quarry = {
+                        block_number: count_blocks_quarry,
+                        quality_name: count_quality_blocks_quarry,
+                        invoice_sale_net_vol: sum_volume_quarry,
+                        tot_weight: sum_weight_quarry,
+                        invoice_item_price: sum_price_quarry,
+                    }
+
+                    render_lot(new_template_lot, block_count_quarry, 'bg-success');                    
 
                     var block_count_final = {
                         block_number: count_blocks_final,

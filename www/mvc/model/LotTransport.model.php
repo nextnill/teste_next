@@ -930,6 +930,7 @@ class LotTransport_Model extends \Sys\Model {
 
                 $sql .= " ORDER BY
                     invoice.date_record ASC,
+                    block.quarry_id,
                     quality.order_number,
                     block.block_number ";
 
@@ -1095,6 +1096,7 @@ class LotTransport_Model extends \Sys\Model {
 
                     menor_date_record,
                     lot_transport.order_number,
+                    block.quarry_id,
                     quality.order_number,
                     block.block_number
                     
