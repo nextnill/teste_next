@@ -122,8 +122,8 @@ function listar_blocks()
             $.each(response, function(i, item) {
                 // se for o primeiro registro, seta o título na tabela
                 if (i == 0) {
-                    table.find("[template-title]").text(item.quarry_name);
                     table.find("[template-quality]").text(item.quality_name);
+                    table.find("[template-title]").text(item.quarry_name);
                 }
                 // se for uma nova pedreira
                 if (item.quarry_name+item.quality_name != quarry_name+quality_name) {
@@ -262,9 +262,7 @@ function add_row(table_body, item)
     add_option(cbo_reserved_client, '-1', 'None');
     for (var i = 0; i < head_office.length; i++) {
         var ho_item = head_office[i];
-        add_option(cbo_reserved_client, ho_item.id, ho_item.code);
-        
-
+        add_option(cbo_reserved_client, ho_item.id, ho_item.code);        
     };
 
     //reserved_client_code.push('-1');
@@ -277,6 +275,9 @@ function add_row(table_body, item)
     cbo_reserved_client.attr('template-ref-bn', item.block_number);
     cbo_reserved_client.attr('template-ref-default', item.reserved_client_id);
     cbo_reserved_client.attr('template-ref-active', "false");    
+    if (item.total_blocks != null) {
+        cbo_reserved_client.tooltip({title: 'Blocks Reserved: ' + item.total_blocks + ' / Vol: ' + item.total_net_vol, placement: 'top'});
+    }
 
     cbo_reserved_client.on("change", function(e) {
         // se nao tiver nenhuma janela de reserva ativa

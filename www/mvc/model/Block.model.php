@@ -842,7 +842,27 @@ class Block_Model extends \Sys\Model {
                     block.client_block_number,
                     block.obs_poblo,
                     block.truck_id,
-                    block.wagon_number
+                    block.wagon_number,
+                    (SELECT
+                        count(block_rs.id) blocks
+                    FROM block block_rs
+                    INNER JOIN client AS reserved_client ON (reserved_client.id = block_rs.reserved_client_id)
+                    WHERE block_rs.excluido = 'N'
+                    AND block_rs.reserved_client_id = block.reserved_client_id
+                    AND block_rs.sold = false
+                    AND block_rs.reserved = true    
+                    GROUP BY
+                        block_rs.reserved_client_id) total_blocks,
+                    (SELECT
+                        sum(block_rs.net_vol) as net_vol
+                    FROM block block_rs
+                    INNER JOIN client AS reserved_client ON (reserved_client.id = block_rs.reserved_client_id)
+                    WHERE block_rs.excluido = 'N'
+                    AND block_rs.reserved_client_id = block.reserved_client_id
+                    AND block_rs.sold = false
+                    AND block_rs.reserved = true    
+                    GROUP BY
+                        block_rs.reserved_client_id) total_net_vol                    
                 FROM block
                 INNER JOIN production_order_item ON (production_order_item.id = block.production_order_item_id AND production_order_item.excluido = 'N')
                 INNER JOIN production_order ON (production_order.id = production_order_item.production_order_id AND production_order.excluido = 'N')
