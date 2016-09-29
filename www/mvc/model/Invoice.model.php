@@ -155,6 +155,8 @@ class Invoice_Model extends \Sys\Model {
     {
         $validation = new Validation();
         
+        $validation->add(Validation::VALID_ERR_NOT_EXISTS, 'Id does not exists');
+
         if (!$this->exists())
         {
             $validation->add(Validation::VALID_ERR_NOT_EXISTS, 'Id does not exists');
@@ -165,6 +167,25 @@ class Invoice_Model extends \Sys\Model {
             $invoice_item_model = $this->LoadModel('InvoiceItem', true);
             $items = $invoice_item_model->get_by_invoice($this->id);
             foreach ($items as $key => $item) {
+               // Não permitimos deletar se o block estiver em algum lote
+                $sql = 'SELECT 
+                            block_id
+                        FROM lot_transport_item
+                        INNER JOIN lot_transport on 
+                        lot_transport.id = lot_transport_item.lot_transport_id 
+                        AND lot_transport.excluido = "N"
+                        AND block_id = ?
+                        ';
+                $query = DB::query($sql, array(
+                    // where
+                    $item['block_id']
+                ));
+                
+                if (DB::has_rows($query))
+                {
+                    return 0;
+                }
+
                 $block_model = $this->LoadModel('Block', true);
                 $block_model->populate($item['block_id']);
                 $block_model->sale_net_c = 0;

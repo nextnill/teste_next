@@ -109,10 +109,10 @@ class Invoice_Controller extends \Sys\Controller
         if ($id > 0)
         {
             $invoice_model->populate($id);
-            $invoice_model->delete();
+            $reponse = $invoice_model->delete();
         }
 
-        $this->print_json($invoice_model);
+        $this->print_json($reponse);
     }
 
 

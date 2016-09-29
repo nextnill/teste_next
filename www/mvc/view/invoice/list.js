@@ -124,9 +124,7 @@ function add_row(table_body, item)
     button_delete.attr('template-ref', item.id);
     button_delete.click(function() {
         var id = $(this).attr('template-ref');
-        
         var delete_action = function() {
-            closeModal('alert_modal');
             $.ajax({
                 error: ajaxError,
                 type: "POST",
@@ -134,19 +132,23 @@ function add_row(table_body, item)
                 data: {
                     id: id
                 },
-                dataType: 'json',
+                dataType: 'json',                
                 success: function (response) {
                     setTimeout(function() {
                         if (response_validation(response)) {
-                            listar();
+                            if (response == '0'){
+                                var vld = new Validation();
+                                vld.add(new ValidationMessage(Validation.CODES.ERR_FIELD, 'There are blocks linked to lots in this invoice. Not permitted exclusion'));
+                                alert_modal('Validation', vld);                                
+                            } else{
+                                closeModal('alert_modal');
+                                listar();
+                            }                            
                         }
                     }, 800);
                 }
-            });
-
-            listar();
-        };
-
+            });            
+        };        
         alert_modal('Inspection', 'Delete Inspection Certificate #' + id + '?', 'Delete', delete_action, true);
     });
 }

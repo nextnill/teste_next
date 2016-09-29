@@ -103,6 +103,8 @@ class BlockRefused_Model extends \Sys\Model {
 
             if($this->invoice_id > 0){
                 $this->delete_from_invoice($this->invoice_id, $this->block_id);
+            } else {                    
+                $this->delete_reservation($this->block_id);                        
             }
                 
             return $this->id;
@@ -145,8 +147,11 @@ class BlockRefused_Model extends \Sys\Model {
 
                 ));
 
+
                 if($this->invoice_id > 0){
                     $this->delete_from_invoice($this->invoice_id, $this->block_id);
+                } else {                    
+                    $this->delete_reservation($this->block_id);                        
                 }
 
                 return $this->id;
@@ -156,8 +161,7 @@ class BlockRefused_Model extends \Sys\Model {
         return $valid;
     }
 
-    static function delete_from_invoice($invoice_id, $block_id){
-
+    function delete_from_invoice($invoice_id, $block_id){
         $sql = "UPDATE invoice_item 
               SET excluido = 'S'
               WHERE invoice_id = ? 
@@ -165,15 +169,20 @@ class BlockRefused_Model extends \Sys\Model {
 
         $query = DB::exec($sql, array($invoice_id, $block_id));
 
+        $this->delete_reservation($block_id);        
+    }
+
+    function delete_reservation($block_id){
         $sql = " UPDATE block 
                   SET 
                   sold = 0,
-                  sold_client_id = NULL
+                  sold_client_id = NULL,
+                  reserved_client_id = NULL,
+                  reserved = 0
               WHERE  id = " . $block_id;
 
 
         $query = DB::exec($sql);
-
     }
 
     function delete()
@@ -234,7 +243,7 @@ class BlockRefused_Model extends \Sys\Model {
     }
 
     function fill($row_query)
-    {
+    {        
         if ($row_query)
         {
             $this->id = (int)$row_query['id'];

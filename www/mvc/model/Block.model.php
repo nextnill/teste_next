@@ -1221,4 +1221,21 @@ class Block_Model extends \Sys\Model {
         return $id;
     }    
 
+function come_back_interim(){
+
+        $sql = "UPDATE block 
+              SET type = 2,
+              block_number = block_number_interim,
+              block_number_interim = null  
+              WHERE id = ? ";
+
+        // set
+        $params[] = $this->block_id;
+       
+        $query = DB::exec($sql, $params);
+
+        return $block_id;
+    }
+
+
 }

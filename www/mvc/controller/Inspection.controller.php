@@ -145,7 +145,6 @@ class Inspection_Controller extends \Sys\Controller
             foreach ($blocks_refused as $key => $block) {
                 
 
-
                 $block_refused_model = $this->LoadModel('BlockRefused', true);
                 $block_refused_model->block_id = $block['id'];
 
@@ -154,6 +153,13 @@ class Inspection_Controller extends \Sys\Controller
                 $block_refused_model->invoice_id = $invoice_id;
                 
                 $ret['refused_id'][] = $block_refused_model->save();
+
+                // se for uma bloco interim transformado para final eu retorno ele ao status interim
+                if ($block['block_number_interim'] != ''){
+                    $blockModel = $this->LoadModel('Block', true);
+                    $blockModel->block_id = $block['id'];
+                    $blockModel->come_back_interim();
+                }
             }
         }
 
