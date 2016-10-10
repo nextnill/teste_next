@@ -223,13 +223,15 @@ class RouteMap_Config extends \Sys\RouteMap
                 '/poblo/obs/json/' => array('Poblo', 'obs_json', 'poblo'),
                 '/poblo/save/' => array('Poblo', 'salve_obs_json', 'poblo'),
                 '/poblo/save_edit/' => array('Poblo', 'save_edit', 'poblo'),
-
+                '/poblo/excel/' => array('Poblo', 'download_excel', 'poblo'),
+                
                 '/poblo_status/' => array('PobloStatus', 'list_action', 'poblo_status'),
                 '/poblo_status/list/json/' => array('PobloStatus', 'list_json'),
                 '/poblo_status/detail/json/' => array('PobloStatus', 'detail_json'),
                 '/poblo_status/save/' => array('PobloStatus', 'save_json', 'poblo_status'),
                 '/poblo_status/save_color/' => array('PobloStatus', 'save_color_json', 'poblo_status'),
                 '/poblo_status/delete/' => array('PobloStatus', 'delete_json', 'poblo_status'),
+
 
 
                 '/truck_carrier/list/' => array('Truck_Carrier', 'list_action', 'truck_carrier'),

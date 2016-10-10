@@ -97,8 +97,6 @@ funcs_on_load.push(function() {
     render_poblo_status();
     get_data_poblo();
     listar_filter_client();
-
-
 });
 
 btn_parar.click(function() {
@@ -112,6 +110,13 @@ btn_recarregar.click(function() {
     btn_recarregar.prop('disabled', true);
     get_data_poblo();
 });
+
+var button_select_excel = $('#btn_Excel');
+button_select_excel.click(function() {
+
+    showModal('modal_excel');    
+    window.location = '<?= APP_URI ?>poblo/excel/' + (cbo_filter_client.val() ? cbo_filter_client.val() : '');
+});    
 
 function listar_filter_client()
 {
