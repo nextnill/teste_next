@@ -1,6 +1,6 @@
 <?php
 
-@set_time_limit(6000);
+@set_time_limit(0);
 
 require 'config/System.config.php';
 require 'sys/MVC.class.php';
@@ -19,9 +19,29 @@ $model = new Model();
 $sql = "SELECT invoice.id, invoice.client_id, client.name, client.code
 FROM invoice
 INNER JOIN client on client.id = invoice.client_id
-WHERE invoice.id NOT IN (156,154,153,158,167,168,165,161,163,164,166)
+WHERE invoice.id IN (    
+                         253, 252, 251, 250, 249, 248, 247, 246, 245, 244,
+                         242, 241, 239, 238, 236, 235, 234, 233, 232, 230
+                    )
 and invoice.excluido = 'N'
 ORDER BY invoice.id";
+
+/*
+                         176, 175, 174, 173, 172, 171, 170, 169, 168, 167,
+                         166, 165, 164, 163, 161, 158, 156, 154, 153
+
+                         216, 214, 213, 211, 208, 205, 204, 203, 
+                         202, 201, 199, 197, 196, 195, 194, 192, 191, 189,
+                         187, 186, 185, 184, 183, 182, 181, 180, 179, 178
+
+                         229, 228, 227, 226, 225, 224, 223, 222, 221, 220,
+                         219, 218
+                         
+                         253, 252, 251, 250, 249, 248, 247, 246, 245, 244,
+                         242, 241, 239, 238, 236, 235, 234, 233, 232, 230
+
+                         
+*/
 
 $invoices = DB::query($sql);
 
