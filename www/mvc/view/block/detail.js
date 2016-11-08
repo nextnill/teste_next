@@ -79,18 +79,21 @@ function show_dialog(tipo, id, isInvoice, compensation_measure)
     }
 
     var btn_save = $('#btn_save');
+    var btn_downgrade = $('#btn_downgrade');
     limpa_formulario(tipo);
 
     switch(tipo)
     {
         case FORMULARIO.NOVO: // inclusão de blocos somente com ordem de produção
             btn_save.hide();
+            btn_downgrade.hide();
             permite_alterar(false);
             break;
         case FORMULARIO.EDITAR:
             carrega_formulario(id, tipo);
             btn_save.text('Save');
-            btn_save.addClass('btn btn-primary');
+            btn_save.addClass('btn btn-primary');            
+            btn_downgrade.hide();
             permite_alterar(true);
             break;
         case FORMULARIO.VISUALIZAR:
@@ -104,6 +107,7 @@ function show_dialog(tipo, id, isInvoice, compensation_measure)
             btn_save.text('Delete');
             btn_save.addClass('btn btn-danger');
             btn_save.css('');
+            btn_downgrade.hide();
             permite_alterar(false);
             break;
     }
@@ -303,6 +307,16 @@ function carrega_formulario(id, tipo)
                 btn_send_photo.click(function() {
                     abre_photo_upload(response.id, response.block_number, response.production_order_item_id, div_photos, div_photo_template);
                 });
+
+                var btn_downgrade = $('#btn_downgrade');                
+
+                if (item_template.baseURI.indexOf('interim') > 0) {
+                    btn_downgrade.hide();                        
+                }
+                btn_downgrade.unbind('click');
+                btn_downgrade.click(function() {
+                    show_downgrade(response.id, response.block_number, response.block_number_interim, response.quarry_id);
+                });                
 
             }
         }

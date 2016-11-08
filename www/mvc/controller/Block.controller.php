@@ -208,4 +208,15 @@ class Block_Controller extends \Sys\Controller
         $this->print_json($list);
     }
 
+    function downgrade_json($params)
+    {
+        $block_id = (int)$this->ReadPost('block_id');
+        $block_number_interim = (string)$this->ReadPost('block_number_interim');
+
+        $block_model = $this->LoadModel('Block', true);
+        $block_id = $block_model->downgrade($block_id, $block_number_interim);
+        
+        $this->print_json(array('block_id' => $block_id));
+    }    
+
 }

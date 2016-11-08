@@ -1221,7 +1221,7 @@ class Block_Model extends \Sys\Model {
         return $id;
     }    
 
-function come_back_interim(){
+    function come_back_interim(){
 
         $sql = "UPDATE block 
               SET type = 2,
@@ -1234,8 +1234,34 @@ function come_back_interim(){
        
         $query = DB::exec($sql, $params);
 
-        return $block_id;
+        return $this->block_id;
     }
+
+    function downgrade($block_id, $block_number_interim){
+        $this->populate($block_id);
+
+        $validation = $this->validation();
+
+        if ($validation->isValid()){
+
+            $this->insert_history();
+
+            $sql = "UPDATE block 
+                  SET type = 2,
+                  block_number = :block_number_interim,
+                  block_number_interim = null  
+                  WHERE id = :block_id ";
+
+            $params[':block_number_interim'] = $block_number_interim;
+            $params[':block_id'] = $block_id;
+
+            DB::exec($sql, $params);
+
+            return $block_id;
+        }
+
+        return $validation;
+    }    
 
 
 }

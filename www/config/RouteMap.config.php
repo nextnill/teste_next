@@ -110,6 +110,7 @@ class RouteMap_Config extends \Sys\RouteMap
 
                 '/block/reserve/' => array('Block', 'reserve_json', 'sobracolumay'),
                 '/block/reserve_selected/' => array('Block', 'reserve_selected_json', 'sobracolumay'),
+                '/block/downgrade/' => array('Block', 'downgrade_json', 'block'),
 
                 '/sobracolumay/list/' => array('Sobracolumay', 'list_action', 'sobracolumay'),
                 '/sobracolumay/list/json/' => array('Sobracolumay', 'list_json', 'sobracolumay'),

@@ -86,8 +86,6 @@ function listar_head_office()
             });
             
             listar_blocks();
-
-
         }
     }).fail(ajaxError);
 }
@@ -99,7 +97,7 @@ function listar(){
 }
 
 function listar_blocks()
-{
+{    
     // pesquisa a listagem em json
     $.getJSON("<?= APP_URI ?>sobracolumay/list/json/<?= $type ?>", function(response) {
         if (response_validation(response)) {
@@ -515,4 +513,87 @@ function color_sobra(row, item) {
             .find('a')
                 .css('color', cor.texto);
     }
+}
+
+function listar_downgrade_blocks()
+{    
+    // pesquisa a listagem em json
+    $.getJSON("<?= APP_URI ?>sobracolumay/list/json/final/", function(response) {
+        if (response_validation(response)) {
+            var list = $('#list');
+            var table = $('[template-table]').clone();
+            var table_body = $(table).find('table > tbody');
+            var quarry_name = '';
+            var quality_name = '';
+            var block_count = 0;
+            var block_net_vol_sum = 0;
+            var block_tot_weight_sum = 0;
+
+            list.html('');
+
+            // limpa trs, menos a primeira
+            table.find("tr:gt(1)").remove();
+            table.removeAttr("template-table");
+            table.css("display", '');
+
+            $.each(response, function(i, item) {
+                // se for o primeiro registro, seta o título na tabela
+                if (i == 0) {
+                    table.find("[template-quality]").text(item.quality_name);
+                    table.find("[template-title]").text(item.quarry_name);
+                }
+                // se for uma nova pedreira
+                if (item.quarry_name+item.quality_name != quarry_name+quality_name) {
+                    
+                    // se não for o primeiro registro
+                    if (i > 0) {
+                        // adiciono o totalizador
+                        add_footer(table_body, block_count, block_net_vol_sum, block_tot_weight_sum);
+                        // mostra a tabela
+                        table.appendTo(list);
+                    }
+                    table = $('[template-table]').clone();
+                    table_body = $(table).find('table > tbody');
+
+                    table.find("tr:gt(1)").remove(); // limpa trs, menos a primeira
+                    table.removeAttr("template-table");
+                    table.css("display", '');
+                    table.find("[template-title]").text(item.quarry_name);
+                    table.find("[template-quality]").text(item.quality_name);
+
+                    // zero os contadores
+                    block_count = 0;
+                    block_net_vol_sum = 0;
+                    block_tot_weight_sum = 0;
+                }
+
+                block_count++;
+                block_net_vol_sum += parseFloat(item.net_vol);
+                block_tot_weight_sum += parseFloat(item.tot_weight);
+
+                add_row(table_body, item);
+                quarry_name = item.quarry_name;
+                quality_name = item.quality_name;
+            });
+
+            // último registro
+            // adiciono o totalizador
+            add_footer(table_body, block_count, block_net_vol_sum, block_tot_weight_sum);
+            // mostra a tabela
+            table.appendTo(list);      
+            
+            $('cbo_head_office').select2();
+
+            //color();
+
+    
+        }
+    }).fail(ajaxError);
+}
+
+function listar_downgrade(){
+    client_color = [];
+    campos_marcados = [];
+    reserved_client = [];
+    listar_downgrade_blocks();
 }

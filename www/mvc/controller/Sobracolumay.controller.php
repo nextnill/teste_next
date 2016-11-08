@@ -14,6 +14,7 @@ class Sobracolumay_Controller extends \Sys\Controller
             'production_order/items/defects_marker',
             'production_order/items/photo_upload',
             'production_order/items/photo_view',
+            'sobracolumay/downgrade',
         ), $data);
     }
 

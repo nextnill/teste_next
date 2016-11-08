@@ -1,0 +1,25 @@
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal_downgrade" tabindex="-1" role="dialog" aria-labelledby="modal_downgrade_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" onclick="javascript:closeModal('modal_downgrade');">&times;</button>
+                <h4 class="modal-title" id="modal_downgrade_label">Downgrade</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" onsubmit="javascript:return false;">
+                    <div class="form-group">
+                        <label>Block Number</label>
+                        <input type="text" class="form-control" id="edt_downgrade_block_number" placeholder="Block Number">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer" style="bottom: 0px;">
+                <button type="button" class="btn btn-default" id="btn_downgrade_cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn_downgrade_confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /MODAL DETALHE -->
