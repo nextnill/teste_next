@@ -454,7 +454,7 @@ var load_inspection_certificate = function()
 
             new_template_inspection = template_inspection.clone();
 
-            render_header_inspection(new_template_inspection, inspection[inspection_index].inspection_name);
+            render_header_inspection(new_template_inspection, inspection[inspection_index].inspection_name, inspection[inspection_index].sold_client_name);
             
             quality_name = '';                
 
@@ -567,12 +567,15 @@ var load_inspection_certificate = function()
     this.load_thread_inspection_certificate(0);
 }
 
-function render_header_inspection(new_template_inspection, name) {
+function render_header_inspection(new_template_inspection, name, sold_client_name) {
 
     // limpa trs, menos a primeira
     new_template_inspection.find('tbody').find("tr:gt(1)").remove();
     new_template_inspection.removeAttr("template-inspection");
     new_template_inspection.css("display", '');
+
+    var field_client_name = new_template_inspection.find('[template-field="client_name"]');
+    field_client_name.text(sold_client_name);
 
     var field_inspection = new_template_inspection.find('[template-field="inspection"]');
     field_inspection.text(name);
