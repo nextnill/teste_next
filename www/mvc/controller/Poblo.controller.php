@@ -1630,7 +1630,7 @@ COLOR_DARKGREEN ) );
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, $item['invoice_item_nf']);
 
                     // Quebramos a data
-                    $strData  = $item['invoice_date_record'];
+                    $strData  = $item['invoice_date_nf'];
                     $parts = explode(" ", $strData);
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$el, $parts[0]);
 

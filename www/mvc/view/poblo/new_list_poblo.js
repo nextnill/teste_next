@@ -1123,7 +1123,7 @@ function render_lot (new_template_lot, item, color) {
     field_nf.attr('nf-data', item.invoice_date_nf);
 
     var field_data = $(new_row.find("[template-field='data']"));
-    field_data.text(item.invoice_date_record ? item.invoice_date_record.format_date() : '');
+    field_data.text(item.invoice_date_nf ? item.invoice_date_nf.format_date() : '');
 
     var field_price = $(new_row.find("[template-field='price']"));
     field_price.text(item.invoice_item_price ? item.invoice_item_price.format_number(2) : '');
@@ -1179,7 +1179,8 @@ function render_lot (new_template_lot, item, color) {
             }
 
             if(data_nf != ''){
-                field_nf.attr('nf-data', data_nf);                
+                field_nf.attr('nf-data', data_nf);
+                field_data.text(data_nf ? data_nf.format_date() : '');
             }
         }
 
