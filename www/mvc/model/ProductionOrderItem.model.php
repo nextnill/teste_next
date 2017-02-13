@@ -26,6 +26,7 @@ class ProductionOrderItem_Model extends \Sys\Model {
     public $net_l;
     public $net_vol;
     public $quality_id;
+    public $type;
     public $obs;
     public $defects_json;
 
@@ -218,6 +219,14 @@ class ProductionOrderItem_Model extends \Sys\Model {
                     $block_model->defects_json = $this->defects_json;
                     $block_model->defects = $this->defects;
                     $block_model->id = $this->block_id;
+
+                    //Carrega model da tabela 'quality' para pegar o id do 'block_model' e salvar na tabela 'block'
+                    $quality_model = $this->LoadModel('Quality', true);
+                    $quality_model->populate($block_model->quality_id);
+
+                    if((int)$block_type > 0){
+                        $block_model->type = $quality_model->block_type;
+                    }
 
                     $block_model->save();
 

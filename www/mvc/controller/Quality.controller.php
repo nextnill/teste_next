@@ -36,6 +36,7 @@ class Quality_Controller extends \Sys\Controller
         }
         
         $quality_model->name = $this->ReadPost('name');
+        $quality_model->block_type = $this->ReadPost('block_type');
         $quality_model->save();
 
         $this->print_json($quality_model);

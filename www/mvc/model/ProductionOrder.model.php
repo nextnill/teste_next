@@ -10,7 +10,7 @@ use \Sys\Validation;
 
 class ProductionOrder_Model extends \Sys\Model {
     
-	const PO_STATUS_DRAFT = 0;
+    const PO_STATUS_DRAFT = 0;
     const PO_STATUS_CONFIRMED = 1;
 
     public $id;
@@ -19,7 +19,6 @@ class ProductionOrder_Model extends \Sys\Model {
     public $quarry_id;
     public $date_production;
     public $product_id;
-    public $block_type;
     public $status;
 
     protected $active_quarries;
@@ -50,11 +49,6 @@ class ProductionOrder_Model extends \Sys\Model {
             $validation->add(Validation::VALID_ERR_FIELD, 'Invalid product');
         }
 
-        if (!$this->block_type > 0)
-        {
-            $validation->add(Validation::VALID_ERR_FIELD, 'Invalid block type');
-        }
-        
         return $validation;
     }
     
@@ -102,24 +96,21 @@ class ProductionOrder_Model extends \Sys\Model {
         if ($validation->isValid())
         {
             $sql = 'INSERT INTO production_order (
-	                    quarry_id,
-	                    date_production,
+                        quarry_id,
+                        date_production,
                         product_id,
-                        block_type,
-	                    status
-	                ) VALUES (
-	                    ?,
-	                    ?,
+                        status
+                    ) VALUES (
+                        ?,
                         ?,
                         ?,
                         ?
-	                ) ';
+                    ) ';
             $query = DB::exec($sql, array(
                 // values
                 $this->quarry_id,
                 $this->date_production,
                 $this->product_id,
-                $this->block_type,
                 self::PO_STATUS_DRAFT
             ));
 
@@ -145,22 +136,20 @@ class ProductionOrder_Model extends \Sys\Model {
             else
             {
                 $sql = 'UPDATE
-	                        production_order
-	                    SET
-	                        quarry_id = ?,
-	                        date_production = ?,
+                            production_order
+                        SET
+                            quarry_id = ?,
+                            date_production = ?,
                             product_id = ?,
-                            block_type = ?,
-	                        status = ?
-	                    WHERE
-	                        id = ?
-	                    ';
+                            status = ?
+                        WHERE
+                            id = ?
+                        ';
                 $query = DB::exec($sql, array(
                     // set
                     $this->quarry_id,
                     $this->date_production,
                     $this->product_id,
-                    $this->block_type,
                     $this->status,
                     // where
                     $this->id
@@ -220,17 +209,16 @@ class ProductionOrder_Model extends \Sys\Model {
         else
         {
             $sql = 'SELECT
-	                    id,
-	                    excluido,
-	                    quarry_id,
-	                    date_production,
+                        id,
+                        excluido,
+                        quarry_id,
+                        date_production,
                         product_id,
-                        block_type,
-	                    status
-	                FROM
-	                    production_order
-	                WHERE
-	                    id = ?
+                        status
+                    FROM
+                        production_order
+                    WHERE
+                        id = ?
                 ';
             $query = DB::query($sql, array(
                 // where
@@ -314,12 +302,11 @@ class ProductionOrder_Model extends \Sys\Model {
             //$this->date_production = $this->field_fill_date($row_query['date_production']);
             $this->date_production = (string)$row_query['date_production'];
             $this->product_id = (int)$row_query['product_id'];
-            $this->block_type = (int)$row_query['block_type'];
             $this->status = (int)$row_query['status'];
         }
     }
     
-    function get_list($quarry_id=null, $block_type=null, $ano, $mes)
+    function get_list($quarry_id=null, $ano, $mes, $quality)
     {
         $params[] = 'N';
 
@@ -359,9 +346,8 @@ class ProductionOrder_Model extends \Sys\Model {
             $params[] = $quarry_id;
         }
 
-        if($block_type){
-            $sql.= ' AND production_order.block_type = ?';
-            $params[] = $block_type;
+        if(!is_null($quality)){
+            $sql.= " AND production_order_item.quality_id IN (".implode(',', $quality).") ";
         }
 
         if($ano){
@@ -374,9 +360,9 @@ class ProductionOrder_Model extends \Sys\Model {
             $params[] = $mes;
         }
 
-        $sql .= "GROUP BY production_order.id ";
+        $sql .= " GROUP BY production_order.id ";
 
-        $sql .= "ORDER BY production_order.date_production DESC, production_order.id DESC ";
+        $sql .= " ORDER BY production_order.date_production DESC, production_order.id DESC ";
 
         $query = DB::query($sql, $params);
         

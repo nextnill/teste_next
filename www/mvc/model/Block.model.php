@@ -183,7 +183,6 @@ class Block_Model extends \Sys\Model {
                         quarry_id,
                         product_id,
                         quality_id,
-                        type,
                         production_order_item_id,
                         block_number,
                         tot_c,
@@ -209,7 +208,7 @@ class Block_Model extends \Sys\Model {
                         obs_poblo,
                         truck_id,
                         wagon_number
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
                               ?, ?, ?, ?, ?, ?, ?, ?, ?,
                               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ';
             
@@ -217,7 +216,6 @@ class Block_Model extends \Sys\Model {
                 $this->quarry_id,
                 $this->product_id,
                 $this->quality_id,
-                $this->type,
                 $this->production_order_item_id,
                 $this->block_number,
                 $this->tot_c,
@@ -267,6 +265,7 @@ class Block_Model extends \Sys\Model {
                     SET
                         block_number = ?,
                         quality_id = ?,
+                        type = ?,
                         tot_c = ?,
                         tot_a = ?,
                         tot_l = ?,
@@ -298,6 +297,7 @@ class Block_Model extends \Sys\Model {
             $query = DB::exec($sql, array(
                 $this->block_number,
                 $this->quality_id,
+                $this->type,
                 $this->tot_c,
                 $this->tot_a,
                 $this->tot_l,

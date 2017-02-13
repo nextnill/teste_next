@@ -34,22 +34,57 @@ function listar_filter_quarry(selected)
     }).fail(ajaxError);
 }
 
+function listar_filter_quality(selected)
+{
+    var cbo_filter_quality = $('#cbo_filter_quality');
+
+    cbo_filter_quality.find("option").remove();
+
+    // pesquisa a listagem em json
+    $.getJSON("<?= APP_URI ?>quality/list/json/", function(response) {
+        if (response_validation(response)) {
+            for (var i = 0; i < response.length; i++) {
+                var item = response[i];
+                add_option(cbo_filter_quality, item.id, item.name);
+            };
+
+            cbo_filter_quality.select2();
+
+            if(typeof selected != 'undefined'){
+
+                cbo_filter_quality.val(selected).trigger('change');
+            }
+
+            cbo_filter_quality.unbind('change');
+            cbo_filter_quality.change(function() {
+                listar();
+            });
+            listar();
+        }
+    }).fail(ajaxError);
+}
+
 function listar()
 {
     var cbo_filter_quarry = $('#cbo_filter_quarry');
     var cbo_filter_type = $('#cbo_filter_type');
     var edt_year = $('#edt_year');
     var cbo_month_filter = $('#cbo_month_filter');
-
+    var cbo_filter_quality = $('#cbo_filter_quality');
 
     // limpa trs, menos a primeira
-    $('#tbl_listagem').find("tr:gt(1)").remove();
 
     // pesquisa a listagem em json
-    $.getJSON("<?= APP_URI ?>po/list/json/" + (cbo_filter_quarry.val() ? cbo_filter_quarry.val() : ''), 
-        {block_type: cbo_filter_type.val(),ano: edt_year.val(), mes: cbo_month_filter.val()}, function(response) {
+    $.getJSON("<?= APP_URI ?>po/list/json/", 
+        {
+            block_type: cbo_filter_type.val(),
+            ano: edt_year.val(),
+            mes: cbo_month_filter.val(),
+            quality: JSON.stringify(cbo_filter_quality.val())
+        }, function(response) {
         if (response_validation(response)) {
             
+            $('#tbl_listagem').find("tr:gt(1)").remove();
             // zero os totalizadores
             tot_vol = 0;
             tot_block = 0;
@@ -103,9 +138,6 @@ function add_row(table_body, item, totalizador)
 
     var field_product_name = $(new_row.find("[template-field='product_name']"));
     field_product_name.text(item.product_name);
-
-    var field_block_type = $(new_row.find("[template-field='block_type']"));
-    field_block_type.text(str_block_type(item.block_type));
 
     var field_vol = $(new_row.find("[template-field='vol']"));
 
@@ -172,6 +204,8 @@ funcs_on_load.push(function(){
     var cbo_filter_quarry = $('#cbo_filter_quarry');
     var cbo_filter_type = $('#cbo_filter_type');
 
+    listar_filter_quality();
+
     if(!parametros.ano && !parametros.mes){
         var agora = new Date();
         var mes = ("0" + (agora.getMonth() + 1)).slice(-2);
@@ -187,7 +221,6 @@ funcs_on_load.push(function(){
     
     edt_year.val(parametros.ano);
     cbo_month_filter.val(parametros.mes);
-    //cbo_filter_quarry.val(parametros.quarry_id);
     listar_filter_quarry(parametros.quarry_id);
     cbo_filter_type.val(parametros.block_type);
     

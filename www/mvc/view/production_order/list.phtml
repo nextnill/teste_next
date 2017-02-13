@@ -27,15 +27,12 @@
                 <option value="12">December</option>
             </select>
         </div>
-        <div class="col-md-3">
-            <label for="cbo_filter_type">Filter Block Type</label>
-            <select id="cbo_filter_type" class="form-control select2 select2-input" onchange="javascript:listar()">
-                <option value="-1">All</option>
-                <option value="1">Final Block</option>
-                <option value="2">Interim Block</option>
+        <div class="form-group col-md-3">
+            <label for="cbo_filter_quality">Filter Quality</label>
+            <select id="cbo_filter_quality" class="form-control select2 select2-input" multiple="multiple" onchange="javascript:listar()">
             </select>
         </div>
-        <div class="col-md-3">
+        <div class="form-group col-md-3" style="padding-top: 6px;">
             <label for="cbo_filter_quarry">Filter Quarry</label>
             <select id="cbo_filter_quarry" class="form-control select2 select2-input">
             </select>
@@ -57,7 +54,6 @@
                 <tr>
                     <th>Quarry</th>
                     <th>Production Date</th>
-                    <th>Block Type</th>
                     <th>Status</th>
                     <th>Vol</th>
                     <th>Blocks</th>
@@ -69,7 +65,6 @@
                 <tr template-row style="display: none;">
                     <td template-field="quarry_name"></td>
                     <td template-field="date_production"></td>
-                    <td template-field="block_type"></td>
                     <td><span template-field="status"></span></td>
                     <td><span template-field="vol"></span></td>
                     <td><span template-field="count"></span></td>

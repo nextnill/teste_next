@@ -15,6 +15,7 @@ class Quality_Model extends \Sys\Model {
 
     public $order_number;
     public $name;
+    public $block_type;
     
     function __construct()
     {
@@ -66,10 +67,11 @@ class Quality_Model extends \Sys\Model {
 
         if ($validation->isValid())
         {
-            $sql = 'INSERT INTO quality (name, order_number) VALUES (?,
-                        (SELECT coalesce(max(b.order_number), 0) + 1 FROM quality b WHERE b.excluido = \'N\')
+            $sql = 'INSERT INTO quality (name, order_number, block_type) VALUES (?,
+                        (SELECT coalesce(max(b.order_number), 0) + 1 FROM quality b WHERE b.excluido = \'N\'),
+                        ?
                     ) ';
-            $query = DB::exec($sql, array($this->name));
+            $query = DB::exec($sql, array($this->name, $this->block_type));
 
             $this->id = DB::last_insert_id();
             return $this->id;
@@ -95,12 +97,14 @@ class Quality_Model extends \Sys\Model {
                     UPDATE
                         quality
                     SET
-                        name = ?
+                        name = ?,
+                        block_type = ?
                     WHERE
                         id = ? ';
                 $query = DB::exec($sql, array(
                     // set
                     $this->name,
+                    $this->block_type,
                     // where
                     $this->id
                 ));
@@ -218,7 +222,8 @@ class Quality_Model extends \Sys\Model {
                     id,
                     excluido,
                     order_number,
-                    name
+                    name,
+                    block_type
                 FROM
                     quality
                 WHERE id = ?',
@@ -244,6 +249,7 @@ class Quality_Model extends \Sys\Model {
 
             $this->order_number = (int)$row_query['order_number'];
             $this->name = (string)$row_query['name'];
+            $this->block_type = (int)$row_query['block_type'];
         }
     }
     
@@ -251,7 +257,7 @@ class Quality_Model extends \Sys\Model {
     {
         $excluido = ($excluido === true ? 'S' : 'N');
         
-        $query = DB::query('SELECT id, excluido, order_number, name FROM quality WHERE excluido = ? ORDER BY order_number, name', array($excluido));
+        $query = DB::query('SELECT id, excluido, order_number, name, block_type FROM quality WHERE excluido = ? ORDER BY order_number, name, block_type', array($excluido));
         
         return $query;
     }

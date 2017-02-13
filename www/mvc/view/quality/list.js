@@ -80,6 +80,15 @@ function add_row(table_body, i, item)
     var field_name = $(new_row.find("[template-field='name']"));
     field_name.text(item.name);
 
+    var block_type = $(new_row.find("[template-field='block_type']"));
+    if(item.block_type == BLOCK_TYPE.FINAL){
+        block_type.text("Final Block");
+    }else if(item.block_type == BLOCK_TYPE.INTERIM){
+        block_type.text("Interim Block");
+    }else{
+        block_type.text("?");
+    }
+
     var button_edit = new_row.find("[template-button='edit']");
     button_edit.attr('template-ref', item.id);
     button_edit.click(

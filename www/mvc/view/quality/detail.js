@@ -68,12 +68,22 @@ function carrega_formulario(id)
         if (response_validation(response)) {
             var rec_id = $('#rec_id');
             var edt_name = $('#edt_name');
+            var rdo_block_type_final = $('#rdo_block_type_final');
+            var rdo_block_type_interim = $('#rdo_block_type_interim');            
 
             if (response.hasOwnProperty('id'))
             {
                 rec_id.val(response.id);
 
                 edt_name.val(response.name);
+
+                if (parseInt(response.block_type, 10) == BLOCK_TYPE.FINAL){
+                    rdo_block_type_final.prop("checked", true);
+                    rdo_block_type_interim.prop("checked", false);
+                }else{
+                    rdo_block_type_final.prop("checked", false);
+                    rdo_block_type_interim.prop("checked", true);
+                }
             }
         }
     }).fail(ajaxError);
@@ -113,6 +123,8 @@ function envia_detalhes()
         var btn_save = $('#btn_save');
         var rec_id = $('#rec_id');
         var edt_name = $('#edt_name');
+        var rdo_block_type_final = $('#rdo_block_type_final');
+        var rdo_block_type_interim = $('#rdo_block_type_interim');
 
         $.ajax({
             error: ajaxError,
@@ -120,7 +132,9 @@ function envia_detalhes()
             url: "<?= APP_URI ?>quality/" + (post_tipo.val() == FORMULARIO.EXCLUIR ? "delete" : "save") + "/",
             data: {
                 id: rec_id.val(),
-                name: edt_name.val()
+                name: edt_name.val(),
+                block_type: rdo_block_type_final.prop("checked") ? BLOCK_TYPE.FINAL : BLOCK_TYPE.INTERIM
+
             },
             success: function (response) {
                 if (response_validation(response)) {

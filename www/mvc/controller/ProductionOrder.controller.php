@@ -10,6 +10,7 @@ class ProductionOrder_Controller extends \Sys\Controller
         $ano = null;
         $mes = null;
         $block_type = null;
+        $quality = null;
         $quarry_id = null;
 
         
@@ -23,6 +24,10 @@ class ProductionOrder_Controller extends \Sys\Controller
         
         if(isset($_SESSION[SPRE.'po_block_type'])){
             $block_type = $_SESSION[SPRE.'po_block_type'];
+        }
+        
+        if(isset($_SESSION[SPRE.'po_quality'])){
+            $quality = $_SESSION[SPRE.'po_quality'];
         }
         
         if(isset($_SESSION[SPRE.'po_quarry_id'])){
@@ -66,23 +71,27 @@ class ProductionOrder_Controller extends \Sys\Controller
             $quarry_id = (int)$params[0];
         }
 
-        $block_type = $this->ReadGet('block_type');
+        // $block_type = $this->ReadGet('block_type');
         $ano = $this->ReadGet('ano');
         $mes = $this->ReadGet('mes');
+        $quality = $this->ReadGet('quality');
 
         $_SESSION[SPRE.'po_ano_filtro'] = $ano;
         $_SESSION[SPRE.'po_mes_filtro'] = $mes;
-        $_SESSION[SPRE.'po_block_type'] = $block_type;
+        // $_SESSION[SPRE.'po_block_type'] = $block_type;
         $_SESSION[SPRE.'po_quarry_id'] = $quarry_id;
+        $_SESSION[SPRE.'po_quality'] = $quality;
 
 
         $quarry_id = ($quarry_id > 0 ? $quarry_id : null);
-        $block_type = ($block_type > 0 ? $block_type : null);
+        // $block_type = ($block_type > 0 ? $block_type : null);
         $ano = ($ano > 0 ? $ano : null);
         $mes = ($mes > 0 ? $mes : null);
 
+        $quality = json_decode($quality);
+
     	$po_model = $this->LoadModel('ProductionOrder', true);
-    	$list = $po_model->get_list($quarry_id, $block_type, $ano, $mes);
+    	$list = $po_model->get_list($quarry_id, $ano, $mes, $quality);
     	
         $this->print_json($list);
         
@@ -110,7 +119,6 @@ class ProductionOrder_Controller extends \Sys\Controller
         $po_model->quarry_id = $this->ReadPost('quarry_id');
         $po_model->date_production = $this->ReadPost('date_production');
         $po_model->product_id = $this->ReadPost('product_id');
-        $po_model->block_type = $this->ReadPost('block_type');
 
         $po_model->save();
 

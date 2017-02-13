@@ -79,14 +79,10 @@ function permite_alterar(valor)
     var cbo_quarry = $('#cbo_quarry');
     var edt_date_production = $('#edt_date_production');
     var cbo_product = $('#cbo_product');
-    var rdo_block_type_final = $('#rdo_block_type_final');
-    var rdo_block_type_interim = $('#rdo_block_type_interim');
 
     cbo_quarry.prop("disabled", !valor);
     edt_date_production.prop("readonly", !valor);
     cbo_product.prop("disabled", !valor);
-    rdo_block_type_final.prop("disabled", !valor);
-    rdo_block_type_interim.prop("disabled", !valor);
 }
 
 function limpa_formulario(tipo)
@@ -99,8 +95,6 @@ function limpa_formulario(tipo)
     var cbo_quarry = $('#cbo_quarry');
     var edt_date_production = $('#edt_date_production');
     var cbo_product = $('#cbo_product');
-    var rdo_block_type_final = $('#rdo_block_type_final');
-    var rdo_block_type_interim = $('#rdo_block_type_interim');
 
     alerta_form.hide();
     btn_save.removeClass();
@@ -113,8 +107,6 @@ function limpa_formulario(tipo)
 
     edt_date_production.val('');
     cbo_product.val('');
-    rdo_block_type_final.prop("checked", true);
-    rdo_block_type_interim.prop("checked", false);
 
     set_focus(cbo_quarry);
 
@@ -130,8 +122,6 @@ function carrega_formulario(id)
             var cbo_quarry = $('#cbo_quarry');
             var edt_date_production = $('#edt_date_production');
             var cbo_product = $('#cbo_product');
-            var rdo_block_type_final = $('#rdo_block_type_final');
-            var rdo_block_type_interim = $('#rdo_block_type_interim');
             var edt_status = $('#edt_status');
             var btn_save = $('#btn_save');
 
@@ -140,16 +130,6 @@ function carrega_formulario(id)
                 rec_id.val(response.id);
                 listar_quarry(response.quarry_id, response.product_id);
                 set_datepicker(edt_date_production, response.date_production);
-                if (parseInt(response.block_type, 10) == BLOCK_TYPE.FINAL)
-                {
-                    rdo_block_type_final.prop("checked", true);
-                    rdo_block_type_interim.prop("checked", false);
-                }
-                else
-                {
-                    rdo_block_type_final.prop("checked", false);
-                    rdo_block_type_interim.prop("checked", true);
-                }
 
                 edt_status.val(str_production_status(response.status));
 
@@ -169,8 +149,6 @@ function valida_formulario()
     var cbo_quarry = $('#cbo_quarry');
     var edt_date_production = $('#edt_date_production');
     var cbo_product = $('#cbo_product');
-    var rdo_block_type_final = $('#rdo_block_type_final');
-    var rdo_block_type_interim = $('#rdo_block_type_interim');
 
     var valido = true;
     var msgs = new Array();
@@ -213,8 +191,6 @@ function envia_detalhes()
         var cbo_quarry = $('#cbo_quarry');
         var edt_date_production = $('#edt_date_production');
         var cbo_product = $('#cbo_product');
-        var rdo_block_type_final = $('#rdo_block_type_final');
-        var rdo_block_type_interim = $('#rdo_block_type_interim');
 
         $.ajax({
             error: ajaxError,
@@ -224,8 +200,7 @@ function envia_detalhes()
                 id: rec_id.val(),
                 quarry_id: cbo_quarry.val(),
                 date_production: get_datepicker(edt_date_production),
-                product_id: cbo_product.val(),
-                block_type: (rdo_block_type_final.prop("checked") ? BLOCK_TYPE.FINAL : BLOCK_TYPE.INTERIM)
+                product_id: cbo_product.val()
             },
             dataType: 'json',
             success: function (response) {
