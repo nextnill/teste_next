@@ -1,0 +1,5 @@
+ALTER TABLE `quality` 
+ADD COLUMN `block_type` TINYINT(4) NULL COMMENT '' AFTER `name`;
+
+ALTER TABLE `production_order` 
+CHANGE COLUMN `block_type` `block_type` TINYINT(4) NULL DEFAULT '0' COMMENT '' ;
