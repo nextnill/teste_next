@@ -11,3 +11,4 @@ ADD COLUMN `wagon_date` DATE NULL COMMENT '' AFTER `wagon_number`;
 ALTER TABLE `block` 
 ADD COLUMN `wagon_date` DATE NULL COMMENT '' AFTER `wagon_number`;
 
+ 
