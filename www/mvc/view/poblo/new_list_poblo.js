@@ -486,13 +486,13 @@ var load_inspection_certificate = function()
                 if(quarry_id != item.quarry_id){
 
                     var block_count = {
-                        invoice_sale_net_vol: sum_volume_quarry,
-                        tot_weight: sum_weight_quarry,
-                        block_number: count_blocks_quarry,
-                        quality_name: count_quality_blocks_quarry,
+                        invoice_sale_net_vol: '',
+                        tot_weight: '',
+                        block_number: '',
+                        quality_name: '',
                     }
 
-                    render_inspection(new_template_inspection, block_count, 'bg-success');
+                    render_inspection(new_template_inspection, block_count, 'bg-white');
 
                     quarry_id = item.quarry_id;
                     count_blocks_quarry = 0;
@@ -531,13 +531,13 @@ var load_inspection_certificate = function()
                     render_inspection(new_template_inspection, block_count, 'bg-warning');
 
                     var block_count_quarry = {
-                        invoice_sale_net_vol: sum_volume_quarry,
-                        tot_weight: sum_weight_quarry,
-                        block_number: count_blocks_quarry,
-                        quality_name: count_quality_blocks_quarry,
+                        invoice_sale_net_vol: '',
+                        tot_weight: '',
+                        block_number: '',
+                        quality_name: '',
                     }
 
-                    render_inspection(new_template_inspection, block_count_quarry, 'bg-success');                    
+                    render_inspection(new_template_inspection, block_count_quarry, 'bg-white'); 
 
 
                     var block_count_final = {
@@ -720,8 +720,7 @@ function render_inspection(new_template_inspection, item, color) {
     btn_edit.unbind('click');
     btn_edit.click(function() {
 
-        
-        show_poblo_edit(item.block_id, item.invoice_item_id, callback, field_block_number_row.attr('nf'), field_block_number_row.attr('date_nf'), field_block_number_row.attr('price'), null, 'insp');
+        show_poblo_edit(item.block_id, item.invoice_item_id, callback, field_block_number_row.attr('nf'), field_block_number_row.attr('date_nf'), field_block_number_row.attr('price'), null, 'insp', item.wagon_date);
     });
     
     if(color){
@@ -809,14 +808,14 @@ var load_lot = function() {
                 if(item.quarry_id != quarry_id){
                     
                     var block_count = {
-                        block_number: count_blocks_quarry,
-                        quality_name: count_quality_blocks_quarry,
-                        invoice_sale_net_vol: sum_volume_quarry,
-                        tot_weight: sum_weight_quarry,
-                        invoice_item_price: sum_price_quarry,
+                        block_number: '',
+                        quality_name: '',
+                        invoice_sale_net_vol: '',
+                        tot_weight: '',
+                        invoice_item_price: '',
                     }
 
-                    render_lot(new_template_lot, block_count, 'bg-success');
+                    render_lot(new_template_lot, block_count, 'bg-white');
 
                     count_blocks_quarry = 0;
                     sum_price_quarry = 0;
@@ -860,14 +859,14 @@ var load_lot = function() {
                     render_lot(new_template_lot, block_count, 'bg-warning');
 
                     var block_count_quarry = {
-                        block_number: count_blocks_quarry,
-                        quality_name: count_quality_blocks_quarry,
-                        invoice_sale_net_vol: sum_volume_quarry,
-                        tot_weight: sum_weight_quarry,
-                        invoice_item_price: sum_price_quarry,
+                        block_number: '',
+                        quality_name: '',
+                        invoice_sale_net_vol: '',
+                        tot_weight: '',
+                        invoice_item_price: '',
                     }
 
-                    render_lot(new_template_lot, block_count_quarry, 'bg-success');                    
+                    render_lot(new_template_lot, block_count_quarry, 'bg-white');                    
 
                     var block_count_final = {
                         block_number: count_blocks_final,
@@ -1146,6 +1145,9 @@ function render_lot (new_template_lot, item, color) {
     var field_wagon_number = $(new_row.find("[template-field='wagon_number']"));
     field_wagon_number.text(item.block_wagon_number ? item.block_wagon_number : '');
 
+    var field_wagon_date = $(new_row.find("[template-field='wagon_date']"));
+    field_wagon_date.text(item.block_wagon_date ? item.block_wagon_date.format_date() : '');
+
     var field_obs = $(new_row.find("[template-field='obs']"));
     field_obs.text(item.obs_poblo ? item.obs_poblo : '');
 
@@ -1165,7 +1167,7 @@ function render_lot (new_template_lot, item, color) {
     btn_edit.click(function() {
 
 
-        var callback = function(nf, price, wagon_number, data_nf){
+        var callback = function(nf, price, wagon_number, data_nf, wagon_date){
             if(nf != ''){
                 field_nf.text(nf);
             }
@@ -1178,13 +1180,17 @@ function render_lot (new_template_lot, item, color) {
                 field_wagon_number.text(wagon_number);
             }
 
+            if(wagon_date != ''){
+                field_wagon_date.text(wagon_date ? wagon_date.format_date() : '');
+            }
+
             if(data_nf != ''){
                 field_nf.attr('nf-data', data_nf);
                 field_data.text(data_nf ? data_nf.format_date() : '');
             }
         }
 
-        show_poblo_edit(item.block_id, item.invoice_item_id, callback, field_nf.text(), field_nf.attr('nf-data'), (field_price.text() != null ? field_price.text().format_number(2) : null) , field_wagon_number.text());
+        show_poblo_edit(item.block_id, item.invoice_item_id, callback, field_nf.text(), field_nf.attr('nf-data'), (field_price.text() != null ? field_price.text().format_number(2) : null), field_wagon_number.text(), '',field_wagon_date.text());
     });
 
     if(color){

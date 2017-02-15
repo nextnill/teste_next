@@ -188,12 +188,18 @@ class Poblo_Controller extends \Sys\Controller
 
         $block_id = (int)$this->ReadPost('block_id');
         $wagon_number = $this->ReadPost('wagon_number');
-
+        $wagon_date = (string)$this->ReadPost('wagon_date');
         
+        $block_model = $this->LoadModel('Block', true);
+        $block_model->id = $block_id;
+
         if($wagon_number <> ''){
-            $block_model = $this->LoadModel('Block', true);
             $block_model->update_wagon_number($block_id, $wagon_number);
-        }       
+        }
+
+        if($wagon_date <> ''){
+            $block_model->update_wagon_date($block_id, $wagon_date);
+        }
 
         $this->print_json(array('block_id' => $block_id));
     }
@@ -362,13 +368,13 @@ class Poblo_Controller extends \Sys\Controller
             $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
         
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('FFFFF0');;
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('FFFFF0');;
         }                
 
         // função interna para adicionar totalizador na pedreira
@@ -377,7 +383,11 @@ class Poblo_Controller extends \Sys\Controller
             $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, $count_blocks_final);
             $objPHPExcel->getActiveSheet()->setCellValue('B'.$el, $count_quality_blocks_final);
             $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, $sum_volume_final);
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, $sum_weight_final);            
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, $sum_weight_final);
+
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.($el + 1), ''); // deixa uma linha em branco
+
+
 
             $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
             $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
@@ -387,22 +397,24 @@ class Poblo_Controller extends \Sys\Controller
             $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
         
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F0F8FF');;
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F0F8FF');;
         }                        
 
         // função interna para adicionar totalizador na pedreira
         function add_totalizador_inspection_quarry($objPHPExcel, $el, $count_blocks_quarry, $count_quality_blocks_quarry, $sum_volume_quarry, $sum_weight_quarry) {
             // imprimo os totalizadores
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, $count_blocks_quarry);
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$el, $count_quality_blocks_quarry);
-            $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, $sum_volume_quarry);
-            $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, $sum_weight_quarry);            
+            // $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, $count_blocks_quarry);
+            // $objPHPExcel->getActiveSheet()->setCellValue('B'.$el, $count_quality_blocks_quarry);
+            // $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, $sum_volume_quarry);
+            // $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, $sum_weight_quarry);
+
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, '');            
 
             $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
             $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
@@ -412,13 +424,13 @@ class Poblo_Controller extends \Sys\Controller
             $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
         
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F0FFF0');;
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
         }    
 
         // função interna para adicionar totalizador na pedreira
@@ -440,24 +452,24 @@ class Poblo_Controller extends \Sys\Controller
             $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
         
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F0F8FF');;
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F0F8FF');;
         }                            
 
         // função interna para adicionar totalizador na pedreira
         function add_totalizador_lot_quarry($objPHPExcel, $el, $count_blocks_quarry, $count_quality_blocks_quarry, $sum_volume_quarry, $sum_weight_quarry, $sum_price_quarry) {
             // imprimo os totalizadores
         
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$el, $sum_price_quarry);
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$el, $count_blocks_quarry);
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$el, $count_quality_blocks_quarry);
-            $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, $sum_volume_quarry);
-            $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, $sum_weight_quarry);            
+            // $objPHPExcel->getActiveSheet()->setCellValue('C'.$el, $sum_price_quarry);
+            // $objPHPExcel->getActiveSheet()->setCellValue('D'.$el, $count_blocks_quarry);
+            // $objPHPExcel->getActiveSheet()->setCellValue('E'.$el, $count_quality_blocks_quarry);
+            // $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, $sum_volume_quarry);
+            // $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, $sum_weight_quarry);            
 
             $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getNumberFormat()->setFormatCode('#,###0.00');
             $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
@@ -469,13 +481,13 @@ class Poblo_Controller extends \Sys\Controller
             $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
         
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F0FFF0');;
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');;
         }    
 
         // função interna para adicionar totalizador na pedreira
@@ -497,13 +509,13 @@ class Poblo_Controller extends \Sys\Controller
             $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
         
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('FFFFF0');;
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('FFFFF0');;
         }   
 
         //load block color according to the selected client
@@ -557,290 +569,6 @@ class Poblo_Controller extends \Sys\Controller
 
         // sobracolumay
         $list = $lot_transport_model->get_sobracolumay($client_id);                     
-
-        if (!empty($list)){
-            foreach ($list as $key => $block) {
-                $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(15);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(12);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(20);            
-                
-                if($key == 0){
-                    $quarry_name = $block['quarry_name'];
-                    $quality_name = $block['quality_name'];
-                    // imprimo a pedreira
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,'Final Sobracolumay - ' . $block['quarry_name']);
-
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-          
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
-
-                    // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':J'.$el);
-
-                    $el++;
-
-
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, 'Production'); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$el, 'Block Number');             
-                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$el, 'Quality');                         
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$el, 'Net Meas');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$el, '');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, '');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, 'Vol');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$el, 'Weight');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, 'Reserved');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, 'Obs');
-
-                    // styles
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('B'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);                
-
-                    // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('D'.$el.':F'.$el);
-                    
-
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $el++;                
-
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$el, 'C');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$el, 'A');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, 'L');                                                         
-
-                    $lAnt = $el - 1;
-
-                    // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$lAnt.':A'.$el);
-                    $objPHPExcel->getActiveSheet()->mergeCells('B'.$lAnt.':B'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('C'.$lAnt.':C'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('G'.$lAnt.':G'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('H'.$lAnt.':H'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('I'.$lAnt.':I'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('J'.$lAnt.':J'.$el);                    
-
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-
-                    $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getFont()->setBold(true);                                        
-                    $el++;                
-                }
-
-                if ($block['quarry_name'] != $quarry_name) {
-
-                    add_totalizador_quality($objPHPExcel, $el, $count_blocks, $count_quality_blocks, $sum_volume, $sum_weight);
-                    $el++;                                        
-                    add_totalizador_final($objPHPExcel, $el, $count_blocks_final, $count_quality_blocks_final, $sum_volume_final, $sum_weight_final);
-                    $el++;
-
-                    // incrementa uma linha
-                    $el++;
-      
-
-                    $quarry_name = $block['quarry_name'];
-                    $quality_name = $block['quality_name'];
-                    $count_blocks_final = 0;
-                    $count_quality_blocks_final = 0;
-                    $sum_volume_final = 0;
-                    $sum_weight_final = 0;      
-
-                    $count_blocks = 0;
-                    $count_quality_blocks = 0;
-                    $sum_volume = 0;
-                    $sum_weight = 0;
-
-                    // imprimo a pedreira
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,'Final Sobracolumay - ' . $block['quarry_name']);
-
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    
-
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
-
-                    // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':J'.$el);
-
-                    $el++;
-
-
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, 'Production'); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$el, 'Block Number');             
-                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$el, 'Quality');                         
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$el, 'Net Meas');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$el, '');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, '');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, 'Vol');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$el, 'Weight');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, 'Reserved');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, 'Obs');
-
-                        // styles
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('B'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);                
-
-                    // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('D'.$el.':F'.$el);
-                    
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $el++;
-
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$el, 'C');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$el, 'A');                                     
-                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, 'L');                                                         
-
-                    $lAnt = $el - 1;
-
-                    // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$lAnt.':A'.$el);
-                    $objPHPExcel->getActiveSheet()->mergeCells('B'.$lAnt.':B'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('C'.$lAnt.':C'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('G'.$lAnt.':G'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('H'.$lAnt.':H'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('I'.$lAnt.':I'.$el);                    
-                    $objPHPExcel->getActiveSheet()->mergeCells('J'.$lAnt.':J'.$el);                    
-
-                    $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-
-                    $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getFont()->setBold(true);                                        
-                    $el++;                                    
-                }
-
-                if($block['quality_name'] != $quality_name){
-                    add_totalizador_quality($objPHPExcel, $el, $count_blocks, $count_quality_blocks, $sum_volume, $sum_weight);
-                    $el++;
-                    
-                    $quality_name = $block['quality_name'];
-                    $count_blocks = 0;
-                    $count_quality_blocks = 0;
-                    $sum_volume = 0;
-                    $sum_weight = 0;
-
-                }
-
-                $count_blocks_final++;
-                $count_quality_blocks_final++;
-                $sum_volume_final += $block['net_vol'];
-                $sum_weight_final += $block['tot_weight'];
-
-                $count_blocks++;
-                $count_quality_blocks++;
-                $sum_volume += $block['net_vol'];
-                $sum_weight += $block['tot_weight'];
-
-                $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, $block['date_production']);
-                $objPHPExcel->getActiveSheet()->setCellValue('B'.$el, $block['block_number']);
-
-                // Verificamos a cor do cliente    
-                color_sobra($client_color, $colors_sobra_background, $objPHPExcel, $el, $block);
-
-                $objPHPExcel->getActiveSheet()->setCellValue('C'.$el, $block['quality_name']);
-                $objPHPExcel->getActiveSheet()->setCellValue('D'.$el, $block['net_c']);
-                $objPHPExcel->getActiveSheet()->setCellValue('E'.$el, $block['net_a']);
-                $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, $block['net_l']);     
-                $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, $block['net_vol']);     
-                $objPHPExcel->getActiveSheet()->setCellValue('H'.$el, $block['tot_weight']);     
-                $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, $block['reserved_client_code']);                 
-                $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, $block['obs_poblo']);                             
-
-                // styles
-
-                $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setWrapText(true);
-
-                $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('B'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                $objPHPExcel->getActiveSheet()->getStyle('B'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-                $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                $objPHPExcel->getActiveSheet()->getStyle('I'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-                $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                
-                
-                $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getNumberFormat()->setFormatCode('#,###0.00');
-                $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getNumberFormat()->setFormatCode('#,###0.00');
-                $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getNumberFormat()->setFormatCode('#,###0.00');
-                $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
-                $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
-                
-
-                $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-
-
-                $border_style = array(
-                    'borders' => array(
-                        'allborders' => array(
-                            'style' => PHPExcel_Style_Border::BORDER_THIN
-                        )
-                    )
-                );
-                $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':J'.$el)->applyFromArray($border_style);
-
-                $el++;            
-            }
-
-            // último registro
-            // adiciono o totalizador
-            add_totalizador_quality($objPHPExcel, $el, $count_blocks, $count_quality_blocks, $sum_volume, $sum_weight);
-            $el++;                                                
-            add_totalizador_final($objPHPExcel, $el, $count_blocks_final, $count_quality_blocks_final, $sum_volume_final, $sum_weight_final);
-            $el++;        
-
-        }
-
 
         // INSPECTIONS
         $inspection_certificate_list = $lot_transport_model->get_inspection_certificate($client_id);
@@ -898,8 +626,8 @@ class Poblo_Controller extends \Sys\Controller
                 $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(10);
                 $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(10);
                 $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(10);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(10);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(12);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(12);
                 $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(12);         
 
                 if($key == 0){
@@ -907,33 +635,33 @@ class Poblo_Controller extends \Sys\Controller
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['sold_client_name']);
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     //$objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
 
                     // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':H'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
 
                     $el++;
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['inspection_name']);
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-                    //$objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+                    //$objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
 
                     // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':H'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
 
                     $el++;
 
@@ -954,16 +682,17 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
                     // merge cells
                     $objPHPExcel->getActiveSheet()->mergeCells('C'.$el.':E'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('H'.$el.':M'.$el);
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
                     $el++;                                    
 
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$el, 'C');                                     
@@ -979,13 +708,13 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->mergeCells('G'.$lAnt.':G'.$el);                    
                     $objPHPExcel->getActiveSheet()->mergeCells('H'.$lAnt.':H'.$el);                    
 
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
                     $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);                                        
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);                                        
                     $el++;                                                        
                 } 
 
@@ -1018,34 +747,34 @@ class Poblo_Controller extends \Sys\Controller
                     // imprimo a pedreira
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['sold_client_name']);
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    //$objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    //$objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
 
                     // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':H'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
 
                     $el++;
 
                     // imprimo a pedreira
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['inspection_name']);
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
                     //$objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');;
 
                     // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':H'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
 
                     $el++;
 
@@ -1067,16 +796,16 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->getStyle('E'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
                     // merge cells
-                    $objPHPExcel->getActiveSheet()->mergeCells('C'.$el.':E'.$el);
-                    
+                    $objPHPExcel->getActiveSheet()->mergeCells('C'.$el.':E'.$el);                    
+                    $objPHPExcel->getActiveSheet()->mergeCells('H'.$el.':M'.$el);                    
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
                     $el++;       
 
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$el, 'C');                                     
@@ -1092,8 +821,8 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->mergeCells('G'.$lAnt.':G'.$el);                    
                     $objPHPExcel->getActiveSheet()->mergeCells('H'.$lAnt.':H'.$el);                    
 
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
                     $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -1179,9 +908,11 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.$el, $item['tot_weight']);     
                     $objPHPExcel->getActiveSheet()->setCellValue('H'.$el, $item['obs_poblo']);                             
 
+
+                    $objPHPExcel->getActiveSheet()->mergeCells('H'.$el.':M'.$el);
                     // styles
 
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setWrapText(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getAlignment()->setWrapText(true);
 
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
@@ -1197,8 +928,8 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
                     $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
                     $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $objPHPExcel->getActiveSheet()->getStyle('H'.$el.':M'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
                     
                     $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getNumberFormat()->setFormatCode('#,###0.00');
                     $objPHPExcel->getActiveSheet()->getStyle('D'.$el)->getNumberFormat()->setFormatCode('#,###0.00');
@@ -1206,7 +937,7 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
                     $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getNumberFormat()->setFormatCode('#,###0.000');
                     
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
 
 
                     $border_style = array(
@@ -1216,7 +947,7 @@ class Poblo_Controller extends \Sys\Controller
                             )
                         )
                     );
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':H'.$el)->applyFromArray($border_style);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->applyFromArray($border_style);
 
                     $el++;            
                 }                 
@@ -1309,12 +1040,13 @@ class Poblo_Controller extends \Sys\Controller
                 $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
                 $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
                 $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
-                $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(15);                         
+                $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(12);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(12);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(12);                         
                 $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(15);
                 $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(15);
                 $objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('M')->setWidth(70);
 
                 if($key == 0){
                    $lot_number =  $block['lot_number'];
@@ -1347,36 +1079,36 @@ class Poblo_Controller extends \Sys\Controller
                     // imprimo o cabeçalho de lot
                     
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$objRichText);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
                     $el++;                    
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['client_name']);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
                     $el++;                                        
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['inspection_name']);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);                    
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);                    
                     $el++;                    
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['vessel']);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);                    
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);                    
                     $el++; 
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, 'NF'); 
@@ -1390,19 +1122,20 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, 'Vol');                                     
                     $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, 'Weight');                                     
                     $objPHPExcel->getActiveSheet()->setCellValue('K'.$el, 'Wagon Number');                                                         
-                    $objPHPExcel->getActiveSheet()->setCellValue('L'.$el, 'Obs');
+                    $objPHPExcel->getActiveSheet()->setCellValue('L'.$el, 'Wagon Date');                                                         
+                    $objPHPExcel->getActiveSheet()->setCellValue('M'.$el, 'Obs');
 
                     // styles
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
                     // merge cells
                     $objPHPExcel->getActiveSheet()->mergeCells('F'.$el.':H'.$el);
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
                     $el++;          
 
                     $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, 'C');                                     
@@ -1422,13 +1155,13 @@ class Poblo_Controller extends \Sys\Controller
                     $objPHPExcel->getActiveSheet()->mergeCells('K'.$lAnt.':K'.$el);                                        
                     $objPHPExcel->getActiveSheet()->mergeCells('L'.$lAnt.':L'.$el);                                                            
 
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
                     $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);                                        
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);                                        
                     $el++;                                    
 
                 }
@@ -1491,36 +1224,36 @@ COLOR_DARKGREEN ) );
                     // imprimo o cabeçalho de lot
                     
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$objRichText);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
                     $el++;                    
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['client_name']);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);
                     $el++;                                        
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['inspection_name']);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);                    
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);                    
                     $el++;                    
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el,$block['vessel']);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F2F3F4');
-                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':L'.$el);                    
+                    $objPHPExcel->getActiveSheet()->mergeCells('A'.$el.':M'.$el);                    
                     $el++; 
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$el, 'NF'); 
@@ -1534,19 +1267,20 @@ COLOR_DARKGREEN ) );
                     $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, 'Vol');                                     
                     $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, 'Weight');                                     
                     $objPHPExcel->getActiveSheet()->setCellValue('K'.$el, 'Wagon Number');                                                         
-                    $objPHPExcel->getActiveSheet()->setCellValue('L'.$el, 'Obs');
+                    $objPHPExcel->getActiveSheet()->setCellValue('L'.$el, 'Wagon Date');                                                         
+                    $objPHPExcel->getActiveSheet()->setCellValue('M'.$el, 'Obs');
 
                     // styles
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
                     // merge cells
                     $objPHPExcel->getActiveSheet()->mergeCells('F'.$el.':H'.$el);
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
                     $el++;         
 
                     $objPHPExcel->getActiveSheet()->setCellValue('F'.$el, 'C');                                     
@@ -1566,13 +1300,13 @@ COLOR_DARKGREEN ) );
                     $objPHPExcel->getActiveSheet()->mergeCells('K'.$lAnt.':K'.$el);                                        
                     $objPHPExcel->getActiveSheet()->mergeCells('L'.$lAnt.':L'.$el);                                                            
 
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);            
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
                     $objPHPExcel->getActiveSheet()->getStyle('F'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('G'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('H'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFont()->setBold(true);                                        
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFont()->setBold(true);                                        
                     $el++;                                                                                                                           
                 }  
 
@@ -1664,11 +1398,12 @@ COLOR_DARKGREEN ) );
                     $objPHPExcel->getActiveSheet()->setCellValue('I'.$el, $item['invoice_sale_net_vol']);                 
                     $objPHPExcel->getActiveSheet()->setCellValue('J'.$el, $item['tot_weight']);                             
                     $objPHPExcel->getActiveSheet()->setCellValue('K'.$el, $item['block_wagon_number']);                             
-                    $objPHPExcel->getActiveSheet()->setCellValue('L'.$el, $item['obs_poblo']);                             
+                    $objPHPExcel->getActiveSheet()->setCellValue('L'.$el, $item['block_wagon_date']);                             
+                    $objPHPExcel->getActiveSheet()->setCellValue('M'.$el, $item['obs_poblo']);                             
 
                     // styles
 
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getAlignment()->setWrapText(true);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getAlignment()->setWrapText(true);
 
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('A'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
@@ -1692,8 +1427,10 @@ COLOR_DARKGREEN ) );
                     $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);                    
                     $objPHPExcel->getActiveSheet()->getStyle('K'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('K'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
-                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyle('L'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $objPHPExcel->getActiveSheet()->getStyle('M'.$el)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
                     
                     
                     $objPHPExcel->getActiveSheet()->getStyle('C'.$el)->getNumberFormat()->setFormatCode('#,###0.00');
@@ -1704,7 +1441,7 @@ COLOR_DARKGREEN ) );
                     $objPHPExcel->getActiveSheet()->getStyle('J'.$el)->getNumberFormat()->setFormatCode('#,###0.000');                    
                     
 
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
 
 
                     $border_style = array(
@@ -1714,7 +1451,7 @@ COLOR_DARKGREEN ) );
                             )
                         )
                     );
-                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':L'.$el)->applyFromArray($border_style);
+                    $objPHPExcel->getActiveSheet()->getStyle('A'.$el.':M'.$el)->applyFromArray($border_style);
 
                     $el++;                                
                 }    

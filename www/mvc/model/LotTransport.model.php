@@ -1024,6 +1024,7 @@ class LotTransport_Model extends \Sys\Model {
                     client.code AS client_code,
                     client.name AS client_name,
                     block.wagon_number As block_wagon_number,
+                    block.wagon_date As block_wagon_date,
                     (
                         SELECT MIN(invoice.date_record)
                         from lot_transport_item
